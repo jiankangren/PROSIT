@@ -1,0 +1,8 @@
+<optimisation method="infinity">
+<!--- pmf of c missing --->
+<task type="UserQoSCR" name="task3">
+  <period>150</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+</task>
+</optimisation>

@@ -1,0 +1,78 @@
+<optimisation method="infinity" verbose="false">
+<!--- This one is ok  --->
+<task type="UserQoSCR" name="task3">
+  <period>400</period>
+  <serverPeriod>100</serverPeriod>
+  <serverBudget>50</serverBudget>
+  <pmf type="beta">
+    <cmin>10</cmin>
+    <cmax>370</cmax>
+    <a>1.5</a>
+    <b>15.1</b>
+    <step>6</step>
+    <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>0.95</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+  <QoSMax>
+    0.50
+  </QoSMax>
+  <QoSMin>
+    0.1
+  </QoSMin>
+</task>
+<task type="UserQoSCR" name="task4">
+  <period>600</period>
+  <serverPeriod>100</serverPeriod>
+  <serverBudget>50</serverBudget>
+<pmf type="beta">
+  <cmin>20</cmin>
+  <cmax>560</cmax>
+  <step>6</step>
+  <a>1.5</a>
+  <b>10.1</b>
+  <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>0.85</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+    <QoSMax>
+    0.38
+  </QoSMax>
+  <QoSMin>
+    0.1
+  </QoSMin>
+</task>
+<task type="UserQoSCR" name="task5">
+  <period>300</period>
+  <serverPeriod>100</serverPeriod>
+  <serverBudget>50</serverBudget>
+<pmf type="beta">
+  <cmin>20</cmin>
+  <cmax>260</cmax>
+  <step>6</step>
+  <a>1.5</a>
+  <b>8.1</b>
+  <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>0.95</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+    <QoSMax>
+    0.5
+  </QoSMax>
+  <QoSMin>
+    0.1
+  </QoSMin>
+</task>
+
+
+
+</optimisation>

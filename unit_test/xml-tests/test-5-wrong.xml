@@ -1,0 +1,7 @@
+<optimisation method="infinity">
+<!--- Server Period Missing not registered --->
+<task type="UserQoSCR" name="task2">
+  <period>150</period>
+ 
+</task>
+</optimisation>

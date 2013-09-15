@@ -1,0 +1,78 @@
+<optimisation method="infinity">
+<!--- The bounds of the first task cannot be obtained  --->
+<epsilon>
+1e-8
+</epsilon>
+<task type="UserQoSAnalytic" name="task3">
+  <period>180</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="uniform">
+    <cmin>10</cmin>
+    <cmax>90</cmax>
+    <step>2</step>
+    <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>0.95</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+   <epsilon>
+    1e-6
+  </epsilon>
+  <QoSMax>
+    5
+  </QoSMax>
+  <QoSMin>
+    0
+  </QoSMin>
+</task>
+<task type="UserQoSAnalytic" name="task4">
+  <period>220</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+<pmf type="uniform">
+  <cmin>10</cmin>
+  <cmax>90</cmax>
+  <step>2</step>
+  <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>0.85</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+    <QoSMax>
+    0.5
+  </QoSMax>
+  <QoSMin>
+    0.1
+  </QoSMin>
+</task>
+<task type="UserQoSAnalytic" name="task5">
+  <period>220</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+<pmf type="uniform">
+  <cmin>10</cmin>
+  <cmax>90</cmax>
+  <step>2</step>
+  <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>0.85</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+  <epsilon>
+    1e-7
+  </epsilon>
+    <QoSMax>
+    0.5
+  </QoSMax>
+  <QoSMin>
+    0.1
+  </QoSMin>
+</task>
+</optimisation>

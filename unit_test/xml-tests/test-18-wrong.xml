@@ -1,0 +1,37 @@
+<optimisation method="infinity">
+<!--- negative b for beta --->
+<task type="UserQoSCR" name="task3">
+  <period>150</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="uniform">
+    <cmin>10</cmin>
+    <cmax>20</cmax>
+    <step>2</step>
+    <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.1</pmin>
+    <pmax>0.95</pmax>
+    <scale>0.5</scale>
+  </qosfun>
+</task>
+<task type="UserQoSAnalytic" name="task4">
+  <period>120</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="beta">
+    <cmin>10</cmin>
+    <cmax>24</cmax>
+    <step>2</step>
+    <a>0.7</a>
+    <b>-0.5</b>
+    <size>10000</size>
+  </pmf>
+  <qosfun type="quadratic">
+    <pmin>0.2</pmin>
+    <pmax>0.85</pmax>
+    <scale>0.8</scale>
+  </qosfun>
+</task>
+</optimisation>

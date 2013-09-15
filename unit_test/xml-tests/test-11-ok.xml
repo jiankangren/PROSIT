@@ -1,0 +1,14 @@
+<optimisation method="infinity">
+<!--- This one is ok --->
+<task type="UserQoSCR" name="task3">
+  <period>150</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="uniform">
+    <cmin>10</cmin>
+    <cmax>20</cmax>
+    <step>2</step>
+    <size>10000</size>
+  </pmf>
+</task>
+</optimisation>

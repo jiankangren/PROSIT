@@ -1,0 +1,13 @@
+<optimisation method="infinity">
+<!--- Missing cmax parameter --->
+<task type="UserQoSCR" name="task3">
+  <period>150</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="uniform">
+    <cmin>10</cmin>
+    <step>5</step>
+    <size>10000</size>
+  </pmf>
+</task>
+</optimisation>

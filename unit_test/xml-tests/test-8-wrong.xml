@@ -1,0 +1,11 @@
+<optimisation method="infinity">
+<!--- pmf wrong file name--->
+<task type="UserQoSCR" name="task3">
+  <period>150</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="file">
+    <fileName>"NonExisting.txt"</fileName>
+  </pmf>
+</task>
+</optimisation>

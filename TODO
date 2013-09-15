@@ -1,0 +1,19 @@
+Sept 14th 2013
+=======================BEFORE RELEASE=====================
+
+1. Refactor task descriptor Hiearchy
+      - Full implementation of aperiodic
+      - setup fixed-priority ready
+
+2. Introduce function object for solution
+
+3. re-factor command line using task descriptor
+
+4. Cleanup code
+
+5. Doxygen documentation
+
+6. Demo directory
+
+7. website
+===========================================================

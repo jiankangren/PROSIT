@@ -1,0 +1,18 @@
+<optimisation method="infinity">
+<!--- QoSfun missing scale parameter --->
+<task type="UserQoSCR" name="task3">
+  <period>150</period>
+  <serverPeriod>50</serverPeriod>
+  <serverBudget>5</serverBudget>
+  <pmf type="uniform">
+    <cmin>10</cmin>
+    <cmax>20</cmax>
+    <step>2</step>
+    <size>10000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.1</pmin>
+    <pmax>0.9</pmax>
+  </qosfun>
+</task>
+</optimisation>
