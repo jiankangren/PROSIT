@@ -1,0 +1,109 @@
+missing.lo: missing.cpp ../config/config.h missing.h \
+ /opt/local/include/gcc47/c++/cmath \
+ /opt/local/include/gcc47/c++//x86_64-apple-darwin12/bits/c++config.h \
+ /opt/local/include/gcc47/c++//x86_64-apple-darwin12/bits/os_defines.h \
+ /opt/local/include/gcc47/c++//x86_64-apple-darwin12/bits/cpu_defines.h \
+ /opt/local/include/gcc47/c++/bits/cpp_type_traits.h \
+ /opt/local/include/gcc47/c++/ext/type_traits.h \
+ /opt/local/lib/gcc47/gcc/x86_64-apple-darwin12/4.7.3/include-fixed/math.h \
+ /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
+ /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
+ /usr/include/AvailabilityInternal.h /opt/local/include/gcc47/c++/cassert \
+ /usr/include/assert.h /usr/include/stdlib.h /usr/include/_types.h \
+ /usr/include/sys/_types.h /usr/include/machine/_types.h \
+ /usr/include/i386/_types.h /usr/include/sys/wait.h \
+ /usr/include/sys/signal.h /usr/include/sys/appleapiopts.h \
+ /usr/include/machine/signal.h /usr/include/i386/signal.h \
+ /usr/include/i386/_structs.h /usr/include/sys/_structs.h \
+ /usr/include/machine/_structs.h /usr/include/mach/i386/_structs.h \
+ /usr/include/sys/resource.h /usr/include/machine/endian.h \
+ /usr/include/i386/endian.h /usr/include/sys/_endian.h \
+ /usr/include/libkern/_OSByteOrder.h \
+ /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h \
+ /usr/include/machine/types.h /usr/include/i386/types.h \
+ /opt/local/include/gcc47/c++/ctime /usr/include/time.h \
+ /usr/include/_structs.h
+
+../config/config.h:
+
+missing.h:
+
+/opt/local/include/gcc47/c++/cmath:
+
+/opt/local/include/gcc47/c++//x86_64-apple-darwin12/bits/c++config.h:
+
+/opt/local/include/gcc47/c++//x86_64-apple-darwin12/bits/os_defines.h:
+
+/opt/local/include/gcc47/c++//x86_64-apple-darwin12/bits/cpu_defines.h:
+
+/opt/local/include/gcc47/c++/bits/cpp_type_traits.h:
+
+/opt/local/include/gcc47/c++/ext/type_traits.h:
+
+/opt/local/lib/gcc47/gcc/x86_64-apple-darwin12/4.7.3/include-fixed/math.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/sys/_symbol_aliasing.h:
+
+/usr/include/sys/_posix_availability.h:
+
+/usr/include/Availability.h:
+
+/usr/include/AvailabilityInternal.h:
+
+/opt/local/include/gcc47/c++/cassert:
+
+/usr/include/assert.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/_types.h:
+
+/usr/include/sys/_types.h:
+
+/usr/include/machine/_types.h:
+
+/usr/include/i386/_types.h:
+
+/usr/include/sys/wait.h:
+
+/usr/include/sys/signal.h:
+
+/usr/include/sys/appleapiopts.h:
+
+/usr/include/machine/signal.h:
+
+/usr/include/i386/signal.h:
+
+/usr/include/i386/_structs.h:
+
+/usr/include/sys/_structs.h:
+
+/usr/include/machine/_structs.h:
+
+/usr/include/mach/i386/_structs.h:
+
+/usr/include/sys/resource.h:
+
+/usr/include/machine/endian.h:
+
+/usr/include/i386/endian.h:
+
+/usr/include/sys/_endian.h:
+
+/usr/include/libkern/_OSByteOrder.h:
+
+/usr/include/libkern/i386/_OSByteOrder.h:
+
+/usr/include/alloca.h:
+
+/usr/include/machine/types.h:
+
+/usr/include/i386/types.h:
+
+/opt/local/include/gcc47/c++/ctime:
+
+/usr/include/time.h:
+
+/usr/include/_structs.h:
