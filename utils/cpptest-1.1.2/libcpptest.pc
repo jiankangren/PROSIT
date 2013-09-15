@@ -1,4 +1,4 @@
-prefix=/home/palopoli/Documents/Stoc_matlab/QBD_TOOL/utils
+prefix=/home/palopoli/PROSIT/utils
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
