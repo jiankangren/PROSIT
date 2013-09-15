@@ -7,16 +7,16 @@ COMPILATION INSTRUCTIONS
 ====================================================================
 COMPILING THE TOOL
 
-* Prerequisite
+Prerequisites
 In order to compile PROSIT you need
-- a gcc/g++ compiler (version 4.2 or later)
-- a make utility
-- the eigen3 library installed
+   - a gcc/g++ compiler (version 4.2 or later)
+   - a make utility
+   - the eigen3 library installed
 
-* Compilation
-- change directory to tool subdirectory 
-- edit Makefile to specify the position of the eigen3 library
-- type make
+Compilation
+   - change directory to tool subdirectory 
+   - edit Makefile to specify the position of the eigen3 library
+   - type make
 
 
 COMPILING THE TESTS
@@ -27,8 +27,10 @@ This is done as follows:
     make
     make install
 
-Then cd to unit-test directory and type make. The tests can be executed
-by the shell script run-tests.sh.
+The next step is to clean up the tool directory. Just cd to tool and
+type "make clean".
+Then cd to unit-test directory and type "make". The tests can be executed
+by the shell script run-tests.sh. 
 
 
 COMMAND LINE USE
