@@ -52,8 +52,8 @@ namespace TaskFactory {
   
   bool register_task_type(const char * type_name, GenericTaskBuilder  * b);
   GenericTaskDescriptor * create_task_descriptor_instance(const char * type_name,
-							       const char * task_name,
-							       GenericTaskParameters * p) throw(Exc);
+							  const char * task_name,
+							  GenericTaskParameters * p) throw(Exc);
   GenericTaskParameters * parse_task_descriptor_parameters(const char * type_name,
 						    const char * task_name,
 						    XMLElement * p) throw(Exc);
