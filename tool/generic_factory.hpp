@@ -23,20 +23,35 @@ namespace GenericFactory {
    */
   template<class Builder>
   class TypeFactory {
+    map<string,Builder*> type_table;
   public:
+    
+    //!Constructor
+    /*! Does not do anything special. It simply
+     * creates the table through its default constructor.
+     */
+    TypeFactory() : type_table() {};
     //! This method is called to register a type
     /*! It verifies that the type name has not been registered
      *  and associates it with the builder
      * \param type_name is the type name to be registered
      * \param b is a pointer to the builder
-     * \return True for success, False if the name exists
+     * \return Exception in case of failure.
      */
 
-    bool register_type(const * type_name, Builder * b);
+    void register_type(const * type_name, Builder * b) throw (Exc);
 
     //! Cleans up the table of the type builder
 
     void clean_up_types();
+    
+    //! Looks up in the table to search for a type
+    /*!
+     * \param name name of the type
+     * \return A pointer to the builder associated with the type
+     *   NULL if it does not exist.
+     */
+    Builder * look_up_type(string name);
 
     //! Destructor
     /*! Essentially calls clean_up_types
@@ -100,7 +115,7 @@ namespace GenericFactory {
     /*! It implicitly calls the desructor of type factors that cleans up
      * the only data structure contained in the factory.
      */
-    virtual ~FunctorEntityFactory();
+    virtual ~FunctorEntityFactory() {};
   };
   
   //! Builder template class used for named entities
@@ -183,16 +198,73 @@ namespace GenericFactory {
 
     //! Cleans up the table of the names
     void clean_up();
+    
     //! Destructor
     /*! calls clean up and the clean-up method of the
      * TypeFactory class
      */
+    
     virtual ~NamedEntityFactory();
   };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // IMPLEMENTATION OF THE METHODS OF TypeFactory
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
+  template<class Builder>
+  void TypeFactory::register_type(const char * type_name, Builder  * b) throw (Exc) {
+    pair<string, Builder*> p(string(type_name), b);
+    if (!type_table.insert(p).second)
+      EXC_PRINT("Cannot create type", type_name);
+    return;
+  };
 
+  template<class Builder>
+  void TypeFactory::clean_up_types() {
+    map<string,Builder*>::iterator it1=type_table.begin();
+       
+    for (it1=type_table.begin();it1!=type_table.end();it1++) {
+      Builder * q = (*it1).second;
+      delete q;
+    };
+    type_table.erase(type_table.begin(),type_table.end());  
+  };
+  
+  template<class Builder>
+  Builder * TypeFactory::look_up_type(string * type_name) {
+    map<string,Builder*>::iterator it;
+    if ((it=type_table.find(string(type_name)))== name_factory.end()) 
+      return 0;
+    else 
+      return (*it).second;
+  };
 
+  template<class Builder>
+  TypeFactory::~TypeFactory() {
+    clean_up_types();
+  };
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // IMPLEMENTATION OF THE METHODS OF FunctorEntityFactory
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  template<class FunctorEntity, class FunctorParameters>
+  auto_ptr<FunctorEntity> FunctorEntityFactory::create_instance(const char * type_name,
+								FunctorParameters * p) throw (Exc) {
+    FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = look_up_type(string(name));
+    if (!ptr) 
+      EXC_PRINT_2("Type undefined", type_name);
+    
+    return ptr->create_instance(p);
+  };
+  
+  template<class FunctorEntity, class FunctorParameters>
+  auto_ptr<FunctorEntity> FunctorEntityFactory::parse_parameters(const char * type_name,
+								 XMLElement * p) throw(Exc) {
+    FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = look_up_type(string(name));
+    if (!ptr) 
+      EXC_PRINT_2("Type undefined", type_name);
+    return ptr->parse_parameters(p);
+  };
 };
 
 
