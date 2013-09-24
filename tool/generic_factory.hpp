@@ -134,18 +134,59 @@ namespace GenericFactory {
 						 XMLElement * el) throw (Exc) = 0;
   };
   //! Factory class template to create name entities.
+  /*! Creates instances of named entities. Such entities are
+   * stored in a table that associates them with a unique name.
+   * Multiple entries are not allowed (an exception is raised).
+   */
   template<class NamedEntity, class NamedEntityParameters>
   class NamedEntityFactory: public TypeFactory< NamedEntityBuilder<NamedEntity, NamedEntityParameters> > {
   public:
+    //! Creates an instance of a named entity
+    /*! It checks if the type does not exist, and if an entity 
+     * with the same type has already been created (raising
+     * an exception in this case). If the checks are passed 
+     * the entity is created and stored in a table with its name.
+     * \param type_name entity type
+     * \param entity_name name of the entity
+     * \param Pameters associated with the entity
+     * \return pointer to the created entity
+     */
     NamedEntity * create_instance(const char * type_name,
 				  const char * entiy_name,
 				  NamedEntityParameters * p);
+    //!Parses an XML entity to retrieve the parameters
+    /*! it extracts the parameters related to an named entity
+     * This is done leveraging the builder methods for parsing
+     * which is overriden to allow for type specific parameters.
+     * \param type_name name of the type of the named entity
+     * \param entity_name name of the entity
+     * \param p pointer to the XML entry related to the named entity
+     * \return pointer to the created entity (exception in case of wrong
+     *    syntax.
+     */
     NamedEntityParameters * parse_parameters(const char * type_name,
 					     const char * entity_name,
 					     XMLElement * p) throw (Exc);
+    //! Retrieve an entity from its name
+    /*! 
+     * \param name name of the entity 
+     * \return pointer to the entity if found (null otherwise)
+     */
     NamedEntity * get_from_name(const char * name);
+    
+    //! Remove an entity from the tables
+    /*! 
+     * \param name name of the entity 
+     * \return True if removed, False if entry does not exist
+     */
     bool remove_from_name(const char * name);
+
+    //! Cleans up the table of the names
     void clean_up();
+    //! Destructor
+    /*! calls clean up and the clean-up method of the
+     * TypeFactory class
+     */
     virtual ~NamedEntityFactory();
   };
 
