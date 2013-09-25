@@ -12,6 +12,7 @@
 #define DISTR_FACTORY_HPP
 #include "pmf.hpp"
 #include "exc.hpp"
+#include "generic_factory.hpp"
 #include <memory>
 #include <tinyxml2.h>
 using namespace tinyxml2;
@@ -20,18 +21,16 @@ namespace DistrFactory {
     virtual ~DistrParameters(){};
   };
 
-  class DistrBuilder {
-  public:
-    virtual auto_ptr<pmf> create_instance(DistrParameters * t) throw(Exc)=0;
-    virtual DistrParameters* parse_parameters(XMLElement * distr) throw (Exc)=0;
-  };
+  // class DistrBuilder {
+  // public:
+  //   virtual auto_ptr<pmf> create_instance(DistrParameters * t) throw(Exc)=0;
+  //   virtual DistrParameters* parse_parameters(XMLElement * distr) throw (Exc)=0;
+  // };
+
+  typedef GenericFactory::FunctorEntityBuilder<pmf,DistrParameters> DistrBuilder;  
+  typedef GenericFactory::FunctorEntityFactory<pmf,DistrParameters> DistributionFactory;
   
-  bool register_distr_type(const char * type_name, DistrBuilder  * b);
-  auto_ptr<pmf> create_distribution_instance(const char * type_name,
-					       DistrParameters * p) throw(Exc);
-  DistrParameters * parse_distribution_parameters(const char * type_name,
-						 XMLElement * p) throw(Exc);
-  void clean_up();
+  extern DistributionFactory distr_factory;
 };
 
 

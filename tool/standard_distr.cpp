@@ -124,8 +124,8 @@ namespace StandardDistributions {
     return c;
   };
   void init() {
-    DistrFactory::register_distr_type("file", new FileDistrBuilder() );
-    DistrFactory::register_distr_type("uniform", new UniformDistrBuilder() );
-    DistrFactory::register_distr_type("beta", new BetaDistrBuilder() );
+    DistrFactory::distr_factory.register_type("file", new FileDistrBuilder() );
+    DistrFactory::distr_factory.register_type("uniform", new UniformDistrBuilder() );
+    DistrFactory::distr_factory.register_type("beta", new BetaDistrBuilder() );
   };
 }

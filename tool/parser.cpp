@@ -53,8 +53,8 @@ namespace XMLParser {
     if(!(type_name = distrElement->Attribute("type"))) 
       EXC_PRINT("type undefined for distribution");
     
-    DistrFactory::DistrParameters * p = DistrFactory::parse_distribution_parameters(type_name, distrElement);
-    auto_ptr<pmf> td =  DistrFactory::create_distribution_instance(type_name, p);
+    DistrFactory::DistrParameters * p = DistrFactory::distr_factory.parse_parameters(type_name, distrElement);
+    auto_ptr<pmf> td =  DistrFactory::distr_factory.create_instance(type_name, p);
     delete p;
     
     return td;

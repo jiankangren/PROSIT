@@ -10,6 +10,10 @@
  */
 #ifndef GENERIC_FACTORY_HPP
 #define GENERIC_FACTORY_HPP
+#include <memory>
+#include <tinyxml2.h>
+#include <map>
+using namespace tinyxml2;
 namespace GenericFactory {
   
   //! Template class to create and register types 
@@ -39,7 +43,7 @@ namespace GenericFactory {
      * \return Exception in case of failure.
      */
 
-    void register_type(const * type_name, Builder * b) throw (Exc);
+    void register_type(const char * type_name, Builder * b) throw (Exc);
 
     //! Cleans up the table of the type builder
 
@@ -66,8 +70,9 @@ namespace GenericFactory {
    * for functor entities. It si essentially an interface class.
    */
     
-  template<class FunctorEntity, class FunctorParameters>
+  template<class FunctorEntity, typename FunctorParameters>
   class FunctorEntityBuilder {
+  public:
     //! Create an instance od the functor type
     /*!
      * \param p functor type parameters, which could be themselves organised in a hiearchy
@@ -92,7 +97,7 @@ namespace GenericFactory {
    * quality of service, or distributions. The ownership of the functor is unique. So the
    * caller receives an auto_ptr to facilitate the automated destruction of the functor
    */
-  template<class FunctorEntity, class FunctorParameters>
+  template<class FunctorEntity, typename FunctorParameters>
   class FunctorEntityFactory: public TypeFactory< FunctorEntityBuilder<FunctorEntity, FunctorParameters> > {
   public:
     //!Creates an instance of a functor with specified type_name and parameters
@@ -109,7 +114,7 @@ namespace GenericFactory {
      * \param type_name is the type name of the functor
      * \param p is a pointer to the XML entry.
      */
-    FunctorParameters parse_parameters(const char * type_name,
+    FunctorParameters * parse_parameters(const char * type_name,
 				       XMLElement * p) throw (Exc);
     //! Destructor
     /*! It implicitly calls the desructor of type factors that cleans up
@@ -123,7 +128,7 @@ namespace GenericFactory {
    * of the methods are different from the builder of a
    * functor
    */
-  template<class NamedEntity, class NamedEntityParameters>
+  template<class NamedEntity, typename NamedEntityParameters>
   class NamedEntityBuilder {
     //! Method to create an instance of a named entity.
     /* Contrary to the functors, named entities have a name
@@ -145,7 +150,7 @@ namespace GenericFactory {
      * \param el pointe to the XML entry data structure
      * \return the parameters of the name entity
     */
-    virtual FunctorParameters * parse_parameters(const char * entity_name,
+    virtual NamedEntityParameters * parse_parameters(const char * entity_name,
 						 XMLElement * el) throw (Exc) = 0;
   };
   //! Factory class template to create name entities.
@@ -153,7 +158,7 @@ namespace GenericFactory {
    * stored in a table that associates them with a unique name.
    * Multiple entries are not allowed (an exception is raised).
    */
-  template<class NamedEntity, class NamedEntityParameters>
+  template<class NamedEntity, typename NamedEntityParameters>
   class NamedEntityFactory: public TypeFactory< NamedEntityBuilder<NamedEntity, NamedEntityParameters> > {
       map<string,NamedEntity*> name_dictionary;
   public:
@@ -213,16 +218,16 @@ namespace GenericFactory {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    
   template<class Builder>
-  void TypeFactory::register_type(const char * type_name, Builder  * b) throw (Exc) {
+  void TypeFactory<Builder>::register_type(const char * type_name, Builder  * b) throw (Exc) {
     pair<string, Builder*> p(string(type_name), b);
     if (!type_table.insert(p).second)
-      EXC_PRINT("Cannot create type", type_name);
+      EXC_PRINT_2("Cannot create type", type_name);
     return;
   };
 
   template<class Builder>
-  void TypeFactory::clean_up_types() {
-    map<string,Builder*>::iterator it1=type_table.begin();
+  void TypeFactory<Builder>::clean_up_types() {
+    typename map<string,Builder*>::iterator it1=type_table.begin();
        
     for (it1=type_table.begin();it1!=type_table.end();it1++) {
       Builder * q = (*it1).second;
@@ -232,36 +237,36 @@ namespace GenericFactory {
   };
   
   template<class Builder>
-  Builder * TypeFactory::look_up_type(string * type_name) {
-    map<string,Builder*>::iterator it;
-    if ((it=type_table.find(string(type_name)))== name_factory.end()) 
+  Builder * TypeFactory<Builder>::look_up_type(string type_name) {
+    typename map<string,Builder*>::iterator it;
+    if ((it=type_table.find(string(type_name)))== type_table.end()) 
       return 0;
     else 
       return (*it).second;
   };
 
   template<class Builder>
-  TypeFactory::~TypeFactory() {
+  TypeFactory<Builder>::~TypeFactory() {
     clean_up_types();
   };
   
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // IMPLEMENTATION OF THE METHODS OF FunctorEntityFactory
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  template<class FunctorEntity, class FunctorParameters>
-  auto_ptr<FunctorEntity> FunctorEntityFactory::create_instance(const char * type_name,
-								FunctorParameters * p) throw (Exc) {
-    FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = look_up_type(string(name));
+  template<class FunctorEntity, typename FunctorParameters>
+  auto_ptr<FunctorEntity> FunctorEntityFactory<FunctorEntity,FunctorParameters>::create_instance(const char * type_name,
+												 FunctorParameters * p) throw (Exc) {
+    FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = TypeFactory< FunctorEntityBuilder<FunctorEntity, FunctorParameters> >::look_up_type(string(type_name));
     if (!ptr) 
       EXC_PRINT_2("Type undefined", type_name);
     
     return ptr->create_instance(p);
   };
   
-  template<class FunctorEntity, class FunctorParameters>
-  auto_ptr<FunctorEntity> FunctorEntityFactory::parse_parameters(const char * type_name,
+  template<class FunctorEntity, typename FunctorParameters>
+  FunctorParameters * FunctorEntityFactory<FunctorEntity,FunctorParameters>::parse_parameters(const char * type_name,
 								 XMLElement * p) throw(Exc) {
-    FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = look_up_type(string(name));
+    FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = TypeFactory< FunctorEntityBuilder<FunctorEntity, FunctorParameters> >::look_up_type(string(type_name));
     if (!ptr) 
       EXC_PRINT_2("Type undefined", type_name);
     return ptr->parse_parameters(p);
@@ -269,35 +274,35 @@ namespace GenericFactory {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // IMPLEMENTATION OF THE METHODS OF FunctorEntityFactory
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  template<class NamedEntity, class NamedEntityParameters>
-  NamedEntity * NamedEntityFactory::create_instance(const char * type_name,
-						    const char * entiy_name,
+  template<class NamedEntity, typename NamedEntityParameters>
+  NamedEntity * NamedEntityFactory<NamedEntity,NamedEntityParameters>::create_instance(const char * type_name,
+						    const char * entity_name,
 						    NamedEntityParameters * p) {
     if (name_dictionary.find(string(entity_name))!= name_dictionary.end())
-      EXC_PRINT_2("Duplicate name for named entity ",task_name);
-    NamedEntityBuilder<NamedEntity, NamedEntityParameters> * ptr = look_up_type(type_name);
+      EXC_PRINT_2("Duplicate name for named entity ",entity_name);
+    NamedEntityBuilder<NamedEntity, NamedEntityParameters> * ptr =  TypeFactory< NamedEntityBuilder<NamedEntity, NamedEntityParameters> >::look_up_type(type_name);
     if(!ptr)
       EXC_PRINT_2("Type not registered with name ", type_name);
     NamedEntity * td = ptr->create_instance(entity_name, p);
-    pair<string, GenericTaskDescriptor* > b(string(enity_name), td);
+    pair<string, NamedEntity* > b(string(entity_name), td);
     
     name_dictionary.insert(b);
     return td;
   }; 
 
-  template<class NamedEntity, class NamedEntityParameters>
-  NamedEntityParameters * NamedEntityFactory::parse_parameters(const char * type_name,
+  template<class NamedEntity, typename NamedEntityParameters>
+  NamedEntityParameters * NamedEntityFactory<NamedEntity,NamedEntityParameters>::parse_parameters(const char * type_name,
 								const char * entity_name,
 								XMLElement * p) throw (Exc) {
-    NamedEntityBuilder<NamedEntity, NamedEntityParameters> * ptr = look_up_type(type_name);
+    NamedEntityBuilder<NamedEntity, NamedEntityParameters> * ptr =  TypeFactory< NamedEntityBuilder<NamedEntity, NamedEntityParameters> >::look_up_type(type_name);
     if(!ptr)
       EXC_PRINT_2("Type not registered with name ", type_name);
     return ptr->parse_parameters(entity_name, p);
   };
   
-  template<class NamedEntity, class NamedEntityParameters>
-  NamedEntity * NamedEntityFactory::get_from_name(cont char *name) {
-    map<string,NamedEntity*>::iterator it;
+  template<class NamedEntity, typename NamedEntityParameters>
+  NamedEntity * NamedEntityFactory<NamedEntity,NamedEntityParameters>::get_from_name(const char *name) {
+    typename map<string,NamedEntity*>::iterator it;
      it = name_dictionary.find(string(name));
      if (it != name_dictionary.end())
        return (*it).second;
@@ -305,9 +310,9 @@ namespace GenericFactory {
        return 0;
   };
   
-  template<class NamedEntity, class NamedEntityParameters>
-  bool * NamedEntityFactory::remove_from_name(cont char *name) {
-    map<string,NamedEntity*>::iterator it;
+  template<class NamedEntity, typename NamedEntityParameters>
+  bool NamedEntityFactory<NamedEntity,NamedEntityParameters>::remove_from_name(const char *name) {
+    typename map<string,NamedEntity*>::iterator it;
     it = name_dictionary.find(string(name));
     
     if (it != name_dictionary.end()) {
@@ -318,9 +323,9 @@ namespace GenericFactory {
       return false;
   };
   
-  template<class NamedEntity, class NamedEntityParameters>
-  void NamedEntityFactory::clean_up() {
-    map<string,NamedEntity*>::iterator it; 
+  template<class NamedEntity, typename NamedEntityParameters>
+  void NamedEntityFactory<NamedEntity,NamedEntityParameters>::clean_up() {
+    typename map<string,NamedEntity*>::iterator it; 
     for (it=name_dictionary.begin();it!=name_dictionary.end();it++) {
       NamedEntity * p = (*it).second;
       delete p;
@@ -328,8 +333,8 @@ namespace GenericFactory {
     name_dictionary.erase(name_dictionary.begin(), name_dictionary.end());
   };
   
-  template<class NamedEntity, class NamedEntityParameters>
-  NamedEntityFactory::~NamedEntity() {
+  template<class NamedEntity, typename NamedEntityParameters>
+  NamedEntityFactory<NamedEntity,NamedEntityParameters>::~NamedEntityFactory() {
     clean_up();
   };
 };
