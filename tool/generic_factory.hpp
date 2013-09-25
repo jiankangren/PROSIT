@@ -155,6 +155,7 @@ namespace GenericFactory {
    */
   template<class NamedEntity, class NamedEntityParameters>
   class NamedEntityFactory: public TypeFactory< NamedEntityBuilder<NamedEntity, NamedEntityParameters> > {
+      map<string,NamedEntity*> name_dictionary;
   public:
     //! Creates an instance of a named entity
     /*! It checks if the type does not exist, and if an entity 
@@ -264,6 +265,72 @@ namespace GenericFactory {
     if (!ptr) 
       EXC_PRINT_2("Type undefined", type_name);
     return ptr->parse_parameters(p);
+  };
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // IMPLEMENTATION OF THE METHODS OF FunctorEntityFactory
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  template<class NamedEntity, class NamedEntityParameters>
+  NamedEntity * NamedEntityFactory::create_instance(const char * type_name,
+						    const char * entiy_name,
+						    NamedEntityParameters * p) {
+    if (name_dictionary.find(string(entity_name))!= name_dictionary.end())
+      EXC_PRINT_2("Duplicate name for named entity ",task_name);
+    NamedEntityBuilder<NamedEntity, NamedEntityParameters> * ptr = look_up_type(type_name);
+    if(!ptr)
+      EXC_PRINT_2("Type not registered with name ", type_name);
+    NamedEntity * td = ptr->create_instance(entity_name, p);
+    pair<string, GenericTaskDescriptor* > b(string(enity_name), td);
+    
+    name_dictionary.insert(b);
+    return td;
+  }; 
+
+  template<class NamedEntity, class NamedEntityParameters>
+  NamedEntityParameters * NamedEntityFactory::parse_parameters(const char * type_name,
+								const char * entity_name,
+								XMLElement * p) throw (Exc) {
+    NamedEntityBuilder<NamedEntity, NamedEntityParameters> * ptr = look_up_type(type_name);
+    if(!ptr)
+      EXC_PRINT_2("Type not registered with name ", type_name);
+    return ptr->parse_parameters(entity_name, p);
+  };
+  
+  template<class NamedEntity, class NamedEntityParameters>
+  NamedEntity * NamedEntityFactory::get_from_name(cont char *name) {
+    map<string,NamedEntity*>::iterator it;
+     it = name_dictionary.find(string(name));
+     if (it != name_dictionary.end())
+       return (*it).second;
+     else
+       return 0;
+  };
+  
+  template<class NamedEntity, class NamedEntityParameters>
+  bool * NamedEntityFactory::remove_from_name(cont char *name) {
+    map<string,NamedEntity*>::iterator it;
+    it = name_dictionary.find(string(name));
+    
+    if (it != name_dictionary.end()) {
+      name_dictionary.erase(string(name));
+      return true;
+    }
+    else
+      return false;
+  };
+  
+  template<class NamedEntity, class NamedEntityParameters>
+  void NamedEntityFactory::clean_up() {
+    map<string,NamedEntity*>::iterator it; 
+    for (it=name_dictionary.begin();it!=name_dictionary.end();it++) {
+      NamedEntity * p = (*it).second;
+      delete p;
+    };
+    name_dictionary.erase(name_dictionary.begin(), name_dictionary.end());
+  };
+  
+  template<class NamedEntity, class NamedEntityParameters>
+  NamedEntityFactory::~NamedEntity() {
+    clean_up();
   };
 };
 
