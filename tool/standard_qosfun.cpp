@@ -66,8 +66,8 @@ namespace StandardQoSFun {
 
 
   void init() {
-    QoSFactory::register_qosfun_type("linear",new(LinearQoSFunBuilder));
-    QoSFactory::register_qosfun_type("quadratic",new(QuadraticQoSFunBuilder));
+    QoSFactory::qos_fun_factory.register_type("linear",new(LinearQoSFunBuilder));
+    QoSFactory::qos_fun_factory.register_type("quadratic",new(QuadraticQoSFunBuilder));
   };
 
 };

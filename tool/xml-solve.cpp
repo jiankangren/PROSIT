@@ -201,13 +201,13 @@ int main(int argc, char *argv[])
     };
 
     delete p;
-    QoSFactory::clean_up();
+    //QoSFactory::clean_up();
     //DistrFactory::clean_up();
     TaskFactory::clean_up();
     return res;
   }
   catch (Exc & e) {
-    QoSFactory::clean_up();
+    //QoSFactory::clean_up();
     //DistrFactory::clean_up();
     TaskFactory::clean_up();
     e.what();

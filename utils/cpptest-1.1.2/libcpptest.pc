@@ -1,4 +1,4 @@
-prefix=/home/palopoli/PROSIT/utils
+prefix=/home/palopoli/Software/PROSIT/utils
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

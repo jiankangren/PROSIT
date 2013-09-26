@@ -42,8 +42,8 @@ namespace XMLParser {
     if(!(type_name = qosfunElement->Attribute("type"))) 
       EXC_PRINT("type undefined for qosfunction");
     
-    QoSFactory::QoSFunParameters * p = QoSFactory::parse_qosfun_parameters(type_name, qosfunElement);
-    auto_ptr<QoSFun> td =  QoSFactory::create_qosfun_instance(type_name, p);
+    QoSFactory::QoSFunParameters * p = QoSFactory::qos_fun_factory.parse_parameters(type_name, qosfunElement);
+    auto_ptr<QoSFun> td =  QoSFactory::qos_fun_factory.create_instance(type_name, p);
     delete p;
     
     return td;

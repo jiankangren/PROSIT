@@ -13,6 +13,7 @@
 #define QOS_FACTORY_HPP
 #include "qos_fun.hpp" 
 #include "exc.hpp"
+#include "generic_factory.hpp"
 #include <memory>
 #include <tinyxml2.h>
 using namespace tinyxml2;
@@ -20,19 +21,9 @@ namespace QoSFactory {
   struct QoSFunParameters {
     virtual ~QoSFunParameters(){};
   };
-
-  class QoSFunBuilder {
-  public:
-    virtual auto_ptr<QoSFun> create_instance(QoSFunParameters * t) throw(Exc)=0;
-    virtual QoSFunParameters* parse_parameters(XMLElement * qosfunel) throw (Exc)=0;
-  };
-  
-  bool register_qosfun_type(const char * type_name, QoSFunBuilder  * b);
-  auto_ptr<QoSFun> create_qosfun_instance(const char * type_name,
-					  QoSFunParameters * p) throw(Exc);
-  QoSFunParameters * parse_qosfun_parameters(const char * type_name,
-					    XMLElement * p) throw(Exc);
-  void clean_up();  
+  typedef GenericFactory::FunctorEntityBuilder<QoSFun,QoSFunParameters> QoSFunBuilder;  
+  typedef GenericFactory::FunctorEntityFactory<QoSFun,QoSFunParameters> QoSFunFactory;
+  extern QoSFunFactory qos_fun_factory;
 };
 
 #endif
