@@ -43,7 +43,7 @@ public:
 class TaskOptimisationSuite : public Test::Suite {
 public:
   TaskOptimisationSuite() {
-    TaskFactory::register_task_type("StubProbPeriodicTaskDescriptor",new StubProbPeriodicTaskBuilder());
+    TaskFactory::task_descriptor_factory.register_type("StubProbPeriodicTaskDescriptor",new StubProbPeriodicTaskBuilder());
     auto_ptr<pmf> c(new pmf(1000,0));
     auto_ptr<pmf> c1(new pmf(1000,0));
     auto_ptr<pmf> c2(new pmf(1000,0));
@@ -53,29 +53,30 @@ public:
     *c1 = *c;
     *c2 = *c;
     StubParameters p(c, 1200000, 50, 100000, 1, 1e-8,2.0);
-    TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptor","task 1",  &p);
+    TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptor","task 1",  &p);
     p.scale = 10.0;
     p.Tsd = 200000;
     p.c = c1;
-    TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptor", "task 2",  &p);
+    TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptor", "task 2",  &p);
     p.scale = 100.0;
     p.Tsd=400000;
     p.c = c2;
-    TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptor", "task 3",  &p);
+    TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptor", "task 3",  &p);
     TEST_ADD(TaskOptimisationSuite::simple_optimisation_1);
     TEST_ADD(TaskOptimisationSuite::simple_optimisation_2);
   };
  
   ~TaskOptimisationSuite() {
-    TaskFactory::clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
+    TaskFactory::task_descriptor_factory.clean_up_types();
   };
 private:  
   void simple_optimisation_1() {
     vector<GenericTaskDescriptor*> v(3);
-    TaskFactory::set_task_qos_bounds("task 1",0.15*2, 0.85*2);
-    TaskFactory::set_task_qos_bounds("task 2",0.25*10, 0.75*10);
-    TaskFactory::set_task_qos_bounds("task 3",0.05*100, 0.9*100);
-    TEST_ASSERT_MSG(TaskFactory::get_task_descriptor_vector(v)==3,"There are three tasks");
+    TaskFactory::task_descriptor_factory.set_task_qos_bounds("task 1",0.15*2, 0.85*2);
+    TaskFactory::task_descriptor_factory.set_task_qos_bounds("task 2",0.25*10, 0.75*10);
+    TaskFactory::task_descriptor_factory.set_task_qos_bounds("task 3",0.05*100, 0.9*100);
+    TEST_ASSERT_MSG(TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v)==3,"There are three tasks");
     InfinityNormBudgetOptimiser Opt(v);
     TEST_ASSERT_MSG(Opt.task_num()==3,"There are three tasks in the optimiser");
     Opt.optimise();
@@ -95,10 +96,10 @@ private:
   };
   void simple_optimisation_2() {
     vector<GenericTaskDescriptor*> v(3);
-    TaskFactory::set_task_qos_bounds("task 1",0.15*2, 0.90*2);
-    TaskFactory::set_task_qos_bounds("task 2",0.2, 0.75*10);
-    TaskFactory::set_task_qos_bounds("task 3",0.05*100, 0.9*100);
-    TEST_ASSERT_MSG(TaskFactory::get_task_descriptor_vector(v)==3,"There are three tasks");
+    TaskFactory::task_descriptor_factory.set_task_qos_bounds("task 1",0.15*2, 0.90*2);
+    TaskFactory::task_descriptor_factory.set_task_qos_bounds("task 2",0.2, 0.75*10);
+    TaskFactory::task_descriptor_factory.set_task_qos_bounds("task 3",0.05*100, 0.9*100);
+    TEST_ASSERT_MSG(TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v)==3,"There are three tasks");
     InfinityNormBudgetOptimiser Opt(v);
     TEST_ASSERT_MSG(Opt.task_num()==3,"There are three tasks in the optimiser");
     Opt.optimise();

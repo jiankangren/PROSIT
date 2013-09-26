@@ -27,20 +27,21 @@ public:
   };
   
   ~IntegratedOptimisationTestSuite() {
-    QoSFactory::clean_up();
-    DistrFactory::clean_up();
-    TaskFactory::clean_up();
+    QoSFactory::qos_fun_factory.clean_up_types();
+    DistrFactory::distr_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up();
+    TaskFactory::task_descriptor_factory.clean_up_types();
   };
 private:
 
   void optimisation1() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-beta-1.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==2,"There are two tasks");
           
 #if 0
@@ -86,12 +87,12 @@ private:
   
   void optimisation2() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-beta-2.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==2,"There are two tasks");
           
 #if 0
@@ -136,12 +137,12 @@ private:
   }
   void optimisation4() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-beta-4.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==3,"There are two tasks");
           
 #if 0
@@ -200,12 +201,12 @@ private:
   }
   void optimisation3() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-beta-3.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==3,"There are two tasks");
           
 #if 0
@@ -252,12 +253,12 @@ private:
   }
     void optimisation5() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-beta-5.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==3,"There are two tasks");
           
 #if 0
@@ -304,12 +305,12 @@ private:
   }
     void optimisation6() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-beta-6.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==3,"There are two tasks");
           
 #if 0

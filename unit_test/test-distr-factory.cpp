@@ -15,17 +15,17 @@ public:
   };
   
   ~DistrFactorySuite() {
-    DistrFactory::clean_up();
+    DistrFactory::distr_factory.clean_up_types();
   };
 private:
   void file() {
     StandardDistributions::SyntheticDistrParameters pWrong(10,100,1,1000);
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("file", &pWrong), Exc, "Wrong parameter type");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("file", &pWrong), Exc, "Wrong parameter type");
     StandardDistributions::FileDistrParameters pWrong1("NotExists.txt");
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("file", &pWrong1),Exc,"File does not exist");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("file", &pWrong1),Exc,"File does not exist");
     StandardDistributions::FileDistrParameters pOk("./pmf-tests/beta.txt");
     auto_ptr<pmf> p;
-    TEST_THROWS_NOTHING(p = DistrFactory::create_distribution_instance("file", &pOk));
+    TEST_THROWS_NOTHING(p = DistrFactory::distr_factory.create_instance("file", &pOk));
     TEST_ASSERT_DELTA_MSG(p->get(5),1.8067801e-01, 1e-4,"First sample does not coincide");
     TEST_ASSERT_MSG(p->check()==pmf::PMF_OK,"pmf ill formed");
   };
@@ -34,27 +34,27 @@ private:
     StandardDistributions::SyntheticDistrParameters pWrong2(10,20,3,1000);
     StandardDistributions::SyntheticDistrParameters pOk(10,20,2,1000);
     //StandardDistributions::UniformDistrBuilder builder;
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("uniform", &pWrong), Exc, "cmax smaller than cmin");
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("uniform", &pWrong2), Exc, "step has to be integer submultiple of the interval");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("uniform", &pWrong), Exc, "cmax smaller than cmin");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("uniform", &pWrong2), Exc, "step has to be integer submultiple of the interval");
     auto_ptr<pmf> p;
-    TEST_THROWS_NOTHING(p = DistrFactory::create_distribution_instance("uniform", &pOk));
+    TEST_THROWS_NOTHING(p = DistrFactory::distr_factory.create_instance("uniform", &pOk));
     //p->print();
     TEST_ASSERT_MSG(p->check()==pmf::PMF_OK,"pmf ill formed");
   };
   void beta() {
     StandardDistributions::SyntheticDistrParameters pWrong(100,10,1,1000);
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("beta", &pWrong), Exc, "Wrong parameter type");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("beta", &pWrong), Exc, "Wrong parameter type");
     
     StandardDistributions::BetaDistrParameters pWrong1(10,20,3,1000,-3.0,-4.0);
 
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("beta", &pWrong1), Exc, "Wrong parameter type 2");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("beta", &pWrong1), Exc, "Wrong parameter type 2");
     
     StandardDistributions::BetaDistrParameters pWrong2(10,20,2,1000,-3.0,4.0);
-    TEST_THROWS_MSG(DistrFactory::create_distribution_instance("beta", &pWrong2), Exc, "Wrong parameter type 3");
+    TEST_THROWS_MSG(DistrFactory::distr_factory.create_instance("beta", &pWrong2), Exc, "Wrong parameter type 3");
 
     StandardDistributions::BetaDistrParameters pOk(10,100,2,1000,3.0,4.0);
     auto_ptr<pmf> p;
-    TEST_THROWS_NOTHING(p = DistrFactory::create_distribution_instance("beta", &pOk));
+    TEST_THROWS_NOTHING(p = DistrFactory::distr_factory.create_instance("beta", &pOk));
     TEST_ASSERT_MSG(p->check()==pmf::PMF_OK,"pmf ill formed");
     //    p->print();
  };

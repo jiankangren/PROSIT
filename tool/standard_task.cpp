@@ -57,8 +57,8 @@ namespace StandardTasks {
   }
   UserQoSPeriodicTaskDescriptorAnalytic::~UserQoSPeriodicTaskDescriptorAnalytic(){};
   void init() {
-    TaskFactory::register_task_type("UserQoSCR",new UserQoSPeriodicTaskBuilderCR);
-    TaskFactory::register_task_type("UserQoSAnalytic",new UserQoSPeriodicTaskBuilderAnalytic);
+    TaskFactory::task_descriptor_factory.register_type("UserQoSCR",new UserQoSPeriodicTaskBuilderCR);
+    TaskFactory::task_descriptor_factory.register_type("UserQoSAnalytic",new UserQoSPeriodicTaskBuilderAnalytic);
   };
 
 

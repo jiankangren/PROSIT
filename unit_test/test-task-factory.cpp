@@ -83,14 +83,14 @@ public:
   };
  
   ~TaskFactoryTestSuite() {
-    TaskFactory::clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
   };
 private:
   void registration() {
-    TEST_ASSERT_MSG(TaskFactory::register_task_type("StubProbPeriodicTaskDescriptor",new StubProbPeriodicTaskBuilder()),"Cannot create task type");
-    TEST_ASSERT_MSG(TaskFactory::register_task_type("StubProbPeriodicTaskDescriptorCR",new StubProbPeriodicTaskBuilderCR()),"Cannot create task type");
-    TEST_ASSERT_MSG(TaskFactory::register_task_type("StubProbPeriodicTaskDescriptorAnalytic",new StubProbPeriodicTaskBuilderAnalytic()),"Cannot create task type");
-    TEST_ASSERT_MSG(!TaskFactory::register_task_type("StubProbPeriodicTaskDescriptorAnalytic",new StubProbPeriodicTaskBuilderAnalytic()),"Should create existing task type");
+    TEST_THROWS_NOTHING_MSG(TaskFactory::task_descriptor_factory.register_type("StubProbPeriodicTaskDescriptor",new StubProbPeriodicTaskBuilder()),"Cannot create task type");
+     TEST_THROWS_NOTHING_MSG(TaskFactory::task_descriptor_factory.register_type("StubProbPeriodicTaskDescriptorCR",new StubProbPeriodicTaskBuilderCR()),"Cannot create task type");
+     TEST_THROWS_NOTHING_MSG(TaskFactory::task_descriptor_factory.register_type("StubProbPeriodicTaskDescriptorAnalytic",new StubProbPeriodicTaskBuilderAnalytic()),"Cannot create task type");
+     TEST_THROWS_MSG(TaskFactory::task_descriptor_factory.register_type("StubProbPeriodicTaskDescriptorAnalytic",new StubProbPeriodicTaskBuilderAnalytic()), Exc,"Should create existing task type");
   };
   void creation() {
     auto_ptr<pmf> c (new pmf(1000,0));
@@ -100,17 +100,17 @@ private:
     *c1=*c;
     auto_ptr<TaskFactory::GenericTaskParameters> pt(new TaskFactory::GenericTaskParameters(c,5,10,1,1e-8));
     TaskFactory::PeriodicTaskParameters p(pt, 120);
-    TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptor", "task 1",  &p);
-    GenericTaskDescriptor * h = TaskFactory::get_task_descriptor_from_name("task 1");
+    TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptor", "task 1",  &p);
+    GenericTaskDescriptor * h = TaskFactory::task_descriptor_factory.get_from_name("task 1");
     TEST_ASSERT_MSG(h!=0,"The task should exist");
     TEST_ASSERT_MSG(h->get_name()=="task 1","The task name is incorrect");
     
     //C has been consumed!!!!
     p.c = c1;
-    TEST_THROWS_MSG(TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptor2","task 2",  &p), Exc, "task type does not exist");
-    TEST_THROWS_MSG(TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptor", "task 1",  &p), Exc, "task name exists already");
-    TaskFactory::create_task_descriptor_instance("StubProbPeriodicTaskDescriptorCR", "task 3",  &p);
-    h = TaskFactory::get_task_descriptor_from_name("task 3");
+    TEST_THROWS_MSG(TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptor2","task 2",  &p), Exc, "task type does not exist");
+    TEST_THROWS_MSG(TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptor", "task 1",  &p), Exc, "task name exists already");
+    TaskFactory::task_descriptor_factory.create_instance("StubProbPeriodicTaskDescriptorCR", "task 3",  &p);
+    h = TaskFactory::task_descriptor_factory.get_from_name("task 3");
     TEST_ASSERT_MSG(dynamic_cast<StubProbPeriodicTaskDescriptorCR*>(h)!=0,"The task should be of type CR");
   }
 };

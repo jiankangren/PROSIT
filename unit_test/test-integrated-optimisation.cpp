@@ -26,19 +26,20 @@ public:
   };
   
   ~IntegratedOptimisationTestSuite() {
-    QoSFactory::clean_up();
-    DistrFactory::clean_up();
-    TaskFactory::clean_up();
+    QoSFactory::qos_fun_factory.clean_up_types();
+    DistrFactory::distr_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up();
+    TaskFactory::task_descriptor_factory.clean_up_types();
   };
 private:
   void optimisation1() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-1.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==2,"There are two tasks");
     
 
@@ -58,12 +59,12 @@ private:
   };
     void optimisation2() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-2.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==2,"There are two tasks");
     InfinityNormBudgetOptimiser Opt(v,p->get_optimisation_epsilon());
     Opt.set_verbose(p->get_verbose());
@@ -81,12 +82,12 @@ private:
   }
   void optimisation3() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-3-wrong.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==2,"There are two tasks");
     InfinityNormBudgetOptimiser Opt(v,p->get_optimisation_epsilon());
     
@@ -95,12 +96,12 @@ private:
   }
   void optimisation4() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();;
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-4.xml"));
     TEST_THROWS_NOTHING(p->parse());
     vector<GenericTaskDescriptor*> v;
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     TEST_ASSERT_MSG(num==3,"There are three tasks");
 
 #if 0
@@ -160,12 +161,12 @@ private:
     }
     void optimisation5() {
       XMLParser::Parser * p;
-      TaskFactory::task_clean_up();
+      TaskFactory::task_descriptor_factory.clean_up();
       
       TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-optimisation-5.xml"));
       TEST_THROWS_NOTHING(p->parse());
       vector<GenericTaskDescriptor*> v;
-      int num = TaskFactory::get_task_descriptor_vector(v);
+      int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
       TEST_ASSERT_MSG(num==3,"There are three tasks");
       
 #if 0

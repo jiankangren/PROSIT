@@ -130,6 +130,7 @@ namespace GenericFactory {
    */
   template<class NamedEntity, typename NamedEntityParameters>
   class NamedEntityBuilder {
+  public:
     //! Method to create an instance of a named entity.
     /* Contrary to the functors, named entities have a name
      * and are stored in an internal data structure. 
@@ -139,8 +140,7 @@ namespace GenericFactory {
      *   the type does not exist. 
      */
     
-    virtual NamedEntity * create_instance(const char * type_name,
-					  const char * entity_name,
+    virtual NamedEntity * create_instance(const char * entity_name,
 					  NamedEntityParameters * p) throw (Exc) = 0;
     
     //! Method to parse the parameters of a named entity
@@ -160,7 +160,8 @@ namespace GenericFactory {
    */
   template<class NamedEntity, typename NamedEntityParameters>
   class NamedEntityFactory: public TypeFactory< NamedEntityBuilder<NamedEntity, NamedEntityParameters> > {
-      map<string,NamedEntity*> name_dictionary;
+  protected:
+    map<string,NamedEntity*> name_dictionary;
   public:
     //! Creates an instance of a named entity
     /*! It checks if the type does not exist, and if an entity 

@@ -53,7 +53,7 @@ static int opts_parse(int argc, char *argv[]) throw (Exc)
 
 static int solve_core(vector<GenericTaskDescriptor*> & v, vector<double> & probability, vector<double> & quality) {
   
-    int num = TaskFactory::get_task_descriptor_vector(v);
+    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
     if(verbose_flag)
         cout<<"Number of tasks parsed: "<<num<<endl;
     
@@ -98,7 +98,7 @@ static int solve_execute() {
   long long t_solution_start=0, t_solution_end=0;
   t_solution_start = my_get_time();
   vector<GenericTaskDescriptor*> v;
-  int num = TaskFactory::get_task_descriptor_vector(v);
+  int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
 
   vector<double> probability(num);
   vector<double> quality(num);
@@ -122,7 +122,7 @@ static int opt_execute(XMLParser::Parser * p) {
 
   t_optimisation_set_up = my_get_time();
   vector<GenericTaskDescriptor*> v;
-  int num = TaskFactory::get_task_descriptor_vector(v);
+  int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
   if(verbose_flag)
     cout<<"Number of tasks parsed: "<<num<<endl;
     
@@ -201,15 +201,22 @@ int main(int argc, char *argv[])
     };
 
     delete p;
-    //QoSFactory::clean_up();
-    //DistrFactory::clean_up();
-    TaskFactory::clean_up();
+    QoSFactory::qos_fun_factory.clean_up_types();
+    DistrFactory::distr_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up();
+    //TaskFactory::clean_up();
     return res;
   }
   catch (Exc & e) {
+    QoSFactory::qos_fun_factory.clean_up_types();
+    DistrFactory::distr_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up();
+  
     //QoSFactory::clean_up();
     //DistrFactory::clean_up();
-    TaskFactory::clean_up();
+    //TaskFactory::clean_up();
     e.what();
     return 0;
   };

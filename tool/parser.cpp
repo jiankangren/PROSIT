@@ -20,8 +20,8 @@ namespace XMLParser {
     if(!(type_name = taskElement->Attribute("type")))
       EXC_PRINT_2("type undefined for task",task_name);
     
-    TaskFactory::GenericTaskParameters * p = TaskFactory::parse_task_descriptor_parameters(type_name, task_name, taskElement);
-    GenericTaskDescriptor *td =  TaskFactory::create_task_descriptor_instance(type_name, task_name, p);
+    TaskFactory::GenericTaskParameters * p = TaskFactory::task_descriptor_factory.parse_parameters(type_name, task_name, taskElement);
+    GenericTaskDescriptor *td =  TaskFactory::task_descriptor_factory.create_instance(type_name, task_name, p);
     delete p;
     
     XMLElement * internal;
@@ -31,7 +31,7 @@ namespace XMLParser {
       if (!(internal= taskElement->FirstChildElement("QoSMin")))
 	EXC_PRINT_2(" QoSmax defined but QoSMin undefined for task ", task_name);
       internal->QueryDoubleText(&qos_min);
-      TaskFactory::set_task_target_qos_bounds(task_name, qos_min,qos_max);
+      TaskFactory::task_descriptor_factory.set_task_target_qos_bounds(task_name, qos_min,qos_max);
     };
     
     return td;
@@ -110,7 +110,7 @@ namespace XMLParser {
   };
   
   ACTIONS Parser::parse() throw (Exc) {
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     XMLElement* element =doc->FirstChildElement("optimisation");
   
     if (element) {

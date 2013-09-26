@@ -14,6 +14,7 @@
 #include "probabilistic_optimisation.hpp"
 #include "exc.hpp"
 #include <tinyxml2.h>
+#include"generic_factory.hpp"
 using namespace tinyxml2;
 
 namespace TaskFactory {
@@ -36,7 +37,7 @@ namespace TaskFactory {
   };
   
 
-  class GenericTaskBuilder {
+  class GenericTaskBuilder: public GenericFactory::NamedEntityBuilder<GenericTaskDescriptor,GenericTaskParameters> {
   public:
     virtual GenericTaskDescriptor * create_instance(const char * name, GenericTaskParameters * t) throw(Exc)=0;
     virtual TaskFactory::GenericTaskParameters * parse_parameters(const char * name, XMLElement * task) throw (Exc);
@@ -49,21 +50,14 @@ namespace TaskFactory {
     virtual TaskFactory::GenericTaskParameters * parse_parameters(const char * name, XMLElement * task) throw (Exc);
   };
 
-  
-  bool register_task_type(const char * type_name, GenericTaskBuilder  * b);
-  GenericTaskDescriptor * create_task_descriptor_instance(const char * type_name,
-							  const char * task_name,
-							  GenericTaskParameters * p) throw(Exc);
-  GenericTaskParameters * parse_task_descriptor_parameters(const char * type_name,
-						    const char * task_name,
-						    XMLElement * p) throw(Exc);
-  GenericTaskDescriptor * get_task_descriptor_from_name(const char * name);
-  void clean_up();
-  void task_clean_up();
-  bool remove_task_descriptor_from_name(const char * name);
-  void set_task_qos_bounds(const char * name, double qos_min, double qos_max) throw (Exc);
-  void set_task_target_qos_bounds(const char * name, double qos_min, double qos_max) throw (Exc);
-  int get_task_descriptor_vector(vector<GenericTaskDescriptor*> & v);
+  class TaskDescriptorFactory: public GenericFactory::NamedEntityFactory<GenericTaskDescriptor,GenericTaskParameters> {
+  public:
+    void set_task_qos_bounds(const char * name, double qos_min, double qos_max) throw (Exc);
+    void set_task_target_qos_bounds(const char * name, double qos_min, double qos_max) throw (Exc);
+    int get_task_descriptor_vector(vector<GenericTaskDescriptor*> & v);  
+  };
+  extern TaskDescriptorFactory task_descriptor_factory;
+
 };
 
 

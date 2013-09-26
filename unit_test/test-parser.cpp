@@ -40,9 +40,11 @@ public:
   };
   
   ~ParserTestSuite() {
-    QoSFactory::clean_up();
-    DistrFactory::clean_up();
-    TaskFactory::clean_up();
+    QoSFactory::qos_fun_factory.clean_up_types();
+    DistrFactory::distr_factory.clean_up_types();
+    TaskFactory::task_descriptor_factory.clean_up();
+    TaskFactory::task_descriptor_factory.clean_up_types();
+
   };
 private:
   void file_access() {
@@ -137,7 +139,7 @@ private:
   };
   void ok_uniform_1() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
 
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-15-ok.xml"));
     TEST_THROWS_NOTHING(p->parse());
@@ -145,7 +147,7 @@ private:
   };
     void ok_uniform_2() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
 
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-16-ok.xml"));
 //     try {
@@ -158,7 +160,7 @@ private:
     };
   void no_beta_1() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
 
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-17-wrong.xml"));
     TEST_THROWS_MSG(p->parse(),Exc,"missing parameter in beta");
@@ -166,7 +168,7 @@ private:
   };
   void no_beta_2() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-18-wrong.xml"));
     TEST_THROWS_MSG(p->parse(),Exc,"missing parameter in beta");
@@ -174,7 +176,7 @@ private:
   };
     void ok_beta_3() {
     XMLParser::Parser * p;
-    TaskFactory::task_clean_up();
+    TaskFactory::task_descriptor_factory.clean_up();
     
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-19-ok.xml"));
     TEST_THROWS_NOTHING(p->parse());
