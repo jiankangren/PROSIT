@@ -95,7 +95,10 @@ namespace GenericFactory {
   /*! Creates a instances of functors. In our terminology a functor is a memory--less object
    * whose only purpose to offer access to user--defined functions (e.g.,
    * quality of service, or distributions. The ownership of the functor is unique. So the
-   * caller receives an auto_ptr to facilitate the automated destruction of the functor
+   * caller receives an auto_ptr to facilitate the automated destruction of the functor.
+   * Unlike the standard C++ we do not override the method () for reasons related to
+   * our personal tastes. Nothing prevents to do this in a near future and come up
+   * with a properly said functor.
    */
   template<class FunctorEntity, typename FunctorParameters>
   class FunctorEntityFactory: public TypeFactory< FunctorEntityBuilder<FunctorEntity, FunctorParameters> > {
