@@ -38,7 +38,7 @@ namespace QoSFactory {
    */
   typedef GenericFactory::FunctorEntityFactory<QoSFun,QoSFunParameters> QoSFunFactory;
   
-  //! Global object used to create factories
+  //! Global object used to create quality of service functions
   /*!
    *This one should be probably the only object entitled to create qos functions.
    * At least, this is my current idea. However, I do not see particular reasons to
