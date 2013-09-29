@@ -18,6 +18,7 @@ using namespace std;
 #include "pmf.hpp"
 const int typical_size=1000;
 
+
 class GenericTaskDescriptor {
 protected:
   string name;
