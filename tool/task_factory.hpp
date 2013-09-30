@@ -18,8 +18,10 @@
 using namespace tinyxml2;
 
 namespace TaskFactory {
+
+  //!Root for hiearchy of parameters
   struct GenericTaskParameters {
-    auto_ptr<pmf> c; 
+    auto_ptr<pmf> c; //!>
     int Qd; 
     int Tsd;
     int Deltad;
@@ -28,6 +30,7 @@ namespace TaskFactory {
     virtual ~GenericTaskParameters(){};
   };
 
+  //!Parameters for a periodic task
   struct PeriodicTaskParameters: public GenericTaskParameters {
     int Pd;
     PeriodicTaskParameters(auto_ptr<GenericTaskParameters> pt, int Pdd):
