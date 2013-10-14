@@ -1,12 +1,12 @@
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
 CPPFLAGS= -Wall -g -I/usr/include/eigen3 -I../utils/tinyxml2
-CPPFLAGS+= -O8
+#CPPFLAGS+= -O8
 endif
 
 ifeq ($(UNAME), Darwin)
 CPPFLAGS= -Wall -g -I/opt/local/include/eigen3 -I../utils/tinyxml2
-CPPFLAGS+= -O8
+#CPPFLAGS+= -O8
 endif
 
 

@@ -10,7 +10,7 @@ namespace StandardDistributions {
       EXC_PRINT_2("computation time pmf undefined for task", name);
     name = internal->GetText();
     if((internal= distElement->FirstChildElement("size"))) {
-      internal->FirstChildElement("size")->QueryIntText(&sz);
+      internal->QueryIntText(&sz);
       return new FileDistrParameters(name, sz);
     };
     return new FileDistrParameters(name);

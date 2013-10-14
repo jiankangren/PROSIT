@@ -10,7 +10,7 @@ ifeq ($(UNAME), Darwin)
 CPPFLAGS= -Wall -g -I/opt/local/include/eigen3 -I../utils/include -I../tool -I../utils/tinyxml2
 LDLIBS+=-L../utils/lib -lcpptest
 endif
-CPPFLAGS+= -O8
+#CPPFLAGS+= -O8
 VPATH=../tool:../utils/tinyxml2
 OBJS= matrix.o closed_form.o companion.o auxiliary_func.o qbd_cr.o qbd_latouche.o qbd_compute_pi0.o matrix_io.o pmf.o cdf.o optimisation.o probabilistic_optimisation.o task_factory.o distr_factory.o qos_factory.o standard_task.o standard_qosfun.o standard_distr.o tinyxml2.o parser.o
 

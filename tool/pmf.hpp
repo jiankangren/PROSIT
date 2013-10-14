@@ -89,8 +89,11 @@ public:
   ERR_CODES check() const;
   
   virtual double get(int el) const throw(Exc) {
-    if(el+offset > size-1)
+    if(el+offset > size-1) {
+      cerr<<"El: "<<el<<" Size: "<<size<<endl;
+      cerr<<"min: "<<get_min()<<" Max: "<<get_max()<<endl;
       EXC_PRINT("access out of range");
+    }
     else
       return elems(el+offset);
   };
