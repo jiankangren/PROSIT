@@ -90,9 +90,10 @@ public:
   
   virtual double get(int el) const throw(Exc) {
     if(el+offset > size-1) {
-      cerr<<"El: "<<el<<" Size: "<<size<<endl;
-      cerr<<"min: "<<get_min()<<" Max: "<<get_max()<<endl;
-      EXC_PRINT("access out of range");
+      // cerr<<"El: "<<el<<" Size: "<<size<<endl;
+      // cerr<<"min: "<<get_min()<<" Max: "<<get_max()<<endl;
+      // EXC_PRINT("access out of range");
+      return 0.0;
     }
     else
       return elems(el+offset);

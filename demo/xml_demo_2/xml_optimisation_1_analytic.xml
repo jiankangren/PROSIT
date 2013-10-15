@@ -10,7 +10,7 @@
   </pmf>
   <qosfun type="linear">
     <pmin>0.01</pmin>
-    <pmax>0.95</pmax>
+    <pmax>1</pmax>
     <scale>8.9128 </scale>
   </qosfun>
   <QoSMax>
@@ -31,7 +31,7 @@
   </pmf>
   <qosfun type="linear">
     <pmin>0.01</pmin>
-    <pmax>0.95</pmax>
+    <pmax>1</pmax>
     <scale>42.0251</scale>
   </qosfun>
   <QoSMax>
