@@ -28,10 +28,10 @@ bool GenericTaskDescriptor::identify_target_bounds() throw (Exc) {
 }
 
 
-GenericBudgetOptimiser::GenericBudgetOptimiser(int task_num, double epsd):tasks(),state(NOT_EXECUTED),max_num(task_num), number(0), optimum(-1e38), eps(epsd) {
+GenericBudgetOptimiser::GenericBudgetOptimiser(int task_num, double epsd, double total_bandwidthd):tasks(),state(NOT_EXECUTED),max_num(task_num), number(0), optimum(-1e38), eps(epsd), total_bandwidth(total_bandwidthd) {
   tasks.clear();
 };
-GenericBudgetOptimiser::GenericBudgetOptimiser(vector<GenericTaskDescriptor*> v, double epsd): tasks(v),state(NOT_EXECUTED),max_num(typical_size), number(0), optimum(-1e38), eps(epsd) {
+GenericBudgetOptimiser::GenericBudgetOptimiser(vector<GenericTaskDescriptor*> v, double epsd, double total_bandwidthd): tasks(v),state(NOT_EXECUTED),max_num(typical_size), number(0), optimum(-1e38), eps(epsd),total_bandwidth(total_bandwidthd) {
   number = v.size();
 };
 
@@ -210,7 +210,7 @@ double InfinityNormBudgetOptimiser::optimise() {
       Btot += double((*it)->get_qmin())/double((*it)->get_server_period());
     };
   };
-  if (Btot > 1.0) {
+  if (Btot > GenericBudgetOptimiser::total_bandwidth+GenericBudgetOptimiser::eps) {
     state = BAD_LOWER_BOUNDS;
     return -1e38;
   };
@@ -232,7 +232,7 @@ double InfinityNormBudgetOptimiser::optimise() {
       i++;
     }
   int counter = 0;
-  if (Btot > 1.0) {
+  if (Btot > GenericBudgetOptimiser::total_bandwidth+GenericBudgetOptimiser::eps) {
     while ( inf_norm_1 - inf_norm_2> GenericBudgetOptimiser::eps) {
       inf_norm = (inf_norm_2 +  inf_norm_1)/2;
       i = 0;
@@ -251,7 +251,7 @@ double InfinityNormBudgetOptimiser::optimise() {
 	};
 	i++;
       }
-      if (Btot+Breserved < 1.0)
+      if (Btot+Breserved < GenericBudgetOptimiser::total_bandwidth-GenericBudgetOptimiser::eps)
 	inf_norm_2 = inf_norm;
       else
 	inf_norm_1 = inf_norm;

@@ -1,7 +1,8 @@
 <optimisation method="infinity" verbose="false">
 <!--- This one is ok  --->
-<task type="UserQoSAnalytic" name="task3">
-  <period>40000</period>
+<totalBandwidth>0.99</totalBandwidth>
+<task type="UserQoSAnalytic" name="task2">
+  <period>30000</period>
   <serverPeriod>10000</serverPeriod>
   <serverBudget>100</serverBudget>
   <pmf type="file">
@@ -12,17 +13,18 @@
     <pmin>0.01</pmin>
     <pmax>1</pmax>
     <scale>8.9128 </scale>
-  </qosfun>
+    <offset>33.112</offset>
+  </qosfun>   
   <QoSMax>
-    9
+    50
   </QoSMax>
   <QoSMin>
-    0.1
+    39.6
   </QoSMin>
   <Delta>-1</Delta>
 </task>
 <task type="UserQoSAnalytic" name="task4">
-  <period>40000</period>
+  <period>30000</period>
   <serverPeriod>10000</serverPeriod>
   <serverBudget>100</serverBudget>
   <pmf type="file">
@@ -35,11 +37,12 @@
     <scale>42.0251</scale>
   </qosfun>
   <QoSMax>
-    42
+    50
   </QoSMax>
   <QoSMin>
-    0.1
+    31
   </QoSMin>
   <Delta>-1</Delta>
 </task>
+
 </optimisation>

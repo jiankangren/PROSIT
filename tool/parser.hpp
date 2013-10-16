@@ -30,12 +30,13 @@ namespace XMLParser {
     void task_list_parse(XMLElement * el) throw(Exc);
     void verbose_parse(XMLElement * el) throw (Exc);
     double optim_eps;
+    double total_bandwidth;
     bool verbose;
   public:
     static GenericTaskDescriptor * task_parse(XMLElement * task) throw(Exc);
     static auto_ptr<pmf> distr_parse(XMLElement * task) throw(Exc);
     static auto_ptr<QoSFun> qosfun_parse(XMLElement * qosfunElement) throw(Exc);
-    Parser(const char * fname) throw(Exc): ot(NO_OPT),verbose(false) {
+    Parser(const char * fname) throw(Exc): ot(NO_OPT),optim_eps(1e-6),total_bandwidth(1.0), verbose(false) {
       doc = new XMLDocument();
       
       if(doc->LoadFile(fname) !=  XML_NO_ERROR) {
@@ -58,6 +59,10 @@ namespace XMLParser {
     double get_optimisation_epsilon() const {
       return optim_eps;
     };
+    double get_total_bandwidth() const {
+      return total_bandwidth;
+    };
+
     //This one parses the file and creates the entries in the task factory
     ACTIONS parse() throw (Exc);
     ~Parser() {

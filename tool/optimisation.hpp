@@ -171,10 +171,12 @@ protected:
   unsigned int number;
   double optimum;
   bool verbose;
+
 public:
   double eps;
-  GenericBudgetOptimiser(int task_num=typical_size, double eps = 1e-6);
-  GenericBudgetOptimiser(vector<GenericTaskDescriptor*> v, double eps=1e-6);
+  double total_bandwidth;
+  GenericBudgetOptimiser(int task_num=typical_size, double eps = 1e-6, double total_bandwidth=1.0);
+  GenericBudgetOptimiser(vector<GenericTaskDescriptor*> v, double eps=1e-6, double total_bandwidth = 1.0);
   virtual ~GenericBudgetOptimiser() {};
   int insert_task(GenericTaskDescriptor * t, bool re_optimise=false) throw(Exc);
   GenericTaskDescriptor * remove_task(unsigned int i, bool re_optimise=false) throw(Exc);
@@ -201,9 +203,9 @@ public:
 
 class InfinityNormBudgetOptimiser: public GenericBudgetOptimiser {
 public:
-  InfinityNormBudgetOptimiser(int task_num=typical_size, double eps = 1e-6): GenericBudgetOptimiser(task_num, eps) 
+  InfinityNormBudgetOptimiser(int task_num=typical_size, double eps = 1e-6,double total_bandwidth=1.0): GenericBudgetOptimiser(task_num, eps, total_bandwidth) 
   {};
-  InfinityNormBudgetOptimiser(vector<GenericTaskDescriptor*> v, double eps=1e-6):GenericBudgetOptimiser(v, eps)
+  InfinityNormBudgetOptimiser(vector<GenericTaskDescriptor*> v, double eps=1e-6,double total_bandwidth=1.0):GenericBudgetOptimiser(v, eps, total_bandwidth)
   {};
   double optimise();
   double eval();

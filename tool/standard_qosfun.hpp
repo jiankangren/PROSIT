@@ -27,8 +27,10 @@ namespace StandardQoSFun {
     double scale;
     double pmin;
     double pmax;
+    double offset;
   public:
-    LinearQoSFunParameters(double scaled, double pmind, double pmaxd): scale(scaled), pmin(pmind), pmax(pmaxd) {
+    LinearQoSFunParameters(double scaled, double pmind, double pmaxd, double offsetd=0): scale(scaled), pmin(pmind), pmax(pmaxd), offset(offsetd) {
+      
       if((pmind > pmaxd)||
 	 (pmind <0)||(pmind >1.0)||
 	 (pmaxd <0)||(pmaxd >1.0)) 
@@ -40,16 +42,17 @@ namespace StandardQoSFun {
 
   //! Class implementing the linear model for the quality of service
   /*! Le p represent the probability of deadline miss
-   * The idea is that for p < pmin the quality is zero;
+   * The idea is that for p < pmin the quality is offset;
    * it grows linearly from pmin to pmax with a slope equal to scale,
    * and it saturates for probability grater than pmax
    */
   class LinearQoSFun: public QoSFun {
     double scale; /**< Slope fo the linear mapping */
-    double pmin; /**< Lower bound for the probability of deadline hit (quality 0 below) */
+    double pmin; /**< Lower bound for the probability of deadline hit (quality offset below) */
     double pmax; /**< Upper bound for the probability of deadline hit (quality saturates above) */
+    double offset; /**< Minimum value for the quality */
   public:
-    LinearQoSFun(double scaled, double pmind, double pmaxd) throw (Exc);
+    LinearQoSFun(double scaled, double pmind, double pmaxd, double offsetd=0) throw (Exc);
     //! Function returning the quality
     /*! \param prob is the probability of respecting the deadline. In
      *  a different implementation could easily be a vector of probabilities.

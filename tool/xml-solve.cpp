@@ -126,7 +126,7 @@ static int opt_execute(XMLParser::Parser * p) {
   if(verbose_flag)
     cout<<"Number of tasks parsed: "<<num<<endl;
     
-  InfinityNormBudgetOptimiser Opt(v, p->get_optimisation_epsilon());
+  InfinityNormBudgetOptimiser Opt(v, p->get_optimisation_epsilon(),p->get_total_bandwidth());
   Opt.init_target_bounds();
   if(verbose_set)
     Opt.set_verbose(verbose_flag);

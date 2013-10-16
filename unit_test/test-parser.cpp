@@ -134,6 +134,7 @@ private:
   void ok_uniform() {
     XMLParser::Parser * p;
     TEST_THROWS_NOTHING(p = new  XMLParser::Parser("./xml-tests/test-14-ok.xml"));
+    
     TEST_THROWS_NOTHING(p->parse());
     delete p;
   };

@@ -95,12 +95,17 @@ namespace XMLParser {
       EXC_PRINT("optimisation method unknown");
     ot = INFINITY_NORM;
     verbose_parse(optElement);
-      
+    
     XMLElement * el = optElement->FirstChildElement("epsilon");
     if (el)
       el->QueryDoubleText(&optim_eps);
     else
       optim_eps = 1e-8;
+    el = optElement->FirstChildElement("totalBandwidth");
+    if(el)
+      el->QueryDoubleText(&total_bandwidth);
+    else
+      total_bandwidth = 1.0;
     task_list_parse(optElement);
   };
   
