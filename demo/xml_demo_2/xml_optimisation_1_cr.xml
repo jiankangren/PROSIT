@@ -14,14 +14,14 @@
     <pmax>1</pmax>
     <scale>8.9128 </scale>
     <offset>33.112</offset>
-  </qosfun>
+  </qosfun>   
   <QoSMax>
     50
   </QoSMax>
   <QoSMin>
     39.6
   </QoSMin>
-  <Delta>200</Delta>
+  <Delta>50</Delta>
 </task>
 <task type="UserQoSCR" name="task4">
   <period>30000</period>
@@ -37,11 +37,12 @@
     <scale>42.0251</scale>
   </qosfun>
   <QoSMax>
-    42
+    50
   </QoSMax>
   <QoSMin>
     31
   </QoSMin>
-  <Delta>200</Delta>
+  <Delta>50</Delta>
 </task>
+
 </optimisation>

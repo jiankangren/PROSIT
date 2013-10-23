@@ -1,6 +1,6 @@
 <optimisation method="infinity" verbose="false">
 <!--- This one is ok  --->
-<totalBandwidth>0.99</totalBandwidth>
+<totalBandwidth>0.95</totalBandwidth>
 <task type="UserQoSAnalytic" name="task2">
   <period>30000</period>
   <serverPeriod>10000</serverPeriod>
