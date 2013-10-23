@@ -1,0 +1,48 @@
+<solve verbose="false">
+<!--- This one is ok  --->
+<totalBandwidth>0.95</totalBandwidth>
+<task type="UserQoSCR" name="task2">
+  <period>30000</period>
+  <serverPeriod>10000</serverPeriod>
+  <serverBudget>3462</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>50</Delta>
+</task>
+<task type="UserQoSCR" name="task4">
+  <period>30000</period>
+  <serverPeriod>10000</serverPeriod>
+  <serverBudget>3997</serverBudget>
+  <pmf type="file">
+    <fileName>prob_2.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>42.0251</scale>
+  </qosfun>
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    31
+  </QoSMin>
+  <Delta>50</Delta>
+</task>
+
+</solve>
