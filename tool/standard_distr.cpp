@@ -59,25 +59,27 @@ namespace StandardDistributions {
   DistrFactory::DistrParameters * UniformDistrBuilder::parse_parameters(XMLElement * distrElement) throw (Exc) {
     return SyntheticDistrBuilder::parse_parameters(distrElement);
   }
-
+  
 
     auto_ptr<pmf> UniformDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
-    SyntheticDistrParameters *pt;
-    if (!(pt = dynamic_cast<SyntheticDistrParameters*>(t))) 
-      EXC_PRINT("wrong parameter type");
-    auto_ptr<pmf> c (new pmf (pt->size,0));
-    if (pt->cmax < pt->cmin) 
-      EXC_PRINT("cmax smaller than cmin");
-
-    if ((pt->cmax - pt->cmin)%pt->step != 0) 
-      EXC_PRINT("step has to be an integer submultiple of the interval");
-    int samples = (pt->cmax-pt->cmin)/pt->step+1;
-    
-    
-    double prob = 1.0/double(samples);
-    for (int h = pt->cmin; h<=pt->cmax; h+= pt->step)
-      c->set(h,prob);
-    return c;
+      SyntheticDistrParameters *pt;
+      if (!(pt = dynamic_cast<SyntheticDistrParameters*>(t))) 
+	EXC_PRINT("wrong parameter type");
+      auto_ptr<pmf> c (new pmf (pt->size,0));
+      if (pt->cmax < pt->cmin) 
+	EXC_PRINT("cmax smaller than cmin");
+      
+      if ((pt->cmax - pt->cmin)%pt->step != 0) 
+	EXC_PRINT("step has to be an integer submultiple of the interval");
+      int samples = (pt->cmax-pt->cmin)/pt->step+1;
+      
+      
+      double prob = 1.0/double(samples);
+      for (int h = pt->cmin; h<=pt->cmax; h+= pt->step)
+	c->set(h,prob);
+      if (pt->dump)
+	c->save(pt->dump_file);
+      return c;
   };
   DistrFactory::DistrParameters * BetaDistrBuilder::parse_parameters(XMLElement * distrElement) throw (Exc) {
     DistrFactory::DistrParameters* pt = SyntheticDistrBuilder::parse_parameters(distrElement);
@@ -125,7 +127,8 @@ namespace StandardDistributions {
     }
     for (int h = pt->cmin; h<=pt->cmax; h+= pt->step)
       c->set(h,c->get(h)/total_prob);
-  
+    if (pt->dump)
+      c->save(pt->dump_file);
     return c;
   };
   void init() {
