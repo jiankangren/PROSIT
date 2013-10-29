@@ -51,28 +51,31 @@ static int opts_parse(int argc, char *argv[]) throw (Exc)
 }
 
 
-static int solve_core(vector<GenericTaskDescriptor*> & v, vector<double> & probability, vector<double> & quality) {
+static int solve_core(vector<GenericTaskDescriptor*> & v, vector<double> & probability, vector<double> & quality, vector<long long> & time) {
+  long long t_solution_start_i=0, t_solution_end_i=0;
+  int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
+  if(verbose_flag)
+    cout<<"Number of tasks parsed: "<<num<<endl;
   
-    int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
-    if(verbose_flag)
-        cout<<"Number of tasks parsed: "<<num<<endl;
-    
-    int i = 0;
-    for (vector<GenericTaskDescriptor*>::iterator it = v.begin() ; (it != v.end()); ++it) {
-        ProbPeriodicTaskDescriptor * p = dynamic_cast<ProbPeriodicTaskDescriptor *>(*it);
-        if(!p) {
-            cerr<<"Sorry. Analysis works only for probabilistic periodic tasks as yet."<<endl;
-            return 0;
-        }
-        probability[i] = p->probability(p->get_budget());
-        quality[i] = p->QoS_from_prob(probability[i]);
-        i++;
-    };
-    return v.size();
+  int i = 0;
+  for (vector<GenericTaskDescriptor*>::iterator it = v.begin() ; (it != v.end()); ++it) {
+    ProbPeriodicTaskDescriptor * p = dynamic_cast<ProbPeriodicTaskDescriptor *>(*it);
+    if(!p) {
+      cerr<<"Sorry. Analysis works only for probabilistic periodic tasks as yet."<<endl;
+      return 0;
+    }
+    t_solution_start_i = my_get_time();
+    probability[i] = p->probability(p->get_budget());
+    t_solution_end_i = my_get_time();
+    quality[i] = p->QoS_from_prob(probability[i]);
+    time[i] = t_solution_end_i - t_solution_start_i;
+    i++;
+  };
+  return v.size();
 };
 
 
-static int solve_display_results(vector<GenericTaskDescriptor*> & v, const vector<double> & probability, const vector<double> & quality) {
+static int solve_display_results(vector<GenericTaskDescriptor*> & v, const vector<double> & probability, const vector<double> & quality, const vector<long long> & time, bool show_time) {
   cout<<"Analysis results."<<endl;
   cout<<"=========================================================================================================="<<endl;
   cout<<"=                                                Results                                                 ="<<endl;
@@ -82,7 +85,11 @@ static int solve_display_results(vector<GenericTaskDescriptor*> & v, const vecto
   double inf_norm=1e38;
 
   for (vector<GenericTaskDescriptor*>::iterator it = v.begin() ; (it != v.end()); ++it) {
-    printf("   Task: %8s. Budget: %10d. Bandwidth: %10f. Probability %10f. Quality: %10f\n", (*it)->get_name().c_str(), (*it)->get_budget(),double((*it)->get_budget())/double((*it)->get_server_period()),probability[i], quality[i]);
+    printf("   Task: %8s. Budget: %10d. Bandwidth: %10f. Probability %10f. Quality: %10f.", (*it)->get_name().c_str(), (*it)->get_budget(),double((*it)->get_budget())/double((*it)->get_server_period()),probability[i], quality[i]);
+    if(show_time)
+      printf(" Time: %*llu\n",25,time[i]);
+    else
+      printf("\n");
     Btot += double((*it)->get_budget())/double((*it)->get_server_period());
     inf_norm=min<double>(quality[i],inf_norm);	  
     i++;
@@ -102,12 +109,12 @@ static int solve_execute() {
 
   vector<double> probability(num);
   vector<double> quality(num);
-  
+  vector<long long> time(num);
 
 
-  solve_core(v,probability, quality);
+  solve_core(v,probability, quality, time);
   t_solution_end = my_get_time();
-  solve_display_results(v, probability, quality);
+  solve_display_results(v, probability, quality, time,true);
   cout<<"=========================================================================================================="<<endl;
   cout<<"=                                              Computation time                                         ="<<endl;
   cout<<"=========================================================================================================="<<endl;
@@ -140,15 +147,16 @@ static int opt_execute(XMLParser::Parser * p) {
   t_optimisation_end=my_get_time();
   vector<double> probability(num);
   vector<double> quality(num);
+  vector<long long> time(num);
   if (Opt.get_state() != GenericBudgetOptimiser::OK) {
     cerr<<"Optimisation failed"<<endl;
     return 0;
   };
   
-  solve_core(v, probability, quality);
+  solve_core(v, probability, quality, time);
   
   cout<<"Optimisation succeeded."<<endl;
-  solve_display_results(v, probability, quality);
+  solve_display_results(v, probability, quality, time, false);
 
   cout<<"=========================================================================================================="<<endl;
   cout<<"=                                              Computation time                                         ="<<endl;
