@@ -9,6 +9,15 @@
 using namespace std;
 //const double epsilon = 1e-10;
 
+int distr::save(const string & filename) throw(Exc) {
+  ofstream myfile(filename.c_str());
+  if(!myfile.is_open())
+    EXC_PRINT_2("unable to open file", filename);
+  int h=0;
+  for (int i=get_min(); i<=get_max();i++,h++)
+    myfile<<i<<": "<<get(i)<<endl;
+  return h;
+}
 
 
 int distr::load(const string & filename) throw (Exc) {

@@ -1,24 +1,183 @@
-<optimisation method="infinity" verbose="false">
+<solve>
 <!--- This one is ok  --->
-<task type="UserQoSAnalytic" name="task3">
-  <period>40000</period>
-  <serverPeriod>10000</serverPeriod>
-  <serverBudget>100</serverBudget>
+<totalBandwidth>0.95</totalBandwidth>
+<task type="UserQoSAnalytic" name="task2-q_3500_d100">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
   <pmf type="file">
-    <fileName>"prob_1.pmf"</fileName>
-    <size>21000</size>
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
   </pmf>
   <qosfun type="linear">
     <pmin>0.01</pmin>
-    <pmax>0.95</pmax>
+    <pmax>1</pmax>
     <scale>8.9128 </scale>
-  </qosfun>
+    <offset>33.112</offset>
+  </qosfun>   
   <QoSMax>
-    9
+    50
   </QoSMax>
   <QoSMin>
-    0.1
+    39.6
   </QoSMin>
-  <Delta>-1</Delta>
+  <Delta>100</Delta>
 </task>
-</optimisation>
+<task type="UserQoSAnalytic" name="task2-q_3500_d175">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>175</Delta>
+</task>
+<task type="UserQoSAnalytic" name="task2-q_3500_d250">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>250</Delta>
+</task>
+<task type="UserQoSAnalytic" name="task2-q_3500_d500">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>500</Delta>
+</task>
+
+<task type="UserQoSAnalytic" name="task2-q_3500_d700">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>700</Delta>
+</task>
+
+<task type="UserQoSAnalytic" name="task2-q_3500_d875">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>875</Delta>
+</task>
+<task type="UserQoSAnalytic" name="task2-q_3500_d1750">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>1750</Delta>
+</task>
+<task type="UserQoSAnalytic" name="task2-q_3500_d3500">
+  <period>30000</period>
+  <serverPeriod>30000</serverPeriod>
+  <serverBudget>10500</serverBudget>
+  <pmf type="file">
+    <fileName>prob_1.pmf</fileName>
+    <size>25000</size>
+  </pmf>
+  <qosfun type="linear">
+    <pmin>0.01</pmin>
+    <pmax>1</pmax>
+    <scale>8.9128 </scale>
+    <offset>33.112</offset>
+  </qosfun>   
+  <QoSMax>
+    50
+  </QoSMax>
+  <QoSMin>
+    39.6
+  </QoSMin>
+  <Delta>3500</Delta>
+</task>
+
+</solve>

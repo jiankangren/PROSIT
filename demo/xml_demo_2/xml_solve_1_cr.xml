@@ -21,7 +21,7 @@
   <QoSMin>
     39.6
   </QoSMin>
-  <Delta>50</Delta>
+  <Delta>5</Delta>
 </task>
 <task type="UserQoSCR" name="task4">
   <period>30000</period>
@@ -42,7 +42,7 @@
   <QoSMin>
     31
   </QoSMin>
-  <Delta>50</Delta>
+  <Delta>5</Delta>
 </task>
 
 </solve>

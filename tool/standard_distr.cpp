@@ -30,6 +30,9 @@ namespace StandardDistributions {
     int cmax;
     int step;
     int size;
+    bool dump=false;
+    std::string dump_file;
+
     XMLElement * internal;
     
     if(!(internal = distrElement->FirstChildElement("cmin"))) 
@@ -47,8 +50,10 @@ namespace StandardDistributions {
     if(!(internal = distrElement->FirstChildElement("size"))) 
       EXC_PRINT("size missing");
     internal->QueryIntText(&size);
-
-    return new SyntheticDistrParameters(cmin, cmax, step,size);
+    if ((internal = distrElement->FirstChildElement("dump"))) 
+      dump_file = internal->GetText();
+  
+    return new SyntheticDistrParameters(cmin, cmax, step,size, dump, dump_file);
   };
 						
   DistrFactory::DistrParameters * UniformDistrBuilder::parse_parameters(XMLElement * distrElement) throw (Exc) {
@@ -94,7 +99,7 @@ namespace StandardDistributions {
       delete p;
       EXC_PRINT("a and b parameters have to be greater than 1.0");
     }
-    BetaDistrParameters * t = new BetaDistrParameters(p->cmin, p->cmax, p->step, p->size, a, b);
+    BetaDistrParameters * t = new BetaDistrParameters(p->cmin, p->cmax, p->step, p->size, a, b, p->dump, p->dump_file);
     delete p;
     return t;
   }

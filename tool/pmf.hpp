@@ -60,6 +60,10 @@ public:
     for (int i=get_min(); i<=get_max();i++)
       cout<<i<<": "<<get(i)<<endl;
   };
+  virtual int save(const string & filename) throw (Exc);
+  int save(const char * filename) throw(Exc) {
+    return save(string(filename));
+  };
   virtual int set(int val, double p) throw(Exc)=0;
   virtual double get(int el) const throw(Exc)  = 0;    
   int load(const char * filename) throw (Exc) {

@@ -41,11 +41,16 @@ namespace StandardDistributions {
     int cmax; /*!< right extreme of the distribution */
     int step; /*!< Step size */
     int size; /*!< Number of points of the distribution */
-    SyntheticDistrParameters(int cmind, int cmaxd, int stepd,int sized): 
+    bool dump; /*!< Dump the distribution aftet generating it */
+    std::string dump_file; /*!< Name of the file to dump the distribution */
+
+    SyntheticDistrParameters(int cmind, int cmaxd, int stepd,int sized, bool dumpd, const std::string & dump_file_d): 
       cmin(cmind),
       cmax(cmaxd),
       step(stepd),
-      size(sized)
+      size(sized),
+      dump(dumpd),
+      dump_file(dump_file_d)
     {};
   };
   
@@ -70,12 +75,12 @@ namespace StandardDistributions {
     virtual DistrFactory::DistrParameters* parse_parameters(XMLElement * distr) throw (Exc);
   };
   
-  //! Parameters for beta distribtuion
+  //! Parameters for beta distribution
   struct BetaDistrParameters : public SyntheticDistrParameters {
     double a; /*!< alpha parameter */
     double b; /*!< beta parameter */
-    BetaDistrParameters(int cmind, int cmaxd, int stepd,int sized, double ad, double bd):
-      SyntheticDistrParameters(cmind, cmaxd, stepd, sized), a(ad), b(bd) {};
+    BetaDistrParameters(int cmind, int cmaxd, int stepd,int sized, double ad, double bd, bool dumpd, const string & dump_file_d):
+      SyntheticDistrParameters(cmind, cmaxd, stepd, sized, dumpd, dump_file_d), a(ad), b(bd) {};
   };
 
   //! Builder for beta distributions
