@@ -50,9 +50,10 @@ namespace StandardDistributions {
     if(!(internal = distrElement->FirstChildElement("size"))) 
       EXC_PRINT("size missing");
     internal->QueryIntText(&size);
-    if ((internal = distrElement->FirstChildElement("dump"))) 
+    if ((internal = distrElement->FirstChildElement("dump"))) {
       dump_file = internal->GetText();
-  
+      dump = true;
+    };
     return new SyntheticDistrParameters(cmin, cmax, step,size, dump, dump_file);
   };
 						
@@ -127,8 +128,9 @@ namespace StandardDistributions {
     }
     for (int h = pt->cmin; h<=pt->cmax; h+= pt->step)
       c->set(h,c->get(h)/total_prob);
-    if (pt->dump)
+    if (pt->dump) {
       c->save(pt->dump_file);
+    }
     return c;
   };
   void init() {

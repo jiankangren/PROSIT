@@ -15,7 +15,7 @@ int distr::save(const string & filename) throw(Exc) {
     EXC_PRINT_2("unable to open file", filename);
   int h=0;
   for (int i=get_min(); i<=get_max();i++,h++)
-    myfile<<i<<": "<<get(i)<<endl;
+    myfile<<i<<"  "<<get(i)<<endl;
   return h;
 }
 
