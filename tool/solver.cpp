@@ -192,8 +192,9 @@ int main(int argc, char *argv[])
       double prob;
       if (old_model_flag)
 	prob = closed_form_old_model_compute_pi(c, Tp/T, Q);
-      else
+      else {
 	prob = closed_form_compute_pi(*h, Tp/T, Q/step);
+      };
       if (verbose_flag) {
 	cout<<"Closed Form Bound Computation finished"<<endl;
       };

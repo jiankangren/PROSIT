@@ -26,11 +26,10 @@ bool closed_form_set_verbose(bool v) {
 double closed_form_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
   cdf c(p.get_size(),p.get_offset());
   pmf2cdf(p, c);
-
   double a0p = c.get(N*Q-1);
   unsigned WCET = c.get_max();
   double pi_0;
-  //  cerr<<"a0p:"<<a0p<<endl;
+  //cerr<<"a0p:"<<a0p<<endl;
   if (verbose)
     cout<<"now preparing analytic form"<<endl;
   if (N*Q>WCET) {
@@ -90,7 +89,7 @@ double closed_form_old_model_compute_pi(const pmf & p, unsigned int N, unsigned 
       // cerr<<"Subtracting:"<<(i-N)*(c.get(i*Q)-c.get((i-1)*Q))/a0p<<endl;
       // 				   //#endif
       pi_0 = pi_0 - (i-N)*(c.get(i*Q)-c.get((i-1)*Q))/a0p;
-    }
+    } 
  
   if (verbose)
     cout<<"Analytic computation completed"<<endl;
