@@ -2,6 +2,7 @@
 #include "matrix.hpp"
 #include "closed_form.hpp"
 #include "smc_func.hpp"
+#include "companion.hpp"
 #define Nc 250000
 #define Nz 1200
 ProbPeriodicTaskDescriptor::ProbPeriodicTaskDescriptor(const char * nm,
@@ -145,4 +146,18 @@ double ProbPeriodicTaskDescriptorAnalytic::probability(int Q) {
   else
     return closed_form_compute_pi(*sampledCpmf,P/Ts,Q/Delta);
 }
+
+ProbPeriodicTaskDescriptorCompanion::ProbPeriodicTaskDescriptorCompanion(const char * nm,
+								       auto_ptr<pmf> c, 
+								       int Pd, 
+								       int Qd, 
+								       int Tsd, 
+								       int Deltad, 
+								       double epsilon) throw (Exc):
+  ProbPeriodicTaskDescriptor(nm,c,Pd,Qd,Tsd,Deltad,epsilon)
+{};
+  
+double ProbPeriodicTaskDescriptorCompanion::probability(int Q) {
+  return companion_compute_pi(*sampledCpmf,P/Ts,Q/Delta);
+};
 

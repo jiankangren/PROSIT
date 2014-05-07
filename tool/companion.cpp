@@ -99,6 +99,14 @@ double companion_old_model_compute_pi(const pmf & p, unsigned int N, unsigned in
   return pi_0;
 }
 
+double companion_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
+  static RowVectorXd  useless;
+  
+  return companion_compute_pi(p, N, Q, useless, false);
+
+};
+
+
 double companion_compute_pi(const pmf & p, unsigned int N, unsigned int Q, RowVectorXd & pi, bool compute_vector) throw(Exc) {
   cdf c(p.get_size(),p.get_offset());
   pmf2cdf(p, c);

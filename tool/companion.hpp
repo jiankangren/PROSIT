@@ -15,6 +15,8 @@
 #include "exc.hpp"
 double companion_old_model_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc);
 double companion_compute_pi(const pmf & p, unsigned int N, unsigned int Q, RowVectorXd & pi, bool compute_vector) throw(Exc);
+double companion_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw (Exc);
+
 bool companion_set_verbose(bool v);
 
 #endif

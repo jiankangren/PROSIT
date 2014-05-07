@@ -63,6 +63,24 @@ namespace StandardTasks {
     virtual double QoS_from_prob(double prob);
     ~UserQoSPeriodicTaskDescriptorAnalytic();
   };
+
+  class UserQoSPeriodicTaskBuilderCompanion: public UserQoSPeriodicTaskBuilder {
+  public:
+    virtual GenericTaskDescriptor * create_instance(const char * name, TaskFactory::GenericTaskParameters * t) throw(Exc);
+  };
+  class UserQoSPeriodicTaskDescriptorCompanion: public ProbPeriodicTaskDescriptorCompanion {
+  private:
+    auto_ptr<QoSFun> qos;
+  public:
+    UserQoSPeriodicTaskDescriptorCompanion(const char * nm, 
+			   auto_ptr<pmf> c, 
+			   int Pd, int Qd, int Tsd, 
+			   int Deltad,
+			   double epsilond, 
+			   auto_ptr<QoSFun> qosd) throw (Exc);
+    virtual double QoS_from_prob(double prob);
+    ~UserQoSPeriodicTaskDescriptorCompanion();
+  };
 }
 
 #endif

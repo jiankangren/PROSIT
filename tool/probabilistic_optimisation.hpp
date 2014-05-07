@@ -65,4 +65,16 @@ public:
 
 
 
+
+
+class ProbPeriodicTaskDescriptorCompanion: public ProbPeriodicTaskDescriptor {
+public:
+  ProbPeriodicTaskDescriptorCompanion(const char * nm, auto_ptr<pmf> c, int Pd, int Qd, int Tsd, int Deltad,double epsilon) throw(Exc);
+  virtual double probability(int Q);
+  virtual ~ProbPeriodicTaskDescriptorCompanion() {};
+};
+
+
+
+
 #endif

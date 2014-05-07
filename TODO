@@ -10,7 +10,7 @@ Sept 14th 2013
 3. re-factor command line using task descriptor
 
 4. Cleanup code
-
+   -- Fix horrible solution for companion_compute
 5. Doxygen documentation
 
 6. Demo directory

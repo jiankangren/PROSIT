@@ -29,6 +29,14 @@ namespace StandardTasks {
 
     return new UserQoSPeriodicTaskDescriptorAnalytic(name, p->c, p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond, p->qos); 
   };
+
+  GenericTaskDescriptor * UserQoSPeriodicTaskBuilderCompanion::create_instance(const char * name, TaskFactory::GenericTaskParameters * t) throw(Exc) {
+    UserQoSPeriodicTaskParameters * p;
+    if(!(p=dynamic_cast<UserQoSPeriodicTaskParameters*>(t)))
+      EXC_PRINT_2("Wrong parameter type for task:", name);
+
+    return new UserQoSPeriodicTaskDescriptorCompanion(name, p->c, p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond, p->qos); 
+  };
   
   UserQoSPeriodicTaskDescriptorCR::UserQoSPeriodicTaskDescriptorCR(const char * nm, 
 						   auto_ptr<pmf> c, 
@@ -45,10 +53,10 @@ namespace StandardTasks {
   UserQoSPeriodicTaskDescriptorCR::~UserQoSPeriodicTaskDescriptorCR(){};
  
   UserQoSPeriodicTaskDescriptorAnalytic::UserQoSPeriodicTaskDescriptorAnalytic(const char * nm, 
-						   auto_ptr<pmf> c, 
-						   int Pd, int Qd, int Tsd, 
-						   int Deltad,
-						   double epsilond, 
+									       auto_ptr<pmf> c, 
+									       int Pd, int Qd, int Tsd, 
+									       int Deltad,
+									       double epsilond, 
 									       auto_ptr<QoSFun> qosd) throw (Exc):
     ProbPeriodicTaskDescriptorAnalytic(nm,c,Pd,Qd,Tsd,Deltad,epsilond), qos(qosd)
   {};
@@ -56,10 +64,30 @@ namespace StandardTasks {
     return qos->eval(prob);
   }
   UserQoSPeriodicTaskDescriptorAnalytic::~UserQoSPeriodicTaskDescriptorAnalytic(){};
+  
+  UserQoSPeriodicTaskDescriptorCompanion::UserQoSPeriodicTaskDescriptorCompanion(const char * nm, 
+									       auto_ptr<pmf> c, 
+									       int Pd, int Qd, int Tsd, 
+									       int Deltad,
+									       double epsilond, 
+									       auto_ptr<QoSFun> qosd) throw (Exc):
+    ProbPeriodicTaskDescriptorCompanion(nm,c,Pd,Qd,Tsd,Deltad,epsilond), qos(qosd)
+  {};
+  double UserQoSPeriodicTaskDescriptorCompanion::QoS_from_prob(double prob) {
+    return qos->eval(prob);
+  }
+  UserQoSPeriodicTaskDescriptorCompanion::~UserQoSPeriodicTaskDescriptorCompanion(){};
+  
+
+
   void init() {
     TaskFactory::task_descriptor_factory.register_type("UserQoSCR",new UserQoSPeriodicTaskBuilderCR);
     TaskFactory::task_descriptor_factory.register_type("UserQoSAnalytic",new UserQoSPeriodicTaskBuilderAnalytic);
+    TaskFactory::task_descriptor_factory.register_type("UserQoSCompanion",new UserQoSPeriodicTaskBuilderCompanion);
+
   };
+
+  
 
 
 };
