@@ -12,10 +12,12 @@ LDLIBS+=-L../utils/lib -lcpptest
 endif
 #CPPFLAGS+= -O8
 VPATH=../tool:../utils/tinyxml2
-OBJS= matrix.o closed_form.o companion.o auxiliary_func.o qbd_cr.o qbd_latouche.o qbd_compute_pi0.o matrix_io.o pmf.o cdf.o optimisation.o probabilistic_optimisation.o task_factory.o distr_factory.o qos_factory.o standard_task.o standard_qosfun.o standard_distr.o tinyxml2.o parser.o
+OBJS= tinyxml2.o  matrix.o closed_form.o companion.o auxiliary_func.o qbd_cr.o qbd_latouche.o qbd_compute_pi0.o matrix_io.o pmf.o cdf.o optimisation.o probabilistic_optimisation.o task_factory.o distr_factory.o qos_factory.o standard_task.o standard_qosfun.o standard_distr.o parser.o
 
 LD=g++
 CC=g++
+CXX=g++
+
 all: solver test-generic-task-descriptor test-periodic-task-descriptor test-prob-periodic-task-descriptor test-task-factory test-optimisation test-standard-distr test-distr-factory test-qos-factory test-parser test-xml-util test-integrated-optimisation test-integrated-optimisation-beta
 #all: test-prob-periodic-task-descriptor
 
@@ -59,7 +61,7 @@ test-integrated-optimisation-beta: test-integrated-optimisation-beta.o $(OBJS)
 	 $(LD) $(LDFLAGS) $(OBJS) test-integrated-optimisation-beta.o $(LDLIBS) -o test-integrated-optimisation-beta
 
 clean :
-	rm -f *.o *.d *~ test-generic-task-descriptor test-periodic-task-descriptor test-prob-periodic-task-descriptor test-task-factory test-optimisation test-standard-distr test-distr-factory test-qos-factory test-parser test-xml-util test-integrated-optmisation test-integrated-optimisation-beta
+	rm -f *.o *.d *~ test-generic-task-descriptor test-periodic-task-descriptor test-prob-periodic-task-descriptor test-task-factory test-optimisation test-standard-distr test-distr-factory test-qos-factory test-parser test-xml-util test-integrated-optmisation test-integrated-optimisation-beta; rm -f ../tool/*.o ../tool/solver ../tool/xml_solve
 
 %.d : %.cpp
 	$(CC) -MM -MF $@ $<

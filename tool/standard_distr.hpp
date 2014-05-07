@@ -44,7 +44,7 @@ namespace StandardDistributions {
     bool dump; /*!< Dump the distribution aftet generating it */
     std::string dump_file; /*!< Name of the file to dump the distribution */
 
-    SyntheticDistrParameters(int cmind, int cmaxd, int stepd,int sized, bool dumpd, const std::string & dump_file_d): 
+    SyntheticDistrParameters(int cmind, int cmaxd, int stepd,int sized, bool dumpd=false, const std::string & dump_file_d=std::string("")): 
       cmin(cmind),
       cmax(cmaxd),
       step(stepd),
@@ -79,7 +79,7 @@ namespace StandardDistributions {
   struct BetaDistrParameters : public SyntheticDistrParameters {
     double a; /*!< alpha parameter */
     double b; /*!< beta parameter */
-    BetaDistrParameters(int cmind, int cmaxd, int stepd,int sized, double ad, double bd, bool dumpd, const string & dump_file_d):
+    BetaDistrParameters(int cmind, int cmaxd, int stepd,int sized, double ad, double bd, bool dumpd=false, const string & dump_file_d=std::string("no file")):
       SyntheticDistrParameters(cmind, cmaxd, stepd, sized, dumpd, dump_file_d), a(ad), b(bd) {};
   };
 
