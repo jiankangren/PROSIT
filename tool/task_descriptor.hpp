@@ -16,7 +16,7 @@
 #include <memory>
 using namespace std;
 #include "pmf.hpp"
-namespace TaskDescriptor {
+namespace PrositCore {
 
   //! Generic class descriptor
   /*! It is the root of the hierarchy of task descriptors
@@ -27,8 +27,8 @@ namespace TaskDescriptor {
   class GenericTaskDescriptor {
   protected:
     string name; /*!< Name of the task */
-    auto_ptr<pmf> C; /*!< Distribution of the computation time */
-    auto_ptr<pmf> Z; /*!< Distribution of the interarrival time */
+    unique_ptr<pmf> C; /*!< Distribution of the computation time */
+    unique_ptr<pmf> Z; /*!< Distribution of the interarrival time */
   
     bool verbose; /*!< Flag to print out information while processing */
     bool periodic; /*!< Flag for periodic tasks */
@@ -102,7 +102,7 @@ namespace TaskDescriptor {
     /*!
      * \return a copy of the pmf related to the computation time
      */
-    int get_computation_time() const {
+    pmf get_computation_time() const {
       return *C;
     };
 
@@ -110,7 +110,7 @@ namespace TaskDescriptor {
     /*!
      * \return a copy of the pmf related to the interarrival time (Exceprion of the task is periodic)
      */
-    int get_interarrival_time() const throw (Exc){
+    pmf get_interarrival_time() const throw (Exc){
       if(periodic)
 	 EXC_PRINT_2("Interarrival time wrongly required for periodic task ", name);
       return *Z;
