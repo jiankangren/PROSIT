@@ -27,7 +27,6 @@ ProbPeriodicTaskDescriptor::ProbPeriodicTaskDescriptor(const char * nm,
   auto_ptr<cdf> q (new cdf(Nc,0));
   sampledCcdf = q;
   pmf2cdf(*sampledCpmf, *sampledCcdf);
-  
 }
 
 bool ProbPeriodicTaskDescriptor::inv_QoS(double p, int &Q, bool ceil) {
