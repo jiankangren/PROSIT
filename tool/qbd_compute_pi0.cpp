@@ -13,7 +13,7 @@ bool qbd_compute_pi0(const MatrixXd & R,
   if(R.rows()!=R.cols())
     EXC_PRINT("R had to be square");
 
-  if (!check_sizes(A0,R) || !check_sizes(A0,B0)) 
+  if (!PrositAux::check_sizes(A0,R) || !PrositAux::check_sizes(A0,B0)) 
     EXC_PRINT("A0, A1, A2 matrixes have to be square and equal size");
 
   if ((R.minCoeff()<0)&&parms.verbose)
@@ -45,7 +45,7 @@ bool qbd_compute_pi0(const MatrixXd & R,
   work.setZero();
   work(n)=1;
   MatrixXd W1;
-  pseudoInverse<MatrixXd>(M,W1);
+  PrositAux::pseudoInverse<MatrixXd>(M,W1);
   pi0 = work*W1;
   if ((pi0.minCoeff()<0)&&parms.verbose)
     cerr<<"QBD_COMPUTE_PI0: Warning: x0 has negative elements"<<endl;

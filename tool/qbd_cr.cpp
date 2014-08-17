@@ -19,7 +19,7 @@ void qbd_cr(const MatrixXd & Ap0,
   MatrixXd A1=Ap1;
   MatrixXd A2=Ap2;
   double drift=0;
-  if (!check_sizes(A0,A1) || !check_sizes(A1,A2)) 
+  if (!PrositAux::check_sizes(A0,A1) || !PrositAux::check_sizes(A1,A2)) 
     EXC_PRINT("A0, A1, A2 matrixes have to be square and equal size");
 
   MatrixXd Id = MatrixXd::Identity(A0.rows(),A0.cols());
@@ -34,7 +34,7 @@ void qbd_cr(const MatrixXd & Ap0,
     EXC_PRINT("Only discrete time supported at the moment");
 
   if(parms.shift) {
-    RowVectorXd theta = stat(A0+A1+A2);
+    RowVectorXd theta = PrositAux::stat(A0+A1+A2);
     double tmp;
     
     drift = theta*A0.rowwise().sum();
@@ -73,7 +73,7 @@ void qbd_cr(const MatrixXd & Ap0,
     C=Atemp*C;
     numit=numit+1;
     
-    check=min(InfinityNorm<MatrixXd>(B),InfinityNorm<MatrixXd>(C));
+    check=min(PrositAux::InfinityNorm<MatrixXd>(B),PrositAux::InfinityNorm<MatrixXd>(C));
     if (parms.verbose)
       cerr<<"After "<<numit<<" iterations "<<check<<" reached"<<endl;
   }
@@ -93,15 +93,15 @@ void qbd_cr(const MatrixXd & Ap0,
       };
   };
   if (parms.verbose) 
-    cerr<<"Final Residual Error for G: "<<InfinityNorm<MatrixXd>(G-A0-(A1+A2*G)*G)<<endl;
+    cerr<<"Final Residual Error for G: "<<PrositAux::InfinityNorm<MatrixXd>(G-A0-(A1+A2*G)*G)<<endl;
   R = A2*(Id-(A1+A2*G)).inverse();
   if (parms.verbose)
-    cerr<<"Final Residual Error for R: "<<InfinityNorm<MatrixXd>(R-A2-R*(A1+R*A0))<<endl;
+    cerr<<"Final Residual Error for R: "<<PrositAux::InfinityNorm<MatrixXd>(R-A2-R*(A1+R*A0))<<endl;
   
   U = A1+R*A0;
 
   if (parms.verbose)
-    cerr<<"Final Residual Error for U: "<<InfinityNorm<MatrixXd>(U-A1-A2*(Id-U).inverse()*A0)<<endl;
+    cerr<<"Final Residual Error for U: "<<PrositAux::InfinityNorm<MatrixXd>(U-A1-A2*(Id-U).inverse()*A0)<<endl;
 
   return;
 };

@@ -1,0 +1,5 @@
+CONVENTIONS FOR NAMESPACE
+
+- PrositAux: namespace for auxiliary objects and functions
+- PrositCore: namespace for the core modules of PROSIT
+- PrositInterf: namespace for modules related to user interfaces

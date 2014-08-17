@@ -14,7 +14,7 @@ void qbd_latouche(const MatrixXd & Ap0,
 		  MatrixXd & R,
 		  const struct qbd_latouche_parms & parms) throw(Exc) {
 
-  if (!check_sizes(Ap0,Ap1) || !check_sizes(Ap1,Ap2)||!check_sizes(Ap1,R)) 
+  if (!PrositAux::check_sizes(Ap0,Ap1) || !PrositAux::check_sizes(Ap1,Ap2)||!PrositAux::check_sizes(Ap1,R)) 
     EXC_PRINT("A0, A1, A2 matrixes have to be square and equal size");
   MatrixXd Rnew(R.rows(), R.cols());
   unsigned long it=0;
@@ -23,7 +23,7 @@ void qbd_latouche(const MatrixXd & Ap0,
 
   while (cont) {
     Rnew = Ap2+R*Ap1+R*R*Ap0;
-    if(InfinityNorm(R-Rnew)<parms.epsilon) 
+    if(PrositAux::InfinityNorm(R-Rnew)<parms.epsilon) 
       cont = false;
     else
       R=Rnew;

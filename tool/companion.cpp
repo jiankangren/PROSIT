@@ -187,7 +187,7 @@ double companion_compute_pi(const pmf & p, unsigned int N, unsigned int Q, RowVe
   pi_final(0) = pi_0;
   MatrixXcd Pinv;
   VectorXcd res;
-  pseudoInverse<MatrixXcd>(A,Pinv);
+  PrositAux::pseudoInverse<MatrixXcd>(A,Pinv);
   res = Pinv*b;
   
   for (unsigned int i = 1; i<unst_num+1; i++) {
