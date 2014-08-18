@@ -1,6 +1,6 @@
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-CPPFLAGS= -Wall -g -I/usr/include/eigen3 -I../utils/tinyxml2
+CPPFLAGS= -Wall -g -I/usr/include/eigen3 -I../utils/tinyxml2 
 CPPFLAGS+= -O8
 endif
 
@@ -8,7 +8,8 @@ ifeq ($(UNAME), Darwin)
 CPPFLAGS= -Wall -g -I/opt/local/include/eigen3 -I../utils/tinyxml2
 CPPFLAGS+= -O8
 endif
-
+CPPFLAGS+= -std=c++11
+LDFLAGS+= -std=c++11
 
 VPATH=../utils/tinyxml2
 
@@ -27,6 +28,6 @@ clean :
 	rm -f *.o *.d *~ solver
 
 %.d : %.cpp
-	$(CC) -MM -MF $@ $<
+	$(CC) $(CPPFLAGS) -MM -MF $@ $<
 
 -include $(OBJS:.o=.d)

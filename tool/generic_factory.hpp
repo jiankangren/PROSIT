@@ -76,10 +76,10 @@ namespace GenericFactory {
     //! Create an instance od the functor type
     /*!
      * \param p functor type parameters, which could be themselves organised in a hiearchy
-     * \return an auto_ptr to the created instance (meaning that the ownership belongs to the caller)
+     * \return an unique_ptr to the created instance (meaning that the ownership belongs to the caller)
      */
 
-    virtual auto_ptr<FunctorEntity> create_instance(FunctorParameters * p) throw (Exc) = 0;
+    virtual unique_ptr<FunctorEntity> create_instance(FunctorParameters * p) throw (Exc) = 0;
 
     //! Parses XML segment
     /*!
@@ -96,7 +96,7 @@ namespace GenericFactory {
   /*! Creates a instances of functors. In our terminology a functor is a memory--less object
    * whose only purpose to offer access to user--defined functions (e.g.,
    * quality of service, or distributions. The ownership of the functor is unique. So the
-   * caller receives an auto_ptr to facilitate the automated destruction of the functor.
+   * caller receives an unique_ptr to facilitate the automated destruction of the functor.
    * Unlike the standard C++ we do not override the method () for reasons related to
    * our personal tastes. Nothing prevents to do this in a near future and come up
    * with a properly said functor.
@@ -108,9 +108,9 @@ namespace GenericFactory {
     /*!
      *\param type_name is the type name of the functor
      *\param p is a pointer to the functor parameters
-     *\return an auto_ptr to the created functor
+     *\return an unique_ptr to the created functor
      */
-    auto_ptr<FunctorEntity> create_instance(const char * type_name,
+    unique_ptr<FunctorEntity> create_instance(const char * type_name,
 					    FunctorParameters * p) throw(Exc);
     //! Extracts the parameters of a functor from an XML entry
     /*! This is made in a type specific way calling the method
@@ -260,7 +260,7 @@ namespace GenericFactory {
   // IMPLEMENTATION OF THE METHODS OF FunctorEntityFactory
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   template<class FunctorEntity, typename FunctorParameters>
-  auto_ptr<FunctorEntity> FunctorEntityFactory<FunctorEntity,FunctorParameters>::create_instance(const char * type_name,
+  unique_ptr<FunctorEntity> FunctorEntityFactory<FunctorEntity,FunctorParameters>::create_instance(const char * type_name,
 												 FunctorParameters * p) throw (Exc) {
     FunctorEntityBuilder<FunctorEntity, FunctorParameters> * ptr = TypeFactory< FunctorEntityBuilder<FunctorEntity, FunctorParameters> >::look_up_type(string(type_name));
     if (!ptr) 

@@ -13,19 +13,22 @@
 #define PROBABILISTIC_OPTIMISATION_HPP
 #include "optimisation.hpp"
 #include "pmf.hpp"
+#include <memory>
+
+using std::unique_ptr;
 
 class ProbPeriodicTaskDescriptor: public PeriodicTaskDescriptor {
 protected:
   double eps;
   int Delta;
   int sampledQ;
-  auto_ptr<PrositAux::pmf> sampledCpmf;
-  auto_ptr<PrositAux::cdf> sampledCcdf;
+  unique_ptr<PrositAux::pmf> sampledCpmf;
+  unique_ptr<PrositAux::cdf> sampledCcdf;
 
 public:
   virtual double QoS_from_prob(double prob)=0;
   
-  ProbPeriodicTaskDescriptor(const char * nm, auto_ptr<PrositAux::pmf> c, int Pd, int Qd, int Tsd, int Delta, double epsilon=1e-38) throw(Exc);
+  ProbPeriodicTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> c, int Pd, int Qd, int Tsd, int Delta, double epsilon=1e-38) throw(Exc);
   virtual double QoS(int Q) {
     return QoS_from_prob(probability(Q));
   };
@@ -39,7 +42,7 @@ class ProbPeriodicTaskDescriptorCR: public ProbPeriodicTaskDescriptor {
   int max_iter;
   bool shift;
 public:
-  ProbPeriodicTaskDescriptorCR(const char * nm, auto_ptr<PrositAux::pmf> c, int Pd, int Qd, int Tsd, int Deltad,double epsilon) throw (Exc);
+  ProbPeriodicTaskDescriptorCR(const char * nm, unique_ptr<PrositAux::pmf> c, int Pd, int Qd, int Tsd, int Deltad,double epsilon) throw (Exc);
   virtual double probability(int Q);
   virtual ~ProbPeriodicTaskDescriptorCR() {};
   int get_max_iter() { return max_iter;};
@@ -58,7 +61,7 @@ public:
 
 class ProbPeriodicTaskDescriptorAnalytic: public ProbPeriodicTaskDescriptor {
 public:
-  ProbPeriodicTaskDescriptorAnalytic(const char * nm, auto_ptr<PrositAux::pmf> c, int Pd, int Qd, int Tsd, int Deltad,double epsilon) throw(Exc);
+  ProbPeriodicTaskDescriptorAnalytic(const char * nm, unique_ptr<PrositAux::pmf> c, int Pd, int Qd, int Tsd, int Deltad,double epsilon) throw(Exc);
   virtual double probability(int Q);
   virtual ~ProbPeriodicTaskDescriptorAnalytic() {};
 };

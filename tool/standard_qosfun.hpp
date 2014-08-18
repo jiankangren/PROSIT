@@ -12,6 +12,9 @@
 #define STD_QOSFUN_HPP
 #include "qos_fun.hpp"
 #include "qos_factory.hpp"
+#include <memory>
+using std::unique_ptr;
+
 namespace StandardQoSFun {
   //! Initialiser
   /*! 
@@ -59,7 +62,7 @@ namespace StandardQoSFun {
 
   //! Sub class of QoSFun builder used to build a linear QoS function
   class LinearQoSFunBuilder: public QoSFactory::QoSFunBuilder {
-    virtual auto_ptr<QoSFun> create_instance(QoSFactory::QoSFunParameters * t) throw(Exc);
+    virtual unique_ptr<QoSFun> create_instance(QoSFactory::QoSFunParameters * t) throw(Exc);
     virtual QoSFactory::QoSFunParameters* parse_parameters(XMLElement * qosfunel) throw (Exc);
   };
 
@@ -80,7 +83,7 @@ namespace StandardQoSFun {
   
   //! Sub class of QoSFun builder used to build a quadratic QoS function
   class QuadraticQoSFunBuilder: public LinearQoSFunBuilder {
-    virtual auto_ptr<QoSFun> create_instance(QoSFactory::QoSFunParameters * t) throw(Exc);
+    virtual unique_ptr<QoSFun> create_instance(QoSFactory::QoSFunParameters * t) throw(Exc);
   };
 };
 

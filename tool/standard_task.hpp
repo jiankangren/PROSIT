@@ -14,12 +14,14 @@
 #include "probabilistic_optimisation.hpp"
 #include "task_factory.hpp"
 #include "qos_fun.hpp"
+using std::unique_ptr;
 namespace StandardTasks {
   void init();
   struct UserQoSPeriodicTaskParameters :  public TaskFactory::PeriodicTaskParameters {
-    auto_ptr<QoSFun> qos;
-    UserQoSPeriodicTaskParameters(auto_ptr<PeriodicTaskParameters> p, auto_ptr<QoSFun> qosd):
-      TaskFactory::PeriodicTaskParameters(*p), qos(qosd) {};
+    unique_ptr<QoSFun> qos;
+    UserQoSPeriodicTaskParameters(unique_ptr<PeriodicTaskParameters> p, unique_ptr<QoSFun> qosd):
+      TaskFactory::PeriodicTaskParameters(std::move(p->c), p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond), 
+      qos(std::move(qosd)) {};
   };
 
   class UserQoSPeriodicTaskBuilder: public TaskFactory::PeriodicTaskBuilder {
@@ -34,14 +36,14 @@ namespace StandardTasks {
   };
   class UserQoSPeriodicTaskDescriptorCR: public ProbPeriodicTaskDescriptorCR {
   private:
-    auto_ptr<QoSFun> qos;
+    unique_ptr<QoSFun> qos;
   public:
     UserQoSPeriodicTaskDescriptorCR(const char * nm, 
-				    auto_ptr<PrositAux::pmf> c, 
+				    unique_ptr<PrositAux::pmf> c, 
 				    int Pd, int Qd, int Tsd, 
 				    int Deltad,
 				    double epsilond, 
-				    auto_ptr<QoSFun> qosd) throw (Exc);
+				    unique_ptr<QoSFun> qosd) throw (Exc);
     virtual double QoS_from_prob(double prob);
     ~UserQoSPeriodicTaskDescriptorCR();
   };
@@ -52,14 +54,14 @@ namespace StandardTasks {
   };
   class UserQoSPeriodicTaskDescriptorAnalytic: public ProbPeriodicTaskDescriptorAnalytic {
   private:
-    auto_ptr<QoSFun> qos;
+    unique_ptr<QoSFun> qos;
   public:
     UserQoSPeriodicTaskDescriptorAnalytic(const char * nm, 
-					  auto_ptr<PrositAux::pmf> c, 
+					  unique_ptr<PrositAux::pmf> c, 
 			   int Pd, int Qd, int Tsd, 
 			   int Deltad,
 			   double epsilond, 
-			   auto_ptr<QoSFun> qosd) throw (Exc);
+			   unique_ptr<QoSFun> qosd) throw (Exc);
     virtual double QoS_from_prob(double prob);
     ~UserQoSPeriodicTaskDescriptorAnalytic();
   };

@@ -2,7 +2,9 @@
 
 #include <map>
 #include <utility>
+#include <memory>
 #include "parser.hpp"
+using std::unique_ptr;
 
 using namespace std;
 namespace TaskFactory {
@@ -62,7 +64,7 @@ namespace TaskFactory {
     if(!(internal= taskElement->FirstChildElement("pmf"))) 
       EXC_PRINT_2("pmf undefined for task",name);
 
-    auto_ptr<PrositAux::pmf> c(XMLParser::Parser::distr_parse(internal));
+    unique_ptr<PrositAux::pmf> c(XMLParser::Parser::distr_parse(internal));
     
     if((internal= taskElement->FirstChildElement("Delta")))
       internal->QueryIntText(&Delta);
@@ -73,7 +75,7 @@ namespace TaskFactory {
     else
       epsilon = 1e-8;
     
-    return new GenericTaskParameters(c,Q,Ts,Delta,epsilon);
+    return new GenericTaskParameters(std::move(c),Q,Ts,Delta,epsilon);
   };
   GenericTaskParameters * PeriodicTaskBuilder::parse_parameters(const char * name, XMLElement * taskElement) throw(Exc) {
     int P;
@@ -85,7 +87,7 @@ namespace TaskFactory {
       EXC_PRINT_2("period undefined for task", name);
     internal->QueryIntText(&P);
     
-    return new PeriodicTaskParameters(auto_ptr<GenericTaskParameters>(p), P);
+    return new PeriodicTaskParameters(unique_ptr<GenericTaskParameters>(p), P);
     //return new PeriodicTaskParameters(p->c,P,p->Qd,p->Tsd,p->Deltad,p->epsilond);
     };
 

@@ -15,27 +15,28 @@
 #include "exc.hpp"
 #include <tinyxml2.h>
 #include"generic_factory.hpp"
+#include <memory>
 using namespace tinyxml2;
 
 namespace TaskFactory {
 
   //!Root for hiearchy of parameters
   struct GenericTaskParameters {
-    auto_ptr<PrositAux::pmf> c; //!>
+    unique_ptr<PrositAux::pmf> c; //!>
     int Qd; 
     int Tsd;
     int Deltad;
     double epsilond;
-    GenericTaskParameters(auto_ptr<PrositAux::pmf> cd, int Qdd, int Tsdd, int Deltadd, double epsilondd): c(cd), Qd(Qdd),Tsd(Tsdd),Deltad(Deltadd),epsilond(epsilondd) {};
+    GenericTaskParameters(unique_ptr<PrositAux::pmf> cd, int Qdd, int Tsdd, int Deltadd, double epsilondd): c(std::move(cd)), Qd(Qdd),Tsd(Tsdd),Deltad(Deltadd),epsilond(epsilondd) {};
     virtual ~GenericTaskParameters(){};
   };
 
   //!Parameters for a periodic task
   struct PeriodicTaskParameters: public GenericTaskParameters {
     int Pd;
-    PeriodicTaskParameters(auto_ptr<GenericTaskParameters> pt, int Pdd):
-      GenericTaskParameters(*pt), Pd(Pdd) {};
-    PeriodicTaskParameters(auto_ptr<PrositAux::pmf> cd, int Pdd, int Qdd, int Tsdd, int Deltadd, double epsilondd): GenericTaskParameters(cd,Qdd,Tsdd,Deltadd,epsilondd), Pd(Pdd) {};
+    PeriodicTaskParameters(unique_ptr<GenericTaskParameters> pt, int Pdd):
+      GenericTaskParameters(std::move(pt->c), pt->Qd, pt->Tsd, pt->Deltad, pt->epsilond), Pd(Pdd) {};
+    PeriodicTaskParameters(unique_ptr<PrositAux::pmf> cd, int Pdd, int Qdd, int Tsdd, int Deltadd, double epsilondd): GenericTaskParameters(std::move(cd),Qdd,Tsdd,Deltadd,epsilondd), Pd(Pdd) {};
     virtual ~PeriodicTaskParameters(){};
   };
   

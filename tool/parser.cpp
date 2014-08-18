@@ -37,24 +37,24 @@ namespace XMLParser {
     return td;
   };
 
-  auto_ptr<QoSFun> Parser::qosfun_parse(XMLElement * qosfunElement) throw(Exc) {
+  unique_ptr<QoSFun> Parser::qosfun_parse(XMLElement * qosfunElement) throw(Exc) {
     const char * type_name;
     if(!(type_name = qosfunElement->Attribute("type"))) 
       EXC_PRINT("type undefined for qosfunction");
     
     QoSFactory::QoSFunParameters * p = QoSFactory::qos_fun_factory.parse_parameters(type_name, qosfunElement);
-    auto_ptr<QoSFun> td =  QoSFactory::qos_fun_factory.create_instance(type_name, p);
+    unique_ptr<QoSFun> td =  QoSFactory::qos_fun_factory.create_instance(type_name, p);
     delete p;
     
     return td;
   };
-  auto_ptr<PrositAux::pmf> Parser::distr_parse(XMLElement * distrElement) throw(Exc) {
+  unique_ptr<PrositAux::pmf> Parser::distr_parse(XMLElement * distrElement) throw(Exc) {
     const char * type_name;
     if(!(type_name = distrElement->Attribute("type"))) 
       EXC_PRINT("type undefined for distribution");
     
     DistrFactory::DistrParameters * p = DistrFactory::distr_factory.parse_parameters(type_name, distrElement);
-    auto_ptr<PrositAux::pmf> td =  DistrFactory::distr_factory.create_instance(type_name, p);
+    unique_ptr<PrositAux::pmf> td =  DistrFactory::distr_factory.create_instance(type_name, p);
     delete p;
     
     return td;

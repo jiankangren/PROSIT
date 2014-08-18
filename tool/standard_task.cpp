@@ -2,13 +2,16 @@
 #include"qos_factory.hpp"
 #include "parser.hpp"
 #include<assert.h>
+#include <memory>
+using std::unique_ptr;
+
 using namespace XMLParser;
 namespace StandardTasks {
   GenericTaskDescriptor * UserQoSPeriodicTaskBuilderCR::create_instance(const char * name, TaskFactory::GenericTaskParameters * t) throw(Exc) {
     UserQoSPeriodicTaskParameters * p;
     if(!(p=dynamic_cast<UserQoSPeriodicTaskParameters*>(t)))
       EXC_PRINT_2("wrong parameter type for task", name);
-    return new UserQoSPeriodicTaskDescriptorCR(name, p->c, p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond, p->qos); 
+    return new UserQoSPeriodicTaskDescriptorCR(name, std::move(p->c), p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond, std::move(p->qos)); 
   };
 
   TaskFactory::GenericTaskParameters * UserQoSPeriodicTaskBuilder::parse_parameters(const char * name, XMLElement * task) throw (Exc) {
@@ -19,24 +22,24 @@ namespace StandardTasks {
     if (! (internal= task->FirstChildElement("qosfun") )) 
       EXC_PRINT_2("Qos function undefined for task:", name);
 
-    auto_ptr<QoSFun> f = Parser::qosfun_parse(internal);
-    return new UserQoSPeriodicTaskParameters(auto_ptr<TaskFactory::PeriodicTaskParameters>(p), f);
+    unique_ptr<QoSFun> f = Parser::qosfun_parse(internal);
+    return new UserQoSPeriodicTaskParameters(unique_ptr<TaskFactory::PeriodicTaskParameters>(p), std::move(f));
   };
   GenericTaskDescriptor * UserQoSPeriodicTaskBuilderAnalytic::create_instance(const char * name, TaskFactory::GenericTaskParameters * t) throw(Exc) {
     UserQoSPeriodicTaskParameters * p;
     if(!(p=dynamic_cast<UserQoSPeriodicTaskParameters*>(t)))
       EXC_PRINT_2("Wrong parameter type for task:", name);
 
-    return new UserQoSPeriodicTaskDescriptorAnalytic(name, p->c, p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond, p->qos); 
+    return new UserQoSPeriodicTaskDescriptorAnalytic(name, std::move(p->c), p->Pd, p->Qd, p->Tsd, p->Deltad, p->epsilond, std::move(p->qos)); 
   };
   
   UserQoSPeriodicTaskDescriptorCR::UserQoSPeriodicTaskDescriptorCR(const char * nm, 
-								   auto_ptr<PrositAux::pmf> c, 
+								   unique_ptr<PrositAux::pmf> c, 
 								   int Pd, int Qd, int Tsd, 
 								   int Deltad,
 								   double epsilond, 
-								   auto_ptr<QoSFun> qosd) throw (Exc):
-    ProbPeriodicTaskDescriptorCR(nm,c,Pd,Qd,Tsd,Deltad,epsilond), qos(qosd)
+								   unique_ptr<QoSFun> qosd) throw (Exc):
+    ProbPeriodicTaskDescriptorCR(nm,std::move(c),Pd,Qd,Tsd,Deltad,epsilond), qos(std::move(qosd))
   {};
   double UserQoSPeriodicTaskDescriptorCR::QoS_from_prob(double prob) {
     return qos->eval(prob);
@@ -45,12 +48,12 @@ namespace StandardTasks {
   UserQoSPeriodicTaskDescriptorCR::~UserQoSPeriodicTaskDescriptorCR(){};
  
   UserQoSPeriodicTaskDescriptorAnalytic::UserQoSPeriodicTaskDescriptorAnalytic(const char * nm, 
-									       auto_ptr<PrositAux::pmf> c, 
+									       unique_ptr<PrositAux::pmf> c, 
 									       int Pd, int Qd, int Tsd, 
 									       int Deltad,
 									       double epsilond, 
-									       auto_ptr<QoSFun> qosd) throw (Exc):
-    ProbPeriodicTaskDescriptorAnalytic(nm,c,Pd,Qd,Tsd,Deltad,epsilond), qos(qosd)
+									       unique_ptr<QoSFun> qosd) throw (Exc):
+    ProbPeriodicTaskDescriptorAnalytic(nm,std::move(c),Pd,Qd,Tsd,Deltad,epsilond), qos(std::move(qosd))
   {};
   double UserQoSPeriodicTaskDescriptorAnalytic::QoS_from_prob(double prob) {
     return qos->eval(prob);

@@ -1,4 +1,6 @@
 #include "standard_qosfun.hpp"
+#include <memory>
+using std::unique_ptr;
 
 namespace StandardQoSFun {
   LinearQoSFun::LinearQoSFun(double scaled, double pmind, double pmaxd) throw (Exc) : scale(scaled), pmin(pmind), pmax(pmaxd) {
@@ -12,7 +14,7 @@ namespace StandardQoSFun {
 	return scale*(pmax-pmin);
       return scale*(prob-pmin);
   };
-  auto_ptr<QoSFun> LinearQoSFunBuilder::create_instance(QoSFactory::QoSFunParameters * t) throw (Exc) {
+  unique_ptr<QoSFun> LinearQoSFunBuilder::create_instance(QoSFactory::QoSFunParameters * t) throw (Exc) {
     LinearQoSFunParameters * p = dynamic_cast<LinearQoSFunParameters*>(t);
     if (!p)
       EXC_PRINT("wrong parameter type");
@@ -21,7 +23,7 @@ namespace StandardQoSFun {
        (p->pmax <0)||(p->pmax>1.0))
       EXC_PRINT("wrong probability limits");
 
-    return auto_ptr<QoSFun>(new LinearQoSFun(p->scale, p->pmin, p->pmax));
+    return unique_ptr<QoSFun>(new LinearQoSFun(p->scale, p->pmin, p->pmax));
   };
   QoSFactory::QoSFunParameters * LinearQoSFunBuilder::parse_parameters(XMLElement *qosfunel) throw (Exc) {
     XMLElement * internal;
@@ -41,7 +43,7 @@ namespace StandardQoSFun {
     return new LinearQoSFunParameters(scale,pmin,pmax);
   };
   
-  auto_ptr<QoSFun> QuadraticQoSFunBuilder::create_instance(QoSFactory::QoSFunParameters * t) throw (Exc) {
+  unique_ptr<QoSFun> QuadraticQoSFunBuilder::create_instance(QoSFactory::QoSFunParameters * t) throw (Exc) {
     LinearQoSFunParameters * p = dynamic_cast<LinearQoSFunParameters*>(t);
     if (!p)
       EXC_PRINT("wrong parameter type");
@@ -50,7 +52,7 @@ namespace StandardQoSFun {
        (p->pmax <0)||(p->pmax>1.0))
       EXC_PRINT("wrong probability limits");
 
-    return auto_ptr<QoSFun>(new QuadraticQoSFun(p->scale, p->pmin, p->pmax));
+    return unique_ptr<QoSFun>(new QuadraticQoSFun(p->scale, p->pmin, p->pmax));
   };
   QuadraticQoSFun::QuadraticQoSFun(double scaled, double pmind, double pmaxd) throw (Exc) : scale(scaled), pmin(pmind), pmax(pmaxd) {
     if ((pmaxd<pmind)||(scaled<0))

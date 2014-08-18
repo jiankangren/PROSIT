@@ -27,8 +27,8 @@ namespace PrositCore {
   class GenericTaskDescriptor {
   protected:
     string name; /*!< Name of the task */
-    unique_ptr<pmf> C; /*!< Distribution of the computation time */
-    unique_ptr<pmf> Z; /*!< Distribution of the interarrival time */
+    unique_ptr<PrositAux::pmf> C; /*!< Distribution of the computation time */
+    unique_ptr<PrositAux::pmf> Z; /*!< Distribution of the interarrival time */
   
     bool verbose; /*!< Flag to print out information while processing */
     bool periodic; /*!< Flag for periodic tasks */
@@ -45,7 +45,7 @@ namespace PrositCore {
      *  \param Cd pointer to the distribution of the computation times 
      *  \param Zd distirbution of the interarrival time
      */
-    GenericTaskDescriptor(const char * nm, auto_ptr<pmf> Cd, auto_ptr<pmf> Zd) throw(Exc):
+    GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd) throw(Exc):
       name(nm),
       C(Cd),
       Z(Zd),
@@ -61,7 +61,7 @@ namespace PrositCore {
      *  \param Cd pointer to the distribution of the computation times 
      *  \param Pd task period
      */
-    GenericTaskDescriptor(const char * nm, auto_ptr<pmf> Cd, unsigned int Pd) throw(Exc):
+    GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd) throw(Exc):
       name(nm),
       C(Cd),
       Z(0),
@@ -92,10 +92,10 @@ namespace PrositCore {
     /*! 
      * \return the task period (Exception raised if not periodic)
      */
-     int get_period() const throw (Exc){
-       if(!periodic)
-	 EXC_PRINT_2("Period wrongly required for aperiodic task ", name);
-       return P;
+    int get_period() const throw (Exc){
+      if(!periodic)
+	EXC_PRINT_2("Period wrongly required for aperiodic task ", name);
+      return P;
     };
     
     //! Returns a copy of the computation time distribution
@@ -110,9 +110,9 @@ namespace PrositCore {
     /*!
      * \return a copy of the pmf related to the interarrival time (Exceprion of the task is periodic)
      */
-    pmf get_interarrival_time() const throw (Exc){
+    PrositAux::pmf get_interarrival_time() const throw (Exc){
       if(periodic)
-	 EXC_PRINT_2("Interarrival time wrongly required for periodic task ", name);
+	EXC_PRINT_2("Interarrival time wrongly required for periodic task ", name);
       return *Z;
     };    
 
@@ -190,7 +190,7 @@ namespace PrositCore {
      *  \param Zd distirbution of the interarrival time
      *  \param priorityd scheduling priority (in the range 0..99)
      */
-    FixedPriorityTaskDescriptor(const char * nm, auto_ptr<pmf> Cd, auto_ptr<pmf> Zd, unsigned int priorityd) throw(Exc):
+    FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, unsigned int priorityd) throw(Exc):
       GenericTaskDescriptor(nm,Cd,Zd)
     {
       if (priorityd>99)
@@ -204,7 +204,7 @@ namespace PrositCore {
      *  \param Pd task period
      *  \param priorityd scheduling priority (in the range 0..99)
      */
-    FixedPriorityTaskDescriptor(const char * nm, auto_ptr<pmf> Cd, unsigned int Pd, unsigned int priorityd) throw(Exc):
+    FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, unsigned int priorityd) throw(Exc):
       GenericTaskDescriptor(nm,Cd,Pd)
     {
       if (priorityd>99)
@@ -237,7 +237,7 @@ namespace PrositCore {
     double QoSmin_target;
     double QoSmax_target;
   public:
-    ResourceReservationTaskDescriptor(const char * nm, auto_ptr<pmf> Cd, auto_ptr<pmf> Zd, const int Qd, const int Tsd) throw(Exc):
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd) throw(Exc):
       GenericTaskDescriptor(nm, Cd, Zd, Qd, Tsd), 
       Q(Qd),
       Ts(Tsd),
@@ -283,50 +283,50 @@ namespace PrositCore {
       Ts=Tsd;
     };
 
-  //Need to redefine this for task specific QoS
-  virtual double QoS(int budget)=0;
-  virtual bool inv_QoS(double q, int & Q, bool ceil) = 0;
-  int get_qmin() const {
-    return Qmin;
-  };
-  int get_qmax() const {
-    return Qmax;
-  };
-  double get_qosmin() const {
-    return QoSmin;
-  };
-  double get_qosmax() const {
-    return QoSmax;
-  };
-  int set_qmin(int Qmind) {
-    int Qminold=Qmin;
-    Qmin=Qmind;
-    bounds_inited = false;
-    return Qminold;
-  };
-  int set_qmax(int Qmaxd) {
-    int Qmaxold=Qmaxd;
-    Qmax=Qmaxd;
-    bounds_inited = false;
-    return Qmaxold;
-  };
-  double get_target_qosmin() const {
-    return QoSmin_target;
-  };
-  double get_target_qosmax() const {
-    return QoSmax_target;
-  };
-  double set_target_qosmax(double q) {
-    double current = QoSmax_target;
-    QoSmax_target = q;
-    bounds_inited = false;
-    return current;
-  };
-  double set_target_qosmin(double q) {
-    double current = QoSmin_target;
-    QoSmin_target = q;
-    bounds_inited = false;
-    return current;
-  };
+    //Need to redefine this for task specific QoS
+    virtual double QoS(int budget)=0;
+    virtual bool inv_QoS(double q, int & Q, bool ceil) = 0;
+    int get_qmin() const {
+      return Qmin;
+    };
+    int get_qmax() const {
+      return Qmax;
+    };
+    double get_qosmin() const {
+      return QoSmin;
+    };
+    double get_qosmax() const {
+      return QoSmax;
+    };
+    int set_qmin(int Qmind) {
+      int Qminold=Qmin;
+      Qmin=Qmind;
+      bounds_inited = false;
+      return Qminold;
+    };
+    int set_qmax(int Qmaxd) {
+      int Qmaxold=Qmaxd;
+      Qmax=Qmaxd;
+      bounds_inited = false;
+      return Qmaxold;
+    };
+    double get_target_qosmin() const {
+      return QoSmin_target;
+    };
+    double get_target_qosmax() const {
+      return QoSmax_target;
+    };
+    double set_target_qosmax(double q) {
+      double current = QoSmax_target;
+      QoSmax_target = q;
+      bounds_inited = false;
+      return current;
+    };
+    double set_target_qosmin(double q) {
+      double current = QoSmin_target;
+      QoSmin_target = q;
+      bounds_inited = false;
+      return current;
+    };
   }
 };

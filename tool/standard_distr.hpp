@@ -13,6 +13,9 @@
 #define STD_DISTR_HPP
 #include "pmf.hpp"
 #include "distr_factory.hpp"
+#include <memory>
+using std::unique_ptr;
+
 namespace StandardDistributions {
   void init();
   
@@ -31,7 +34,7 @@ namespace StandardDistributions {
    */
   class FileDistrBuilder: public DistrFactory::DistrBuilder {
   public:
-    virtual auto_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc);
+    virtual unique_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc);
     virtual DistrFactory::DistrParameters* parse_parameters(XMLElement * distr) throw (Exc);
   };  
   
@@ -56,7 +59,7 @@ namespace StandardDistributions {
    */
   class SyntheticDistrBuilder : public DistrFactory::DistrBuilder {
       public:
-    virtual auto_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc)=0;
+    virtual unique_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc)=0;
     virtual DistrFactory::DistrParameters* parse_parameters(XMLElement * distr) throw (Exc);
   };
   
@@ -66,7 +69,7 @@ namespace StandardDistributions {
    */
   class UniformDistrBuilder : public SyntheticDistrBuilder {
       public:
-    virtual auto_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc);
+    virtual unique_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc);
     virtual DistrFactory::DistrParameters* parse_parameters(XMLElement * distr) throw (Exc);
   };
   
@@ -85,7 +88,7 @@ namespace StandardDistributions {
    */
   class BetaDistrBuilder: public SyntheticDistrBuilder {
       public:
-    virtual auto_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc);
+    virtual unique_ptr<PrositAux::pmf> create_instance(DistrFactory::DistrParameters * t) throw(Exc);
     virtual DistrFactory::DistrParameters* parse_parameters(XMLElement * distr) throw (Exc);
   };
 };

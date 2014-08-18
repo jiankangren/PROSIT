@@ -2,16 +2,19 @@
 #include "matrix.hpp"
 #include "closed_form.hpp"
 #include "smc_func.hpp"
+#include <memory>
+using std::unique_ptr;
+
 #define Nc 250000
 #define Nz 1200
 ProbPeriodicTaskDescriptor::ProbPeriodicTaskDescriptor(const char * nm,
-						       auto_ptr<PrositAux::pmf> c, 
+						       unique_ptr<PrositAux::pmf> c, 
 						       int Pd, 
 						       int Qd, 
 						       int Tsd, 
 						       int Deltad, 
 						       double epsilon) throw (Exc): 
-  PeriodicTaskDescriptor(nm, c, Pd, Qd, Tsd), 
+  PeriodicTaskDescriptor(nm, std::move(c), Pd, Qd, Tsd), 
   eps(epsilon),
   Delta(Deltad)
 {
@@ -21,10 +24,10 @@ ProbPeriodicTaskDescriptor::ProbPeriodicTaskDescriptor(const char * nm,
   
   sampledQ = Qd/newDelta;
 
-  auto_ptr<PrositAux::pmf> p (C->resample(newDelta));
-  sampledCpmf = p;
-  auto_ptr<PrositAux::cdf> q (new PrositAux::cdf(Nc,0));
-  sampledCcdf = q;
+  unique_ptr<PrositAux::pmf> p (std::move(C->resample(newDelta)));
+  sampledCpmf = std::move(p);
+  unique_ptr<PrositAux::cdf> q (new PrositAux::cdf(Nc,0));
+  sampledCcdf = std::move(q);
   PrositAux::pmf2cdf(*sampledCpmf, *sampledCcdf);
   
 }
@@ -74,13 +77,13 @@ bool ProbPeriodicTaskDescriptor::inv_QoS(double p, int &Q, bool ceil) {
 
 
 ProbPeriodicTaskDescriptorCR::ProbPeriodicTaskDescriptorCR(const char * nm,
-							   auto_ptr<PrositAux::pmf>  c, 
+							   unique_ptr<PrositAux::pmf>  c, 
 							   int Pd, 
 							   int Qd, 
 							   int Tsd, 
 							   int Deltad, 
 							   double epsilon) throw (Exc):
-  ProbPeriodicTaskDescriptor(nm,c,Pd,Qd,Tsd,Deltad,epsilon), max_iter(10000), shift(true)
+  ProbPeriodicTaskDescriptor(nm,std::move(c),Pd,Qd,Tsd,Deltad,epsilon), max_iter(10000), shift(true)
 {};
   
 double ProbPeriodicTaskDescriptorCR::probability(int Q) {
@@ -126,20 +129,20 @@ double ProbPeriodicTaskDescriptorCR::probability(int Q) {
     return 0.0;
 }
 ProbPeriodicTaskDescriptorAnalytic::ProbPeriodicTaskDescriptorAnalytic(const char * nm,
-								       auto_ptr<PrositAux::pmf> c, 
+								       unique_ptr<PrositAux::pmf> c, 
 								       int Pd, 
 								       int Qd, 
 								       int Tsd, 
 								       int Deltad, 
 								       double epsilon) throw (Exc):
-  ProbPeriodicTaskDescriptor(nm,c,Pd,Qd,Tsd,Deltad,epsilon)
+  ProbPeriodicTaskDescriptor(nm,std::move(c),Pd,Qd,Tsd,Deltad,epsilon)
 {};
   
 double ProbPeriodicTaskDescriptorAnalytic::probability(int Q) {
   //Adaptation of the Delta
   if ( Delta < 0) {
     int newDelta = max(1,Q/2);
-    auto_ptr<PrositAux::pmf> newSampledPmf(C->resample(newDelta));
+    unique_ptr<PrositAux::pmf> newSampledPmf(C->resample(newDelta));
     return closed_form_compute_pi(*newSampledPmf,P/Ts,Q/newDelta);
   }
   else
