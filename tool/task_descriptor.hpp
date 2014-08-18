@@ -14,10 +14,10 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include "prosit_types.hpp"
 using namespace std;
 #include "pmf.hpp"
 namespace PrositCore {
-
   //! Generic class descriptor
   /*! It is the root of the hierarchy of task descriptors
    * This descriptor only contains the timing information.
@@ -35,9 +35,11 @@ namespace PrositCore {
     unsigned int P;  /*!< Period (has meaning onlly if periodic flag is set) */
     
     unsigned int deadline_step; /*!< Granularity to define probabilistic deadlines */
-    double qos; /*< Quality level */
 
-    map<unsigned int,double> probabilistic_deadlines; /*!< Map associating deadlines with probabilities */
+    DeadlineProbabilityMap probabilistic_deadlines; /*!< Map associating deadlines with probabilities */
+
+    
+    Solver * ProbabilitySolver; /*!< Pointer to the object containing the solution algorithm for probabilities */
   public:
 
     //! Constructor for aperiodic Tasks
@@ -63,14 +65,16 @@ namespace PrositCore {
      */
     GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd) throw(Exc):
       name(nm),
-      C(Cd),
-      Z(0),
+      C(std::move(Cd)),
+      Z(new PrositAux::pmf()),
       verbose(false),
       periodic(true),
       P(Pd),
       deadline_step(0),
       qos(0.0)
-    {};
+    {
+      Z->set(Pd, 1.0);
+    };
     
     //! Set verbose flag to a specified value
     /*! 
@@ -102,18 +106,18 @@ namespace PrositCore {
     /*!
      * \return a copy of the pmf related to the computation time
      */
-    pmf get_computation_time() const {
-      return *C;
+    PrositAux::pmf * get_computation_time() const {
+      return C.get();
     };
 
     //! Returns a copy of the interarrival time distribution
     /*!
      * \return a copy of the pmf related to the interarrival time (Exceprion of the task is periodic)
      */
-    PrositAux::pmf get_interarrival_time() const throw (Exc){
+    PrositAux::pmf * get_interarrival_time() const throw (Exc){
       if(periodic)
 	EXC_PRINT_2("Interarrival time wrongly required for periodic task ", name);
-      return *Z;
+      return Z.get();
     };    
 
 
@@ -132,48 +136,23 @@ namespace PrositCore {
     };
     
 
-    //! Computes the probability of respecting the deadline
+    //! Computes the probability of respecting the deadlines
     /*! These probabilities are computed for a given configuration
-     * of the scheduling parameters.
+     * of the scheduling parameters. (Deadlines have been previously registered 
+     * by calling insert
      *      
      */
-    virtual void compute_probability(int deadline)=0;
+    virtual void compute_probability()=0;
  
-    double get_probablity(int deadline) const throw(Exc);
-
-    //!Quality of service function 
-    /*! \return Quality of Service associated with the current
-     * configuration of scheduling parameters.
+    //!Returns the probability associated with a deadline
+    /*!compute_probability is implicitly called if not called before.
+     * \param deadline: the deadline for which the computations
+     * is required.
+     * \return The requested probability. An exception is thrown if the deadline
+     * has not been registered.
      */
-    virtual double compute_QoS()=0;
+    double get_probability(unsigned int deadline) const throw(Exc);
 
-    //!Inverse quality functions
-    /*! 
-     *  Compute the scheduling parameters required to attain the
-     * level of quality in qos
-     * \param ceil should we approximate the desired value from above (true),
-     *   or from below (false)?
-     */
-    virtual void invert_QoS(bool ceil)=0;
-
-    //!Returns the current level of the quality of service
-    /*! Makes sense after calling compute_QoS()
-     * \return current value of quality
-     */
-    double get_qos() const {return qos;};
-
-    //! Set quality of service level
-    /*! \param qosd desired quality level
-     * It needs to be non-negative.
-     * \return Previous level of the quality of service
-     */
-    double set_qos(double qosd) throw (Exc) {
-      double old_qos = qos;
-      qos = qosd;
-      if (qosd < 0)
-	EXC_PRINT_2("Negative value of QoS set for task ", name);
-      return old_qos;
-    };
 
     //! Destruct, which is virtual, being the class polymorphic
     virtual ~GenericTaskDescriptor() {};

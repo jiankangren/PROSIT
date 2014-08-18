@@ -2,5 +2,5 @@ CONVENTIONS FOR NAMESPACE
 
 - PrositAux: namespace for auxiliary objects and functions
 - PrositSolvers: namespace for the solvers of PROSIT
-- Prosit: namespace for the core modules of PROSIT
+- PrositCore: namespace for the core modules of PROSIT
 - PrositInterf: namespace for modules related to user interfaces
