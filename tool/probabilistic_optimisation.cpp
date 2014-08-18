@@ -5,7 +5,7 @@
 #define Nc 250000
 #define Nz 1200
 ProbPeriodicTaskDescriptor::ProbPeriodicTaskDescriptor(const char * nm,
-						       auto_ptr<pmf> c, 
+						       auto_ptr<PrositAux::pmf> c, 
 						       int Pd, 
 						       int Qd, 
 						       int Tsd, 
@@ -21,11 +21,11 @@ ProbPeriodicTaskDescriptor::ProbPeriodicTaskDescriptor(const char * nm,
   
   sampledQ = Qd/newDelta;
 
-  auto_ptr<pmf> p (C->resample(newDelta));
+  auto_ptr<PrositAux::pmf> p (C->resample(newDelta));
   sampledCpmf = p;
-  auto_ptr<cdf> q (new cdf(Nc,0));
+  auto_ptr<PrositAux::cdf> q (new PrositAux::cdf(Nc,0));
   sampledCcdf = q;
-  pmf2cdf(*sampledCpmf, *sampledCcdf);
+  PrositAux::pmf2cdf(*sampledCpmf, *sampledCcdf);
   
 }
 
@@ -74,7 +74,7 @@ bool ProbPeriodicTaskDescriptor::inv_QoS(double p, int &Q, bool ceil) {
 
 
 ProbPeriodicTaskDescriptorCR::ProbPeriodicTaskDescriptorCR(const char * nm,
-							   auto_ptr<pmf>  c, 
+							   auto_ptr<PrositAux::pmf>  c, 
 							   int Pd, 
 							   int Qd, 
 							   int Tsd, 
@@ -98,7 +98,7 @@ double ProbPeriodicTaskDescriptorCR::probability(int Q) {
   if (maxv<=0) maxv=1;
   
   MatrixXd mat(3*maxv,3*maxv);
-  pmf u(Nz,0);
+  PrositAux::pmf u(Nz,0);
   u.set(P/Ts,1.0);
   //3. compute matrix
   for (int i=0; i<maxv*3; i++)
@@ -126,7 +126,7 @@ double ProbPeriodicTaskDescriptorCR::probability(int Q) {
     return 0.0;
 }
 ProbPeriodicTaskDescriptorAnalytic::ProbPeriodicTaskDescriptorAnalytic(const char * nm,
-								       auto_ptr<pmf> c, 
+								       auto_ptr<PrositAux::pmf> c, 
 								       int Pd, 
 								       int Qd, 
 								       int Tsd, 
@@ -139,7 +139,7 @@ double ProbPeriodicTaskDescriptorAnalytic::probability(int Q) {
   //Adaptation of the Delta
   if ( Delta < 0) {
     int newDelta = max(1,Q/2);
-    auto_ptr<pmf> newSampledPmf(C->resample(newDelta));
+    auto_ptr<PrositAux::pmf> newSampledPmf(C->resample(newDelta));
     return closed_form_compute_pi(*newSampledPmf,P/Ts,Q/newDelta);
   }
   else

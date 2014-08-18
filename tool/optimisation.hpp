@@ -23,7 +23,7 @@ class GenericTaskDescriptor {
 protected:
   string name;
   //Computation time
-  auto_ptr<pmf> C;
+  auto_ptr<PrositAux::pmf> C;
   //Budget
   int Q;
   //Server Period
@@ -38,7 +38,7 @@ protected:
   double QoSmax_target;
 
 public:
-  GenericTaskDescriptor(const char * nm, auto_ptr<pmf> c, const int Qd, const int Tsd) throw(Exc):
+  GenericTaskDescriptor(const char * nm, auto_ptr<PrositAux::pmf> c, const int Qd, const int Tsd) throw(Exc):
     name(nm),C(c),
     Q(Qd),
     Ts(Tsd),
@@ -70,7 +70,7 @@ public:
   };
   virtual ~GenericTaskDescriptor() {
   };
-  const pmf & get_computation_time() {
+  const PrositAux::pmf & get_computation_time() {
     return *C;
   };
   virtual int get_budget() const {
@@ -139,12 +139,12 @@ public:
   };
 };
 class AperiodicTaskDescriptor: public GenericTaskDescriptor {
-  auto_ptr<pmf> Z;
+  auto_ptr<PrositAux::pmf> Z;
 public:
-  pmf &get_interarrival_time() {
+  PrositAux::pmf &get_interarrival_time() {
     return *Z;
   };
-  AperiodicTaskDescriptor(const char * nm, auto_ptr<pmf> c, auto_ptr<pmf> Zd, const int Qd, const int Tsd): GenericTaskDescriptor(nm,c,Qd,Tsd), Z(Zd) {};
+  AperiodicTaskDescriptor(const char * nm, auto_ptr<PrositAux::pmf> c, auto_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd): GenericTaskDescriptor(nm,c,Qd,Tsd), Z(Zd) {};
   ~AperiodicTaskDescriptor(){};
 };
 
@@ -158,7 +158,7 @@ public:
   void set_period(int Pd) {
     P = Pd;
   };
-  PeriodicTaskDescriptor(const char * nm,auto_ptr<pmf> c, int Pd, const int Qd, const int Tsd): GenericTaskDescriptor(nm,c,Qd,Tsd), P(Pd){};
+  PeriodicTaskDescriptor(const char * nm,auto_ptr<PrositAux::pmf> c, int Pd, const int Qd, const int Tsd): GenericTaskDescriptor(nm,c,Qd,Tsd), P(Pd){};
   virtual ~PeriodicTaskDescriptor() {};
 };
 

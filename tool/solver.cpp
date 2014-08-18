@@ -143,8 +143,8 @@ int main(int argc, char *argv[])
 	  step = 1;
 	}
     };
-    pmf c(Nc,0);
-    pmf u(Nz,0);
+    PrositAux::pmf c(Nc,0);
+    PrositAux::pmf u(Nz,0);
     
     if (companion_flag) 
       {
@@ -168,8 +168,8 @@ int main(int argc, char *argv[])
 	  throw(Exc("Two file parameters requested"));
       }
     }
-    t_start = my_get_time();
-    pmf * h;
+    t_start = PrositAux::my_get_time();
+    PrositAux::pmf * h;
     if (step !=1) {
       if (verbose_flag) { 
 	cout<<"WCET: "<<c.get_max()<<endl;
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
       if (verbose_flag) {
 	cout<<"Closed Form Bound Computation finished"<<endl;
       };
-      t_probability_compute_end=my_get_time();
+      t_probability_compute_end=PrositAux::my_get_time();
       if ((prob < 0)||(prob > 1.0+0.0001))
 	prob = 0;
       cout<<"P{d < "<<Tp<<"} "<<prob<<endl;
@@ -220,16 +220,16 @@ int main(int argc, char *argv[])
 	  if (verbose_flag) {
 	    cout<<"Companion Strategy computation finished"<<endl;
 	  };
-	  t_probability_compute_end=my_get_time();
+	  t_probability_compute_end=PrositAux::my_get_time();
 	  if ((prob < 0)&&(prob > 1+0.0001))
 	    prob = 0;
 	  cout<<"P{d < "<<Tp<<"} "<<prob<<endl;
 	}
 	else
 	  {
-	    cdf cdfc(h->get_size(),0);
+	    PrositAux::cdf cdfc(h->get_size(),0);
 	    //1. compute cdf of U
-	    pmf2cdf(*h,cdfc);
+	    PrositAux::pmf2cdf(*h,cdfc);
 	    Q = Q/step;
 	    if (compress_flag) {
 	      if(verbose_flag)
@@ -286,11 +286,11 @@ int main(int argc, char *argv[])
 	      parms.max_iter=iter;
 	      MatrixXd G(A0.rows(),A0.cols());
 	      MatrixXd U(A0.rows(),A0.cols());
-	      t_matrix_preparation_end = my_get_time();
+	      t_matrix_preparation_end = PrositAux::my_get_time();
 	      qbd_cr(A2, A1, A0, G, R, U, parms);
 	      if (verbose_flag)
 		cout<<"Cyclic reduction computation finished"<<endl;
-	      t_solve_end=my_get_time();
+	      t_solve_end=PrositAux::my_get_time();
 	    };
 
 
@@ -306,11 +306,11 @@ int main(int argc, char *argv[])
 		p1.verbose=true;
   
      
-	      t_matrix_preparation_end = my_get_time();
+	      t_matrix_preparation_end = PrositAux::my_get_time();
 	      qbd_latouche(A2, A1, A0, R, p1);
 	      if (verbose_flag)
 		cout<<"Latouche computation finished"<<endl;
-	      t_solve_end=my_get_time();
+	      t_solve_end=PrositAux::my_get_time();
 	      // if (ps){
 	      //   Rp=m_get(maxv,maxv);
 	      //   Rp=computeR(Rp,A0p,A1p,A2p,0.001);
@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
 	      parms.verbose=false;
 	    parms.max_iter=iter;
 	    qbd_compute_pi0(R,B0,A2,pi0,parms);
-	    t_probability_compute_end=my_get_time();
+	    t_probability_compute_end=PrositAux::my_get_time();
 #ifdef DEBUG
 	    cerr<<"pi0 :"<<pi0<<endl;
 	    cerr<<"Probability: "<<pi0.sum()<<endl;

@@ -89,6 +89,7 @@ namespace GenericFactory {
      */
 
     virtual FunctorParameters * parse_parameters(XMLElement * el) throw (Exc) = 0;
+    virtual ~FunctorEntityBuilder() {};
   };
   
   //! Functor entity factory
@@ -155,6 +156,7 @@ namespace GenericFactory {
     */
     virtual NamedEntityParameters * parse_parameters(const char * entity_name,
 						 XMLElement * el) throw (Exc) = 0;
+    virtual ~NamedEntityBuilder() {};
   };
   //! Factory class template to create name entities.
   /*! Creates instances of named entities. Such entities are

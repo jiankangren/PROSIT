@@ -33,7 +33,7 @@ namespace XMLParser {
     bool verbose;
   public:
     static GenericTaskDescriptor * task_parse(XMLElement * task) throw(Exc);
-    static auto_ptr<pmf> distr_parse(XMLElement * task) throw(Exc);
+    static auto_ptr<PrositAux::pmf> distr_parse(XMLElement * task) throw(Exc);
     static auto_ptr<QoSFun> qosfun_parse(XMLElement * qosfunElement) throw(Exc);
     Parser(const char * fname) throw(Exc): ot(NO_OPT),verbose(false) {
       doc = new XMLDocument();

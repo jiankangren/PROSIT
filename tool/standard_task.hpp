@@ -37,11 +37,11 @@ namespace StandardTasks {
     auto_ptr<QoSFun> qos;
   public:
     UserQoSPeriodicTaskDescriptorCR(const char * nm, 
-			   auto_ptr<pmf> c, 
-			   int Pd, int Qd, int Tsd, 
-			   int Deltad,
-			   double epsilond, 
-			   auto_ptr<QoSFun> qosd) throw (Exc);
+				    auto_ptr<PrositAux::pmf> c, 
+				    int Pd, int Qd, int Tsd, 
+				    int Deltad,
+				    double epsilond, 
+				    auto_ptr<QoSFun> qosd) throw (Exc);
     virtual double QoS_from_prob(double prob);
     ~UserQoSPeriodicTaskDescriptorCR();
   };
@@ -55,7 +55,7 @@ namespace StandardTasks {
     auto_ptr<QoSFun> qos;
   public:
     UserQoSPeriodicTaskDescriptorAnalytic(const char * nm, 
-			   auto_ptr<pmf> c, 
+					  auto_ptr<PrositAux::pmf> c, 
 			   int Pd, int Qd, int Tsd, 
 			   int Deltad,
 			   double epsilond, 

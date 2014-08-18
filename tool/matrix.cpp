@@ -16,8 +16,8 @@
 //Computes the transition matrix for a 
 //reservation with computation time p and interarrival time u
 //It uses the model we have used in JSS12
-double matrix_prob_ts(int i, int j, int q, const cdf &p, 
-		    const pmf &u)
+double matrix_prob_ts(int i, int j, int q, const PrositAux::cdf &p, 
+		      const PrositAux::pmf &u)
 {
 
   int z = 0; 
@@ -56,8 +56,8 @@ double matrix_prob_ts(int i, int j, int q, const cdf &p,
 //reservation with computation time p and interarrival time u
 //It uses the model we have used in JSS12 but it compresses the states
 //smaller than the minimum interarrival time
-double matrix_prob_ts_compressed(int i, int j, int q, const cdf &p, 
-		    const pmf &u)
+double matrix_prob_ts_compressed(int i, int j, int q, const PrositAux::cdf &p, 
+				 const PrositAux::pmf &u)
 {
 #ifdef DEBUG
   cerr<<"matrix_prob_ts called"<<endl;

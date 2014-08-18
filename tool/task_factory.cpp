@@ -62,7 +62,7 @@ namespace TaskFactory {
     if(!(internal= taskElement->FirstChildElement("pmf"))) 
       EXC_PRINT_2("pmf undefined for task",name);
 
-    auto_ptr<pmf> c(XMLParser::Parser::distr_parse(internal));
+    auto_ptr<PrositAux::pmf> c(XMLParser::Parser::distr_parse(internal));
     
     if((internal= taskElement->FirstChildElement("Delta")))
       internal->QueryIntText(&Delta);

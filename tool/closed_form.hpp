@@ -12,8 +12,8 @@
 #define CLOSED_FORM_HPP
 #include "pmf.hpp"
 #include "exc.hpp"
-double closed_form_old_model_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc);
-double closed_form_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc);
+double closed_form_old_model_compute_pi(const PrositAux::pmf & p, unsigned int N, unsigned int Q) throw(Exc);
+double closed_form_compute_pi(const PrositAux::pmf & p, unsigned int N, unsigned int Q) throw(Exc);
 bool closed_form_set_verbose(bool v);
 
 #endif

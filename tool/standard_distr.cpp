@@ -15,12 +15,12 @@ namespace StandardDistributions {
     };
     return new FileDistrParameters(name);
   };
-  auto_ptr<pmf> FileDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
+  auto_ptr<PrositAux::pmf> FileDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
     FileDistrParameters *pt;
     if (!(pt = dynamic_cast<FileDistrParameters*>(t)))
       EXC_PRINT("worng parameter type");
 
-    auto_ptr<pmf> c (new pmf (pt->size,0));
+    auto_ptr<PrositAux::pmf> c (new PrositAux::pmf (pt->size,0));
     c->load(pt->fileName);
     return c;
   };
@@ -56,11 +56,11 @@ namespace StandardDistributions {
   }
 
 
-    auto_ptr<pmf> UniformDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
+  auto_ptr<PrositAux::pmf> UniformDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
     SyntheticDistrParameters *pt;
     if (!(pt = dynamic_cast<SyntheticDistrParameters*>(t))) 
       EXC_PRINT("wrong parameter type");
-    auto_ptr<pmf> c (new pmf (pt->size,0));
+    auto_ptr<PrositAux::pmf> c (new PrositAux::pmf (pt->size,0));
     if (pt->cmax < pt->cmin) 
       EXC_PRINT("cmax smaller than cmin");
 
@@ -99,13 +99,13 @@ namespace StandardDistributions {
     return t;
   }
 
-  auto_ptr<pmf> BetaDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
+  auto_ptr<PrositAux::pmf> BetaDistrBuilder::create_instance(DistrFactory::DistrParameters * t) throw (Exc) {
     BetaDistrParameters *pt;
     if (!(pt = dynamic_cast<BetaDistrParameters*>(t)))
       EXC_PRINT("wrong parameters type");
     
 
-    auto_ptr<pmf> c (new pmf (pt->size,0));
+    auto_ptr<PrositAux::pmf> c (new PrositAux::pmf (pt->size,0));
     if ((pt->cmax - pt->cmin)%pt->step != 0)
       EXC_PRINT("step had to be an integer submultiple of the interval");
     if((pt->a<=0)||(pt->b<=0))

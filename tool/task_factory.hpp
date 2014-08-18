@@ -21,12 +21,12 @@ namespace TaskFactory {
 
   //!Root for hiearchy of parameters
   struct GenericTaskParameters {
-    auto_ptr<pmf> c; //!>
+    auto_ptr<PrositAux::pmf> c; //!>
     int Qd; 
     int Tsd;
     int Deltad;
     double epsilond;
-    GenericTaskParameters(auto_ptr<pmf> cd, int Qdd, int Tsdd, int Deltadd, double epsilondd): c(cd), Qd(Qdd),Tsd(Tsdd),Deltad(Deltadd),epsilond(epsilondd) {};
+    GenericTaskParameters(auto_ptr<PrositAux::pmf> cd, int Qdd, int Tsdd, int Deltadd, double epsilondd): c(cd), Qd(Qdd),Tsd(Tsdd),Deltad(Deltadd),epsilond(epsilondd) {};
     virtual ~GenericTaskParameters(){};
   };
 
@@ -35,7 +35,7 @@ namespace TaskFactory {
     int Pd;
     PeriodicTaskParameters(auto_ptr<GenericTaskParameters> pt, int Pdd):
       GenericTaskParameters(*pt), Pd(Pdd) {};
-    PeriodicTaskParameters(auto_ptr<pmf> cd, int Pdd, int Qdd, int Tsdd, int Deltadd, double epsilondd): GenericTaskParameters(cd,Qdd,Tsdd,Deltadd,epsilondd), Pd(Pdd) {};
+    PeriodicTaskParameters(auto_ptr<PrositAux::pmf> cd, int Pdd, int Qdd, int Tsdd, int Deltadd, double epsilondd): GenericTaskParameters(cd,Qdd,Tsdd,Deltadd,epsilondd), Pd(Pdd) {};
     virtual ~PeriodicTaskParameters(){};
   };
   

@@ -27,7 +27,7 @@ namespace DistrFactory {
   };
 
   //! Instantiation of the generic builder to create factories of distributions
-  typedef GenericFactory::FunctorEntityBuilder<pmf,DistrParameters> DistrBuilder;  
+  typedef GenericFactory::FunctorEntityBuilder<PrositAux::pmf,DistrParameters> DistrBuilder;  
 
     //! Generic factory instantiation to create factories of distributions
   /*! This factory is to create a distribution object.
@@ -35,7 +35,7 @@ namespace DistrFactory {
    * The crucial method for a distribution is get(int el), which
    * associates a probability with the integer value el.
    */
-  typedef GenericFactory::FunctorEntityFactory<pmf,DistrParameters> DistributionFactory;
+  typedef GenericFactory::FunctorEntityFactory<PrositAux::pmf,DistrParameters> DistributionFactory;
   
   //! Global object used to create distributions
   /*!

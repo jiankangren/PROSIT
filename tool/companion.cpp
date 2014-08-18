@@ -33,9 +33,9 @@ bool companion_set_verbose(bool v) {
   return old_verbose;
 }
 
-double companion_old_model_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
-  cdf c(p.get_size(),p.get_offset());
-  pmf2cdf(p, c);
+double companion_old_model_compute_pi(const PrositAux::pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
+  PrositAux::cdf c(p.get_size(),p.get_offset());
+  PrositAux::pmf2cdf(p, c);
   unsigned BCET = c.get_min();
   unsigned WCET = c.get_max();
   unsigned h0 = N - ceil(double(BCET)/(double(Q)));
@@ -99,9 +99,9 @@ double companion_old_model_compute_pi(const pmf & p, unsigned int N, unsigned in
   return pi_0;
 }
 
-double companion_compute_pi(const pmf & p, unsigned int N, unsigned int Q, RowVectorXd & pi, bool compute_vector) throw(Exc) {
-  cdf c(p.get_size(),p.get_offset());
-  pmf2cdf(p, c);
+double companion_compute_pi(const PrositAux::pmf & p, unsigned int N, unsigned int Q, RowVectorXd & pi, bool compute_vector) throw(Exc) {
+  PrositAux::cdf c(p.get_size(),p.get_offset());
+  PrositAux::pmf2cdf(p, c);
   unsigned BCET = c.get_min();
   unsigned WCET = c.get_max();
   unsigned size = (WCET-BCET);

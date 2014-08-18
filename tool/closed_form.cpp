@@ -23,9 +23,9 @@ bool closed_form_set_verbose(bool v) {
 };
 
 
-double closed_form_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
-  cdf c(p.get_size(),p.get_offset());
-  pmf2cdf(p, c);
+double closed_form_compute_pi(const PrositAux::pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
+  PrositAux::cdf c(p.get_size(),p.get_offset());
+  PrositAux::pmf2cdf(p, c);
 
   double a0p = c.get(N*Q-1);
   unsigned WCET = c.get_max();
@@ -63,9 +63,9 @@ double closed_form_compute_pi(const pmf & p, unsigned int N, unsigned int Q) thr
     pi_0 = 0;
   return pi_0;
 }
-double closed_form_old_model_compute_pi(const pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
-  cdf c(p.get_size(),p.get_offset());
-  pmf2cdf(p, c);
+double closed_form_old_model_compute_pi(const PrositAux::pmf & p, unsigned int N, unsigned int Q) throw(Exc) {
+  PrositAux::cdf c(p.get_size(),p.get_offset());
+  PrositAux::pmf2cdf(p, c);
   
   double a0p = c.get((N-1)*Q);
   unsigned WCET = c.get_max();

@@ -96,7 +96,7 @@ static int solve_display_results(vector<GenericTaskDescriptor*> & v, const vecto
 
 static int solve_execute() {
   long long t_solution_start=0, t_solution_end=0;
-  t_solution_start = my_get_time();
+  t_solution_start = PrositAux::my_get_time();
   vector<GenericTaskDescriptor*> v;
   int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
 
@@ -106,7 +106,7 @@ static int solve_execute() {
 
 
   solve_core(v,probability, quality);
-  t_solution_end = my_get_time();
+  t_solution_end = PrositAux::my_get_time();
   solve_display_results(v, probability, quality);
   cout<<"=========================================================================================================="<<endl;
   cout<<"=                                              Computation time                                         ="<<endl;
@@ -120,7 +120,7 @@ static int solve_execute() {
 static int opt_execute(XMLParser::Parser * p) {
   long long t_optimisation_start=0, t_optimisation_set_up = 0, t_optimisation_end=0;
 
-  t_optimisation_set_up = my_get_time();
+  t_optimisation_set_up = PrositAux::my_get_time();
   vector<GenericTaskDescriptor*> v;
   int num = TaskFactory::task_descriptor_factory.get_task_descriptor_vector(v);
   if(verbose_flag)
@@ -133,11 +133,11 @@ static int opt_execute(XMLParser::Parser * p) {
   else
     Opt.set_verbose(p->get_verbose());
     
-  t_optimisation_start=my_get_time();
+  t_optimisation_start=PrositAux::my_get_time();
     
   Opt.optimise();
     
-  t_optimisation_end=my_get_time();
+  t_optimisation_end=PrositAux::my_get_time();
   vector<double> probability(num);
   vector<double> quality(num);
   if (Opt.get_state() != GenericBudgetOptimiser::OK) {
@@ -180,14 +180,14 @@ int main(int argc, char *argv[])
     if( argc-optind!=1 )
       EXC_PRINT("one input file requested");
     
-    t_start = my_get_time();
+    t_start = PrositAux::my_get_time();
     
     XMLParser::Parser * p = new XMLParser::Parser(argv[opt]);
     p->parse();
     if(verbose_flag)
       cout<<"XML file succesfully parsed"<<endl;
    
-    t_xml_parse_end = my_get_time();
+    t_xml_parse_end = PrositAux::my_get_time();
     int res;
     switch(p->get_act()) {
     case  XMLParser::OPTIMISE: 

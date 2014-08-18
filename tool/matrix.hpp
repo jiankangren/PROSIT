@@ -12,10 +12,10 @@
 #define MATRIX_HPP
 
 
-double matrix_prob_ts(int i, int j, int q, const cdf &p, 
-		      const pmf &u);
-double matrix_prob_ts_compressed(int i, int j, int q, const cdf &p, 
-		      const pmf &u);
+double matrix_prob_ts(int i, int j, int q, const PrositAux::cdf &p, 
+		      const PrositAux::pmf &u);
+double matrix_prob_ts_compressed(int i, int j, int q, const PrositAux::cdf &p, 
+				 const PrositAux::pmf &u);
 
 void compute_matrixes(const MatrixXd & mat, int dim, MatrixXd & B, MatrixXd & A0,
 		      MatrixXd & A1, MatrixXd & A2);

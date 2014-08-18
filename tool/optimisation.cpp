@@ -216,7 +216,7 @@ double InfinityNormBudgetOptimiser::optimise() {
   };
   Btot = 0;
   i = 0;
-  double Breserved;
+  double Breserved=0.0;
   for (vector<GenericTaskDescriptor*>::iterator it = tasks.begin() ; (it != tasks.end()); ++it) 
     if (*it != 0) {
       assert(i<number);

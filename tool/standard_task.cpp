@@ -31,11 +31,11 @@ namespace StandardTasks {
   };
   
   UserQoSPeriodicTaskDescriptorCR::UserQoSPeriodicTaskDescriptorCR(const char * nm, 
-						   auto_ptr<pmf> c, 
-						   int Pd, int Qd, int Tsd, 
-						   int Deltad,
-						   double epsilond, 
-						   auto_ptr<QoSFun> qosd) throw (Exc):
+								   auto_ptr<PrositAux::pmf> c, 
+								   int Pd, int Qd, int Tsd, 
+								   int Deltad,
+								   double epsilond, 
+								   auto_ptr<QoSFun> qosd) throw (Exc):
     ProbPeriodicTaskDescriptorCR(nm,c,Pd,Qd,Tsd,Deltad,epsilond), qos(qosd)
   {};
   double UserQoSPeriodicTaskDescriptorCR::QoS_from_prob(double prob) {
@@ -45,10 +45,10 @@ namespace StandardTasks {
   UserQoSPeriodicTaskDescriptorCR::~UserQoSPeriodicTaskDescriptorCR(){};
  
   UserQoSPeriodicTaskDescriptorAnalytic::UserQoSPeriodicTaskDescriptorAnalytic(const char * nm, 
-						   auto_ptr<pmf> c, 
-						   int Pd, int Qd, int Tsd, 
-						   int Deltad,
-						   double epsilond, 
+									       auto_ptr<PrositAux::pmf> c, 
+									       int Pd, int Qd, int Tsd, 
+									       int Deltad,
+									       double epsilond, 
 									       auto_ptr<QoSFun> qosd) throw (Exc):
     ProbPeriodicTaskDescriptorAnalytic(nm,c,Pd,Qd,Tsd,Deltad,epsilond), qos(qosd)
   {};
