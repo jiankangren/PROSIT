@@ -11,7 +11,9 @@
 #ifndef PROSIT_TYPES_HPP
 #define PROSIT_TYPES_HPP
 #include <map>
-
+///!@file prosit_types.hpp
+///
+///Basic types used in the tool
 namespace PrositCore {
   ///!All deadlines are defiend as integer multiple of 
   ///a basic quantity

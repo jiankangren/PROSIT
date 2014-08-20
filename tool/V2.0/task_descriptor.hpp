@@ -29,16 +29,19 @@
 #include <utility>
 #include <memory>
 #include "prosit_types.hpp"
+#include "exc.hpp"
 using namespace std;
 #include "pmf.hpp"
 namespace PrositCore {
-  //! Generic class descriptor
+  /// @brief Generic class descriptor
   /*! It is the root of the hierarchy of task descriptors
    * This descriptor only contains the timing information.
    * The hierarchy is specialised on the basis of: 1) scheduling algorithm
    * 2) solver family
    */
   class GenericTaskDescriptor {
+  private:
+    bool solved; /*!< The solver has been called */
   protected:
     string name; /*!< Name of the task */
     unique_ptr<PrositAux::pmf> C; /*!< Distribution of the computation time */
@@ -53,15 +56,16 @@ namespace PrositCore {
     DeadlineProbabilityMap probabilistic_deadlines; /*!< Map associating deadlines with probabilities */
 
     
-    Solver * ProbabilitySolver; /*!< Pointer to the object containing the solution algorithm for probabilities */
+    ProbabilitySolver * probability_solver; /*!< Pointer to the object containing the solution algorithm for probabilities */
+
   public:
 
-    //! Constructor for aperiodic Tasks
+    ///@brief Constructor for aperiodic Tasks
     /*! \param nm unique identifier for the task
      *  \param Cd pointer to the distribution of the computation times 
      *  \param Zd distirbution of the interarrival time
      */
-    GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd) throw(Exc):
+    GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd) throw(PrositAux::Exc):
       name(nm),
       C(Cd),
       Z(Zd),
@@ -69,15 +73,16 @@ namespace PrositCore {
       periodic(false),
       P(0),
       deadline_step(0),
-      qos(0.0)
+      proability_solver(0),
+      solved(false)
     {};
     
-    //! Constructor for periodic tasks
+    ///@brief Constructor for periodic tasks
     /*! \param nm unique identifier for the task
      *  \param Cd pointer to the distribution of the computation times 
      *  \param Pd task period
      */
-    GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd) throw(Exc):
+    GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd) throw(PrositAux::Exc):
       name(nm),
       C(std::move(Cd)),
       Z(new PrositAux::pmf()),
@@ -85,12 +90,13 @@ namespace PrositCore {
       periodic(true),
       P(Pd),
       deadline_step(0),
-      qos(0.0)
+      probability_solver(0),
+      solved(false)
     {
       Z->set(Pd, 1.0);
     };
     
-    //! Set verbose flag to a specified value
+    ///@brief Set verbose flag to a specified value
     /*! 
      * \param verbosed desidered value for the verbose flag
      * \return old value for the verbose flag
@@ -101,22 +107,22 @@ namespace PrositCore {
       return current;
     };
     
-    //! Verify if the task is periodic
+    ///@brief Verify if the task is periodic
     bool is_periodic() const {
       return periodic;
     };
     
-    //! Returns the task period
+    ///@brief Returns the task period
     /*! 
      * \return the task period (Exception raised if not periodic)
      */
-    int get_period() const throw (Exc){
+    int get_period() const throw (PrositAux::Exc){
       if(!periodic)
 	EXC_PRINT_2("Period wrongly required for aperiodic task ", name);
       return P;
     };
     
-    //! Returns a copy of the computation time distribution
+    ///@brief Returns a copy of the computation time distribution
     /*!
      * \return a copy of the pmf related to the computation time
      */
@@ -124,66 +130,66 @@ namespace PrositCore {
       return C.get();
     };
 
-    //! Returns a copy of the interarrival time distribution
+    /// Returns a copy of the interarrival time distribution
     /*!
      * \return a copy of the pmf related to the interarrival time (Exceprion of the task is periodic)
      */
-    PrositAux::pmf * get_interarrival_time() const throw (Exc){
+    PrositAux::pmf * get_interarrival_time() const throw (PrositAux::Exc){
       if(periodic)
 	EXC_PRINT_2("Interarrival time wrongly required for periodic task ", name);
       return Z.get();
     };    
 
 
-    //! Define a deadline
+    ///@brief Define a deadline
     /*! \param deadline has to be a multiple of deadline_step
      * \return Exception thrown for multiple entries and for non-multiple
      * of the deadline_step
      */
-    void insert_deadline(unsigned int deadline) throw (Exc) {
-      if (deadline%deadline_step)
-	EXC_PRINT_2("Wrong deadline values set for task ", name);
-      pair<unsigned int, double> entry(deadline,0.0);
-      if(!probabilistic_deadlines.insert(entry))
-	EXC_PRINT_2("cannot create deadline for task ", name);
-      return;
-    };
+    void insert_deadline(DeadLineUnit deadline);
     
 
-    //! Computes the probability of respecting the deadlines
+    ///@brief Computes the probability of respecting the deadlines
     /*! These probabilities are computed for a given configuration
      * of the scheduling parameters. (Deadlines have been previously registered 
-     * by calling insert
+     * by calling insert. An exception is thrown if the solver is not set.
      *      
      */
-    virtual void compute_probability()=0;
+    virtual void compute_probability();
  
-    //!Returns the probability associated with a deadline
+    ///@briefReturns the probability associated with a deadline
     /*!compute_probability is implicitly called if not called before.
      * \param deadline: the deadline for which the computations
      * is required.
      * \return The requested probability. An exception is thrown if the deadline
      * has not been registered.
      */
-    double get_probability(unsigned int deadline) const throw(Exc);
+    double get_probability(PrositTypes::DeadlineUnit deadline) const;
+    
+    ////@brief@brief Sets the probability solver 
+    ///
+    ///Sets the external object that computes the probability. 
+    ///The probability computation has to be made anew.
+    virtual void set_solver(ProbabilitySolver * psd) ;
 
 
-    //! Destruct, which is virtual, being the class polymorphic
+    ///@brief Destruct, which is virtual, being the class polymorphic
     virtual ~GenericTaskDescriptor() {};
   };
   
 
-  //! Class for fixed priority task descriptors
+  /// @brief Class for fixed priority task descriptors
   class FixedPriorityTaskDescriptor : public GenericTaskDescriptor {
+  protected:
     unsigned int priority; /*!<Scheduling priority of the task */
   public:
-    //! Constructor for aperiodic Fixed Priority Tasks
+    ///@brief Constructor for aperiodic Fixed Priority Tasks
     /*! \param nm unique identifier for the task
      *  \param Cd pointer to the distribution of the computation times 
      *  \param Zd distirbution of the interarrival time
      *  \param priorityd scheduling priority (in the range 0..99)
      */
-    FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, unsigned int priorityd) throw(Exc):
+    FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, unsigned int priorityd) throw(PrositAux::Exc):
       GenericTaskDescriptor(nm,Cd,Zd)
     {
       if (priorityd>99)
@@ -191,13 +197,13 @@ namespace PrositCore {
       priority = priorityd;
     };
     
-    //! Constructor for Fixed Priority periodic tasks
+    ///@brief Constructor for Fixed Priority periodic tasks
     /*! \param nm unique identifier for the task
      *  \param Cd pointer to the distribution of the computation times 
      *  \param Pd task period
      *  \param priorityd scheduling priority (in the range 0..99)
      */
-    FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, unsigned int priorityd) throw(Exc):
+    FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, unsigned int priorityd) throw(PrositAux::Exc):
       GenericTaskDescriptor(nm,Cd,Pd)
     {
       if (priorityd>99)
@@ -205,10 +211,10 @@ namespace PrositCore {
       priority = priorityd;
     };
     
-    //!Returns the task priority
+    ///@briefReturns the task priority
     unsigned int get_priority() const {return priority;}; 
 
-    //! Sets the task priority
+    ///@brief Sets the task priority
     /*! \param priority new task priority
      * \return old priority
      */
@@ -221,11 +227,12 @@ namespace PrositCore {
 
   
   class ResourceReservationTaskDescriptor: public GenericTaskDescriptor {
+  protected:
     int Q; /*!< Reservation budget */
     int Ts; /*!< Reservation period */
    
   public:
-    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd) throw(Exc):
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd) throw(PrositAux::Exc):
       GenericTaskDescriptor(nm, Cd, Zd), 
       Q(Qd),
       Ts(Tsd),
@@ -244,7 +251,7 @@ namespace PrositCore {
       return Ts;
     };
 
-    void set_budget(int Qd) throw(Exc) {
+    void set_budget(int Qd) throw(PrositAux::Exc) {
       if (double(Qd)/Ts > 1.0)
 	EXC_PRINT_2("budget too large for object", name);
       Q=Qd;
@@ -254,7 +261,5 @@ namespace PrositCore {
 	EXC_PRINT_2("server period too small for task ", name);
       Ts=Tsd;
     };
-    //Need to redefine this for task specific QoS
-
   }
 };
