@@ -18,6 +18,14 @@ namespace PrositCore {
    */
   class RRQosTaskDescriptor: public ResourceReservationsTaskDescriptor {
     double qos; /*< Quality level */
+     int Qmin; /*!< Minimum value for budget */
+    int Qmax; /*!< Maximum value for the budget */
+    double QoSmin; /*!< Minimum value for quality*/
+    double QoSmax; /*!< Maximum value for quality */
+    bool bounds_inited;
+    double QoSmin_target;
+    double QoSmax_target;
+
   public:
     //!Quality of service function 
     /*! \return Quality of Service associated with the current
@@ -51,6 +59,64 @@ namespace PrositCore {
       if (qosd < 0)
 	EXC_PRINT_2("Negative value of QoS set for task ", name);
       return old_qos;
+    };
+    
+    void init_bounds() throw(Exc) {
+      set_budget(Qmin);
+      QoSmin = QoS();
+      set_budget(Qmax);
+      QoSmax = QoS();
+      bounds_inited = true;
+    };
+
+    virtual bool identify_bounds(double q_min, double q_max) throw(Exc);
+    virtual bool identify_target_bounds() throw (Exc);
+    bool get_bounds_inited() const {
+      return bounds_inited;
+    };
+        virtual double QoS(int budget)=0;
+    virtual bool inv_QoS(double q, int & Q, bool ceil) = 0;
+    int get_qmin() const {
+      return Qmin;
+    };
+    int get_qmax() const {
+      return Qmax;
+    };
+    double get_qosmin() const {
+      return QoSmin;
+    };
+    double get_qosmax() const {
+      return QoSmax;
+    };
+    int set_qmin(int Qmind) {
+      int Qminold=Qmin;
+      Qmin=Qmind;
+      bounds_inited = false;
+      return Qminold;
+    };
+    int set_qmax(int Qmaxd) {
+      int Qmaxold=Qmaxd;
+      Qmax=Qmaxd;
+      bounds_inited = false;
+      return Qmaxold;
+    };
+    double get_target_qosmin() const {
+      return QoSmin_target;
+    };
+    double get_target_qosmax() const {
+      return QoSmax_target;
+    };
+    double set_target_qosmax(double q) {
+      double current = QoSmax_target;
+      QoSmax_target = q;
+      bounds_inited = false;
+      return current;
+    };
+    double set_target_qosmin(double q) {
+      double current = QoSmin_target;
+      QoSmin_target = q;
+      bounds_inited = false;
+      return current;
     };
   }
 
