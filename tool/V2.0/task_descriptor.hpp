@@ -111,6 +111,14 @@ namespace PrositCore {
     bool is_periodic() const {
       return periodic;
     };
+
+    ///@brief Returns the name of the task
+    /*! 
+     *@return Sting containing the name of the task.
+     */
+    std::string get_name() const {
+      return name;
+    };
     
     ///@brief Returns the task period
     /*! 
@@ -139,8 +147,23 @@ namespace PrositCore {
 	EXC_PRINT_2("Interarrival time wrongly required for periodic task ", name);
       return Z.get();
     };    
-
-
+    
+    ///@brief Returns the deadline step
+    /*! It allows the user to know the deadline step size to be used
+      in defining the probability map. All deadlines set in the map
+      are intended as multiples of this basic unit.
+     */
+    unsigned int get_deadline_step() const {
+      return deadline_step;
+    };
+   ///@brief Returns an a pointer to the probabilistic dedadlines map
+    /*! The user is descouraged to use this method directly. It is there
+     * for it to be used by the solver.
+     */
+    DeadlineProbabilityMap * get_probabilistic_deadlines()  {
+      return probabilistic_deadlines;
+    };
+    
     ///@brief Define a deadline
     /*! \param deadline has to be a multiple of deadline_step
      * \return Exception thrown for multiple entries and for non-multiple
@@ -157,7 +180,7 @@ namespace PrositCore {
      */
     virtual void compute_probability();
  
-    ///@briefReturns the probability associated with a deadline
+    ///@brief Returns the probability associated with a deadline
     /*!compute_probability is implicitly called if not called before.
      * \param deadline: the deadline for which the computations
      * is required.
@@ -170,7 +193,12 @@ namespace PrositCore {
     ///
     ///Sets the external object that computes the probability. 
     ///The probability computation has to be made anew.
-    virtual void set_solver(ProbabilitySolver * psd) ;
+    ///@param psd pointer to the probability solver that has to be used.
+    ///The ownership of the solver is not taken by the task descriptor.
+    ///If the solver is not appropriate for the task (e.g., if we use a FP solver
+    /// for a resource reservation task), an exception is thrown by the solver
+    /// during the task registration phase.
+    void set_solver(ProbabilitySolver * psd) ;
 
 
     ///@brief Destruct, which is virtual, being the class polymorphic
@@ -211,7 +239,7 @@ namespace PrositCore {
       priority = priorityd;
     };
     
-    ///@briefReturns the task priority
+    ///@brief Returns the task priority
     unsigned int get_priority() const {return priority;}; 
 
     ///@brief Sets the task priority
@@ -225,15 +253,39 @@ namespace PrositCore {
     };
   };
 
-  
+  ///@brief Task descriptors for tasks managed by the resource reservation algorithm.
   class ResourceReservationTaskDescriptor: public GenericTaskDescriptor {
   protected:
     int Q; /*!< Reservation budget */
     int Ts; /*!< Reservation period */
    
   public:
-    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd) throw(PrositAux::Exc):
-      GenericTaskDescriptor(nm, Cd, Zd), 
+    ///@brief Constructor for aperiodic tasks
+    ///
+    ///An exception is thhrown if the budget is set improperly.
+    ///@param nm task name
+    ///@param Cd distribution of the computation time. The descriptor takes ownership of this pointer.
+    ///@param Zd distribution of interarrival time. The descriptor takes ownership of this pointer.
+    ///@param Qd Reservation Budget
+    ///@param Tsd Reservation period.
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd):
+      GenericTaskDescriptor(nm, std::move(Cd), std::move(Zd)), 
+      Q(Qd),
+      Ts(Tsd),
+    {
+      if (double(Qd)/double(Tsd) > 1.0)
+	EXC_PRINT_2("Server period period too small for task", name);
+    };
+    ///@brief Constructor for aperiodic tasks
+    ///
+    ///An exception is thhrown if the budget is set improperly.
+    ///@param nm task name
+    ///@param Cd distribution of the computation time. The descriptor takes ownership of this pointer.
+    ///@param Pd Tas period
+    ///@param Qd Reservation Budget
+    ///@param Tsd Reservation period.
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unsigned int Pd, const int Qd, const int Tsd):
+      GenericTaskDescriptor(nm, std::move(Cd), std::move(Zd)), 
       Q(Qd),
       Ts(Tsd),
     {
@@ -241,21 +293,34 @@ namespace PrositCore {
 	EXC_PRINT_2("Server period period too small for task", name);
     };
 
+
     virtual ~ResourceReservationTaskDescriptor() {
     };
-    
+
+    ///@brief Returns the budget
     int get_budget() const {
       return Q;
     };
+
+    ///@brief Returns the server period
     int get_server_period() const {
       return Ts;
     };
 
+    ///@brief Sets the server budget
+    ///
+    ///@param Qd desired budget. AN exception is thrown if the 
+    ///bandwidth exceeds 1.0
     void set_budget(int Qd) throw(PrositAux::Exc) {
       if (double(Qd)/Ts > 1.0)
 	EXC_PRINT_2("budget too large for object", name);
       Q=Qd;
     };
+    
+    ///@brief Sets the server period
+    ///
+    ///@param Tsd desired period. AN exception is thrown if the 
+    ///bandwidth exceeds 1.0
     int set_server_period(int Tsd) {
       if (double(Q)/double(Tsd) > 1.0)
 	EXC_PRINT_2("server period too small for task ", name);
