@@ -60,7 +60,7 @@ namespace PrositAux {
 #define EXC_PRINT(msg)							\
   do {									\
     cerr<<"file:"<<__FILE__<<", line:"<<__LINE__<<", function: "<<__PRETTY_FUNCTION__<<". "<<msg<<endl; \
-    throw dmap_exc::Exc(string(__PRETTY_FUNCTION__)+string(": ")+string(msg)); \
+    throw PrositAux::Exc(string(__PRETTY_FUNCTION__)+string(": ")+string(msg)); \
   } while(0)
 #endif
 
@@ -78,7 +78,7 @@ namespace PrositAux {
 #define EXC_PRINT_2(msg,msg1)						\
   do {									\
     cerr<<"file:"<<__FILE__<<", line:"<<__LINE__<<", function: "<<__PRETTY_FUNCTION__<<". "<<msg<<" "<<msg1<<endl; \
-    throw dmap_exc::Exc(string(__PRETTY_FUNCTION__)+string(": ")+string(msg)+string(" ")+string(msg1)); \
+    throw PrositAux::Exc(string(__PRETTY_FUNCTION__)+string(": ")+string(msg)+string(" ")+string(msg1)); \
   } while(0)
 #endif
 };

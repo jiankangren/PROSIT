@@ -1,11 +1,11 @@
 #include "task_descriptor.hpp"
 
 namespace PrositCore {
-  void GenericTaskDescriptor::insert_deadline(PrositTypes::DeadLineUnit deadline) {
+  void GenericTaskDescriptor::insert_deadline(DeadlineUnit deadline) {
     if (deadline%deadline_step)
       EXC_PRINT_2("Wrong deadline values set for task ", name);
     pair<unsigned int, double> entry(deadline,0.0);
-    if(!probabilistic_deadlines.insert(entry))
+    if(!(probabilistic_deadlines.insert(entry).second))
       EXC_PRINT_2("cannot create deadline for task ", name);
     return;
   };
@@ -25,11 +25,11 @@ namespace PrositCore {
     
   };
    
-  double GenericTaskDescriptor::get_probability(PrositTypes::DeadLineUnit deadline) {
+  double GenericTaskDescriptor::get_probability(DeadlineUnit deadline) {
     DeadlineProbabilityMapIter it = probabilistic_deadlines.find(deadline);    
     if(!solved)
       compute_probability();
-    if (it == proabilistic_deadlines.end())
+    if (it == probabilistic_deadlines.end())
       EXC_PRINT_2("Deadline does not exist for task ",name); 
     
     return it->second;

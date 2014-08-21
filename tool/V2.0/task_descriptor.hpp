@@ -32,6 +32,7 @@
 #include "exc.hpp"
 using namespace std;
 #include "pmf.hpp"
+#include "probability_solver.hpp"
 namespace PrositCore {
   /// @brief Generic class descriptor
   /*! It is the root of the hierarchy of task descriptors
@@ -40,7 +41,7 @@ namespace PrositCore {
    * 2) solver family
    */
   class GenericTaskDescriptor {
-  private:
+  protected:
     bool solved; /*!< The solver has been called */
   protected:
     string name; /*!< Name of the task */
@@ -66,15 +67,15 @@ namespace PrositCore {
      *  \param Zd distirbution of the interarrival time
      */
     GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd) throw(PrositAux::Exc):
+      solved(false),	    
       name(nm),
-      C(Cd),
-      Z(Zd),
+      C(std::move(Cd)),
+      Z(std::move(Zd)),
       verbose(false),
       periodic(false),
       P(0),
       deadline_step(0),
-      proability_solver(0),
-      solved(false)
+      probability_solver(0)
     {};
     
     ///@brief Constructor for periodic tasks
@@ -83,6 +84,7 @@ namespace PrositCore {
      *  \param Pd task period
      */
     GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd) throw(PrositAux::Exc):
+      solved(false),
       name(nm),
       C(std::move(Cd)),
       Z(new PrositAux::pmf()),
@@ -90,8 +92,7 @@ namespace PrositCore {
       periodic(true),
       P(Pd),
       deadline_step(0),
-      probability_solver(0),
-      solved(false)
+      probability_solver(0) 
     {
       Z->set(Pd, 1.0);
     };
@@ -161,7 +162,7 @@ namespace PrositCore {
      * for it to be used by the solver.
      */
     DeadlineProbabilityMap * get_probabilistic_deadlines()  {
-      return probabilistic_deadlines;
+      return &probabilistic_deadlines;
     };
     
     ///@brief Define a deadline
@@ -169,7 +170,7 @@ namespace PrositCore {
      * \return Exception thrown for multiple entries and for non-multiple
      * of the deadline_step
      */
-    void insert_deadline(DeadLineUnit deadline);
+    void insert_deadline(DeadlineUnit deadline);
     
 
     ///@brief Computes the probability of respecting the deadlines
@@ -187,7 +188,7 @@ namespace PrositCore {
      * \return The requested probability. An exception is thrown if the deadline
      * has not been registered.
      */
-    double get_probability(PrositTypes::DeadlineUnit deadline) const;
+    double get_probability(DeadlineUnit deadline);
     
     ////@brief@brief Sets the probability solver 
     ///
@@ -218,7 +219,7 @@ namespace PrositCore {
      *  \param priorityd scheduling priority (in the range 0..99)
      */
     FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, unsigned int priorityd) throw(PrositAux::Exc):
-      GenericTaskDescriptor(nm,Cd,Zd)
+      GenericTaskDescriptor(nm,std::move(Cd),std::move(Zd))
     {
       if (priorityd>99)
 	EXC_PRINT_2("Priority out of range for task ", nm);
@@ -232,7 +233,7 @@ namespace PrositCore {
      *  \param priorityd scheduling priority (in the range 0..99)
      */
     FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, unsigned int priorityd) throw(PrositAux::Exc):
-      GenericTaskDescriptor(nm,Cd,Pd)
+      GenericTaskDescriptor(nm,std::move(Cd),std::move(Pd))
     {
       if (priorityd>99)
 	EXC_PRINT_2("Priority out of range for task ", nm);
@@ -268,10 +269,10 @@ namespace PrositCore {
     ///@param Zd distribution of interarrival time. The descriptor takes ownership of this pointer.
     ///@param Qd Reservation Budget
     ///@param Tsd Reservation period.
-    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd):
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd):
       GenericTaskDescriptor(nm, std::move(Cd), std::move(Zd)), 
       Q(Qd),
-      Ts(Tsd),
+      Ts(Tsd)
     {
       if (double(Qd)/double(Tsd) > 1.0)
 	EXC_PRINT_2("Server period period too small for task", name);
@@ -284,10 +285,10 @@ namespace PrositCore {
     ///@param Pd Tas period
     ///@param Qd Reservation Budget
     ///@param Tsd Reservation period.
-    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<ProxitAux::pmf> Cd, unsigned int Pd, const int Qd, const int Tsd):
-      GenericTaskDescriptor(nm, std::move(Cd), std::move(Zd)), 
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, const int Qd, const int Tsd):
+      GenericTaskDescriptor(nm, std::move(Cd), Pd), 
       Q(Qd),
-      Ts(Tsd),
+      Ts(Tsd)
     {
       if (double(Qd)/double(Tsd) > 1.0)
 	EXC_PRINT_2("Server period period too small for task", name);
@@ -326,5 +327,7 @@ namespace PrositCore {
 	EXC_PRINT_2("server period too small for task ", name);
       Ts=Tsd;
     };
-  }
+  };
 };
+
+#endif
