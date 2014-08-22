@@ -153,10 +153,24 @@ namespace PrositCore {
     /*! It allows the user to know the deadline step size to be used
       in defining the probability map. All deadlines set in the map
       are intended as multiples of this basic unit.
-     */
+      @return The current deadline step.
+    */
     unsigned int get_deadline_step() const {
       return deadline_step;
     };
+
+    ///@brief Sets the deadline step
+    /*! It allows the user to decide the deadline step size to be used
+      in defining the probability map. All deadlines set in the map
+      are intended as multiples of this basic unit. The operation
+      generates an exception if the probabilistic deadlines map is not
+      empty.
+      Additional constraints can be required by specific classes of tasks,
+      hence the need to make this function virtual
+      @param ds required deadline step.
+     */
+    virtual void set_deadline_step(unsigned int ds);
+
    ///@brief Returns an a pointer to the probabilistic dedadlines map
     /*! The user is descouraged to use this method directly. It is there
      * for it to be used by the solver.
@@ -172,6 +186,11 @@ namespace PrositCore {
      */
     void insert_deadline(DeadlineUnit deadline);
     
+    ///@brief Clears deadline probability map
+    /*! Removes all previously set deadlines. */
+    void reset_probabilistic_deadlines() {
+      probabilistic_deadlines.clear();
+    };
 
     ///@brief Computes the probability of respecting the deadlines
     /*! These probabilities are computed for a given configuration
@@ -257,8 +276,8 @@ namespace PrositCore {
   ///@brief Task descriptors for tasks managed by the resource reservation algorithm.
   class ResourceReservationTaskDescriptor: public GenericTaskDescriptor {
   protected:
-    int Q; /*!< Reservation budget */
-    int Ts; /*!< Reservation period */
+    unsigned int Q; /*!< Reservation budget */
+    unsigned int Ts; /*!< Reservation period */
    
   public:
     ///@brief Constructor for aperiodic tasks
@@ -269,7 +288,7 @@ namespace PrositCore {
     ///@param Zd distribution of interarrival time. The descriptor takes ownership of this pointer.
     ///@param Qd Reservation Budget
     ///@param Tsd Reservation period.
-    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const int Qd, const int Tsd):
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, const unsigned int Qd, const unsigned int Tsd):
       GenericTaskDescriptor(nm, std::move(Cd), std::move(Zd)), 
       Q(Qd),
       Ts(Tsd)
@@ -285,7 +304,7 @@ namespace PrositCore {
     ///@param Pd Tas period
     ///@param Qd Reservation Budget
     ///@param Tsd Reservation period.
-    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, const int Qd, const int Tsd):
+    ResourceReservationTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, const unsigned int Qd, const unsigned int Tsd):
       GenericTaskDescriptor(nm, std::move(Cd), Pd), 
       Q(Qd),
       Ts(Tsd)
@@ -299,6 +318,8 @@ namespace PrositCore {
     };
 
     ///@brief Returns the budget
+    ///
+    ///@return current budget
     int get_budget() const {
       return Q;
     };
@@ -312,21 +333,34 @@ namespace PrositCore {
     ///
     ///@param Qd desired budget. AN exception is thrown if the 
     ///bandwidth exceeds 1.0
-    void set_budget(int Qd) throw(PrositAux::Exc) {
+    void set_budget(unsigned int Qd) throw(PrositAux::Exc) {
       if (double(Qd)/Ts > 1.0)
 	EXC_PRINT_2("budget too large for object", name);
       Q=Qd;
     };
+    ///@brief Sets the deadline step
+    /*! It overrides the standard definition of deadline step
+     * requiring the additional constraint that it be a mutliple of the server
+     * period. It can be freely reset to zero at any time.
+      @param ds required deadline step.
+     */
+    virtual void set_deadline_step(unsigned int ds);
+
     
     ///@brief Sets the server period
     ///
     ///@param Tsd desired period. AN exception is thrown if the 
-    ///bandwidth exceeds 1.0
-    int set_server_period(int Tsd) {
+    ///bandwidth exceeds 1.0 or if the server period is not a sub multiple
+    ///of current deadline step.
+    int set_server_period(unsigned int Tsd) {
       if (double(Q)/double(Tsd) > 1.0)
-	EXC_PRINT_2("server period too small for task ", name);
+	EXC_PRINT_2("Server period too small for task ", name);
+      if ((deadline_step != 0) && (! (deadline_step%Tsd)))
+	EXC_PRINT_2("Deadline step has to be a multiple of server period for ", name);
       Ts=Tsd;
     };
+
+
   };
 };
 
