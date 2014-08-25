@@ -48,7 +48,7 @@ namespace PrositCore {
     unique_ptr<PrositAux::pmf> C; /*!< Distribution of the computation time */
     unique_ptr<PrositAux::pmf> Z; /*!< Distribution of the interarrival time */
   
-    bool verbose; /*!< Flag to print out information while processing */
+    bool verbose_flag; /*!< Flag to print out information while processing */
     bool periodic; /*!< Flag for periodic tasks */
     unsigned int P;  /*!< Period (has meaning onlly if periodic flag is set) */
     
@@ -62,16 +62,16 @@ namespace PrositCore {
   public:
 
     ///@brief Constructor for aperiodic Tasks
-    /*! \param nm unique identifier for the task
-     *  \param Cd pointer to the distribution of the computation times 
-     *  \param Zd distirbution of the interarrival time
+    /*! @param nm unique identifier for the task
+     *  @param Cd pointer to the distribution of the computation times 
+     *  @param Zd distribution of the interarrival time
      */
     GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd) throw(PrositAux::Exc):
       solved(false),	    
       name(nm),
       C(std::move(Cd)),
       Z(std::move(Zd)),
-      verbose(false),
+      verbose_flag(false),
       periodic(false),
       P(0),
       deadline_step(0),
@@ -79,16 +79,16 @@ namespace PrositCore {
     {};
     
     ///@brief Constructor for periodic tasks
-    /*! \param nm unique identifier for the task
-     *  \param Cd pointer to the distribution of the computation times 
-     *  \param Pd task period
+    /*! @param nm unique identifier for the task
+     *  @param Cd pointer to the distribution of the computation times 
+     *  @param Pd task period
      */
     GenericTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd) throw(PrositAux::Exc):
       solved(false),
       name(nm),
       C(std::move(Cd)),
       Z(new PrositAux::pmf()),
-      verbose(false),
+      verbose_flag(false),
       periodic(true),
       P(Pd),
       deadline_step(0),
@@ -97,14 +97,14 @@ namespace PrositCore {
       Z->set(Pd, 1.0);
     };
     
-    ///@brief Set verbose flag to a specified value
+    ///@brief Set verbose_flag flag to a specified value
     /*! 
-     * \param verbosed desidered value for the verbose flag
-     * \return old value for the verbose flag
+     * @param verbose_flagd desidered value for the verbose_flag flag
+     * @return old value for the verbose_flag flag
      */
-    bool set_verbose(bool verbosed) {
-      bool current=verbose;
-      verbose = verbosed;
+    bool set_verbose_flag(bool verbose_flagd) {
+      bool current=verbose_flag;
+      verbose_flag = verbose_flagd;
       return current;
     };
     
@@ -113,6 +113,10 @@ namespace PrositCore {
       return periodic;
     };
 
+    ///@brief Returns the verbose_flag flag
+    bool is_verbose() const {
+      return verbose_flag;
+    };
     ///@brief Returns the name of the task
     /*! 
      *@return Sting containing the name of the task.
@@ -123,7 +127,7 @@ namespace PrositCore {
     
     ///@brief Returns the task period
     /*! 
-     * \return the task period (Exception raised if not periodic)
+     * @return the task period (Exception raised if not periodic)
      */
     int get_period() const throw (PrositAux::Exc){
       if(!periodic)
@@ -133,7 +137,7 @@ namespace PrositCore {
     
     ///@brief Returns a copy of the computation time distribution
     /*!
-     * \return a copy of the pmf related to the computation time
+     * @return a copy of the pmf related to the computation time
      */
     PrositAux::pmf * get_computation_time() const {
       return C.get();
@@ -141,7 +145,7 @@ namespace PrositCore {
 
     /// Returns a copy of the interarrival time distribution
     /*!
-     * \return a copy of the pmf related to the interarrival time (Exceprion of the task is periodic)
+     * @return a copy of the pmf related to the interarrival time (Exceprion of the task is periodic)
      */
     PrositAux::pmf * get_interarrival_time() const throw (PrositAux::Exc){
       if(periodic)
@@ -180,8 +184,8 @@ namespace PrositCore {
     };
     
     ///@brief Define a deadline
-    /*! \param deadline has to be a multiple of deadline_step
-     * \return Exception thrown for multiple entries and for non-multiple
+    /*! @param deadline has to be a multiple of deadline_step
+     * @return Exception thrown for multiple entries and for non-multiple
      * of the deadline_step
      */
     void insert_deadline(DeadlineUnit deadline);
@@ -202,9 +206,9 @@ namespace PrositCore {
  
     ///@brief Returns the probability associated with a deadline
     /*!compute_probability is implicitly called if not called before.
-     * \param deadline: the deadline for which the computations
+     * @param deadline: the deadline for which the computations
      * is required.
-     * \return The requested probability. An exception is thrown if the deadline
+     * @return The requested probability. An exception is thrown if the deadline
      * has not been registered.
      */
     double get_probability(DeadlineUnit deadline);
@@ -232,10 +236,10 @@ namespace PrositCore {
     unsigned int priority; /*!<Scheduling priority of the task */
   public:
     ///@brief Constructor for aperiodic Fixed Priority Tasks
-    /*! \param nm unique identifier for the task
-     *  \param Cd pointer to the distribution of the computation times 
-     *  \param Zd distirbution of the interarrival time
-     *  \param priorityd scheduling priority (in the range 0..99)
+    /*! @param nm unique identifier for the task
+     *  @param Cd pointer to the distribution of the computation times 
+     *  @param Zd distirbution of the interarrival time
+     *  @param priorityd scheduling priority (in the range 0..99)
      */
     FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unique_ptr<PrositAux::pmf> Zd, unsigned int priorityd) throw(PrositAux::Exc):
       GenericTaskDescriptor(nm,std::move(Cd),std::move(Zd))
@@ -246,10 +250,10 @@ namespace PrositCore {
     };
     
     ///@brief Constructor for Fixed Priority periodic tasks
-    /*! \param nm unique identifier for the task
-     *  \param Cd pointer to the distribution of the computation times 
-     *  \param Pd task period
-     *  \param priorityd scheduling priority (in the range 0..99)
+    /*! @param nm unique identifier for the task
+     *  @param Cd pointer to the distribution of the computation times 
+     *  @param Pd task period
+     *  @param priorityd scheduling priority (in the range 0..99)
      */
     FixedPriorityTaskDescriptor(const char * nm, unique_ptr<PrositAux::pmf> Cd, unsigned int Pd, unsigned int priorityd) throw(PrositAux::Exc):
       GenericTaskDescriptor(nm,std::move(Cd),std::move(Pd))
@@ -263,8 +267,8 @@ namespace PrositCore {
     unsigned int get_priority() const {return priority;}; 
 
     ///@brief Sets the task priority
-    /*! \param priority new task priority
-     * \return old priority
+    /*! @param priority new task priority
+     * @return old priority
      */
     unsigned int set_priority(unsigned int priorityd) {
       unsigned int old_prio = priority;

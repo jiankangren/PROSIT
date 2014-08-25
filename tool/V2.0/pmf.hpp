@@ -99,6 +99,9 @@ namespace PrositAux {
       return tail;
     };
     virtual int load(const string & filename) throw(Exc);
+    ///@brief Creates a clone of the pmf, which is resampled at the requested granularity
+    ///
+    ///@param q granularity
     pmf * resample(int q) const;
     friend void pmf2cdf(const pmf & p, cdf & c);
     friend void cdf2pmf(const cdf & c, pmf & p);

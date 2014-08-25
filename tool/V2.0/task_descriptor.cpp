@@ -23,7 +23,7 @@ namespace PrositCore {
     if (solved)
       return;
     
-    probability_solver->solve(probabilistic_deadlines, deadline_step);
+    probability_solver->solve();
     
   };
    

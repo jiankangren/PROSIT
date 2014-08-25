@@ -21,13 +21,15 @@ namespace PrositCore{
 
   ///@brief root of the hiearachy. Essentially this is class defines an interface.
   class ProbabilitySolver {
+  protected:
     bool solved; /*!< Has the solver been already called on the current configuration of tasks? */
   public:
     ///@brief Computes the steady state probability of meeting a set of deadlines
     ///
-    ///@param pm refernce to the deadline map
-    ///@param deadline_step basic deadline step
-    virtual void solve(DeadlineProbabilityMap & pm, unsigned int deadline_step) = 0;
+    ///This function is supposed to have access to the internal information of the 
+    ///task descriptor it applies to. The result of the call is to fill in 
+    ///the proabilistic_deadline structure within the associated task descriptors.
+    virtual void solve() = 0;
     
     ///@brief Adds the task to the set of tasks the solver applies to
     ///

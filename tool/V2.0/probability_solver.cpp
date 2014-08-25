@@ -21,9 +21,10 @@ namespace PrositCore {
       {
 	/* not task at current level of priority */
 	it = task_set.insert(pair< unsigned int, std::list<FixedPriorityTaskDescriptor*> >(task_descriptor->get_priority(), std::list<FixedPriorityTaskDescriptor*>() )).first;
+      };
+    (*it).second.push_back(task_descriptor);
+    reset();
   };
-  (*it).second.push_back(task_descriptor);
-  reset();
-};
 }
+
 
