@@ -114,7 +114,7 @@ namespace PrositCore {
     };
 
     ///@brief Returns the verbose_flag flag
-    bool is_verbose() const {
+    bool get_verbose() const {
       return verbose_flag;
     };
     ///@brief Returns the name of the task

@@ -14,7 +14,7 @@ LDFLAGS+= -std=c++11
 VPATH=../../utils/tinyxml2
 
 
-PROSIT_OBJS = pmf.o cdf.o probability_solver.o task_descriptor.o qbd_rr_solver.o
+PROSIT_OBJS = pmf.o cdf.o probability_solver.o task_descriptor.o qbd_rr_solver.o qbd_latouche_solver.o
 INTERF_OBJS = 
 
 OBJS += $(PROSIT_OBJS)
