@@ -41,6 +41,14 @@ namespace PrositCore {
     
     ///@brief Fills in the probability map
     void fill_in_probability_map();
+
+    ///@brief Post processing after QBD solution
+    void post_process() {
+      if(! compute_pi0() )
+	if (task_descriptor->get_verbose())
+	  cerr<<"Warning: anomalies in the computation of pi0"<<endl;
+      fill_in_probability_map();
+    };
   public:
     ///@brief Default constructor
     ///

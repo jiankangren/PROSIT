@@ -1,6 +1,7 @@
 #include "qbd_rr_solver.hpp"
 #include "pmf.hpp"
 #include "task_descriptor.hpp"
+#include <cmath>
 ///@file qbd_rr_solver.cpp
 ///
 ///Implementation of general fuynction for qbd based solvers.
@@ -391,40 +392,41 @@ namespace PrositCore
     
     DeadlineProbabilityMap * pm = task_descriptor->get_probabilistic_deadlines();
     DeadlineProbabilityMapIter pmi; 
+    int max_deadline = 0;
+    for (pmi = pm->begin(); pmi != pm->end(); pmi++) {
+      if (((*pmi).first < u->get_min())&&compress_flag)
+	cerr<<"Deadline "<<(*pmi).first*T<<" will not be computed for task "<<task_descriptor->get_name()<<" because it used the compressed model"<<endl;
+      if (max_deadline < (*pmi).first)
+	max_deadline = (*pmi).first;
+    }
+    ///The probability of state pi_h is found as pi_0 R^h
+    ///Thus he have to didentify the maximum H
+    int H = ceil(max_deadline/pi0.size());
+    
+    
     int Q = task_descriptor->get_budget();
-    if (compress_flag) {
-      for (int i = 0; i < u->get_min(); i++) 
-	if ( (pmi = pm->find(i))!= pm->end())
-	  cerr<<"Deadline "<<i*T<<" will not be computed for task "<<task_descriptor->get_name()<<" because it used the compressed model"<<endl;
-      double prob = 0.0; int delta=0;
-      
-     
-      for (int i = 0; i<pi0.size(); i++) {
-	prob += pi0(i);
+    
+    Eigend::RowVectorXd pi = pi0;
+    int delta =0;
+    double prob=0.0;
+    if (compress_flag)
+      delta = u->get_min();
+    
+    for(int h = 0; h < H; h++) { 
+      for (int i = 0; i<pi.size(); i++) {
+	prob += pi(i);
 	if (i%Q == 0) {
-	  if ( (pmi = pm->find(u->get_min()+delta))!=pm->end() )
+	  if ( (pmi = pm->find(delta))!=pm->end() )
 	    (*pmi).second = prob;
-	  if(task_descriptor->get_verbose())
-	    cout<<"P{d < "<<u->get_min()*T+T*(delta)<<"} "<<prob<<endl;
-	  delta++;
+	  cout<<"P{d < "<<T*(delta)<<"} "<<prob<<endl;
+	  delta ++;
 	}
       };
+      pi = pi0*R;
     }
-    else
-      {
-	double prob = 0.0; int delta=0;
-	for (int i = 0; i<pi0.size(); i++) {
-	  prob += pi0(i);
-	  if (i%Q == 0) {
-	    if ( (pmi = pm->find(delta))!=pm->end() )
-	      (*pmi).second = prob;
-	    cout<<"P{d < "<<T*(delta)<<"} "<<prob<<endl;
-	    delta ++;
-	  }
-	};
-      }
-  };
+  }
+};
+  
 
-}
   
 
