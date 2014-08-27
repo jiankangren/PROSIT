@@ -1,16 +1,13 @@
 #include <iostream>
 #include <algorithm>
-#include "auxiliary_func.hpp"
-#include "matrix_io.hpp"
-#include "exc.hpp"
-#include "smc_func.hpp"
-#include "pmf.hpp"
-#include "companion.hpp"
 #include <stdio.h>
 #include <algorithm>
 #include <getopt.h>
-#include "matrix.hpp"
-#include "closed_form.hpp"
+#include "auxiliary_func.hpp"
+#include "pmf.hpp"
+#include <memory>
+#include "qbd_rr_solver.hpp"
+#include "exc.hpp"
 
 ///@file Command line solver for computation of stady state probabilities
 
@@ -30,13 +27,12 @@ static int companion_flag = 0;
 static int compress_flag = 0;
 static int analytic_flag=0;
 static int cr_flag = 0;
-static int old_model_flag = 0;
 static int max_deadline = 0;
 static int iter = 100;
 static double eps = 1e-4;
 
 
-static int opts_parse(int argc, char *argv[]) throw (Exc)
+static int opts_parse(int argc, char *argv[]) 
 {
   int opt;
   static struct option long_options[16] =
@@ -109,7 +105,7 @@ static int opts_parse(int argc, char *argv[]) throw (Exc)
       analytic_flag = 1;
       break;
     default: /* ?~@~Y??~@~Y */
-      throw Exc("opts_parse parameters incorrect");
+      EXC_PRINT("opts_parse parameters incorrect");
     }
   }  
   return optind;
@@ -120,9 +116,8 @@ static int opts_parse(int argc, char *argv[]) throw (Exc)
 
 int main(int argc, char *argv[])
 {
-  int maxv,i,j;
-  int forward,back;
-  long long t_start=0, t_matrix_preparation_end=0, t_solve_end=0, t_probability_compute_end=0;
+  int i;
+  long long t_start=0, t_end;
   PrositAux::pmf * c = new PrositAux::pmf(Nc,0);
   PrositAux::pmf * u = new PrositAux::pmf(Nz,0);
 
@@ -149,24 +144,26 @@ int main(int argc, char *argv[])
       if (argc-optind !=1)
 	EXC_PRINT("Only one file parameter requested for companion form");
       if (Tp==0)
-	EXC_PRINT("Task period needs to be set for companion"));
+	EXC_PRINT("Task period needs to be set for companion");
     }
     else {
       if (argc-optind ==2)
 	u->load(argv[opt+1]);
       else {
 	if (Tp!=0)
-	  u.set(Tp,1.0);
+	  u->set(Tp,1.0);
 	else
 	  EXC_PRINT("Two file parameters requested");
       }
     }
     t_start = PrositAux::my_get_time();
-    
-    PrositCore::ResourceReservationTaskDescriptor task_des("task", std::move(c), std::move(u), Q, T);
-    task_des->set_deadline_step(T);
+    std::unique_ptr<PrositAux::pmf> cp(c);
+    std::unique_ptr<PrositAux::pmf> up(u);
+
+    PrositCore::ResourceReservationTaskDescriptor task_des("task", std::move(cp), std::move(up), unsigned(Q), unsigned(T));
+    task_des.set_deadline_step(T);
     for (int i = 0; i < max_deadline; i++)
-      task_des->insert_deadline(i);
+      task_des.insert_deadline(i);
 
 
     if (analytic_flag) {
@@ -216,14 +213,20 @@ int main(int argc, char *argv[])
 	  {
 	    if(!latouche_flag)
 	      EXC_PRINT("CR to be implemented yet");
-	    cout<<"Total time: "<<t_probability_compute_end-t_start<<endl;
-	    LatoucheResourceReservationProbabilitySolver solver(step,eps, iter);
-	    solver.register_task(task_des);
+	    PrositCore::LatoucheResourceReservationProbabilitySolver solver(step,eps, iter);
+	    solver.register_task(&task_des);
 	    task_des.compute_probability();
 	    
 	  }
       }
-
+    for (i = 0; i< max_deadline; i++) 
+      cout<<"P { f < "<<task_des.get_deadline_step()*T<< "} =" <<task_des.get_probability(i)<<endl;
+  } catch (PrositAux::Exc & e) {
+    cerr<<"Exception caught"<<endl;
+    e.what();
+  }
+  t_end = PrositAux::my_get_time();
+    cout<<"Total time: "<<t_end-t_start<<endl;
   return 0;
 }
 

@@ -392,9 +392,9 @@ namespace PrositCore
     
     DeadlineProbabilityMap * pm = task_descriptor->get_probabilistic_deadlines();
     DeadlineProbabilityMapIter pmi; 
-    int max_deadline = 0;
+    unsigned int max_deadline = 0;
     for (pmi = pm->begin(); pmi != pm->end(); pmi++) {
-      if (((*pmi).first < u->get_min())&&compress_flag)
+      if (((*pmi).first < unsigned(u->get_min()))&&compress_flag)
 	cerr<<"Deadline "<<(*pmi).first*T<<" will not be computed for task "<<task_descriptor->get_name()<<" because it used the compressed model"<<endl;
       if (max_deadline < (*pmi).first)
 	max_deadline = (*pmi).first;
@@ -406,7 +406,7 @@ namespace PrositCore
     
     int Q = task_descriptor->get_budget();
     
-    Eigend::RowVectorXd pi = pi0;
+    Eigen::RowVectorXd pi = pi0;
     int delta =0;
     double prob=0.0;
     if (compress_flag)

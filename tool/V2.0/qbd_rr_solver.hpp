@@ -17,7 +17,7 @@
 //#include "smc_func.hpp"
 #include <memory>
 #include "pmf.hpp"
-
+#include "task_descriptor.hpp"
 
 namespace PrositCore {
   class QBDResourceReservationProbabilitySolver: public ResourceReservationProbabilitySolver {
@@ -52,7 +52,7 @@ namespace PrositCore {
   public:
     ///@brief Default constructor
     ///
-    ///@param granularity grnaularity for resampling the distribution of computation time
+    ///@param granularity granularity for resampling the distribution of computation time
     QBDResourceReservationProbabilitySolver(unsigned int grand):  ResourceReservationProbabilitySolver(), B0(), A0(), A1(), A2(), R(), pi0(), granularity(grand), compress_flag(false), computed_matrices(false), computed_pi0(false) {};
     
     ///@brief Sets granularity to a desired value
@@ -120,6 +120,7 @@ namespace PrositCore {
 
 
   class LatoucheResourceReservationProbabilitySolver : public QBDResourceReservationProbabilitySolver {
+  public:
     ///@brief Default constructor
     ///
     ///@param grand Desired value of the granularity for resampling the distribution of computation time
