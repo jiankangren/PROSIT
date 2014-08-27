@@ -49,6 +49,10 @@ namespace PrositCore {
 	  cerr<<"Warning: anomalies in the computation of pi0"<<endl;
       fill_in_probability_map();
     };
+
+    ///@brief Solver specific algorithm (called by solve)
+    virtual void apply_algorithm()=0;
+
   public:
     ///@brief Default constructor
     ///
@@ -74,6 +78,14 @@ namespace PrositCore {
     ///
     ///It is required to perform solver specific initialisation
     virtual void reset();
+
+    ///@brief Redefinition of solve
+    ///
+    ///This buids on the services provided by solver specific algorithm
+    ///(apply_algorithm)
+    void solve();
+
+
     virtual ~QBDResourceReservationProbabilitySolver() {};
   private:
 
@@ -134,9 +146,6 @@ namespace PrositCore {
     ///@brief Destructor
     virtual ~LatoucheResourceReservationProbabilitySolver() {};
     
-    ///@brief Computation of the probability.
-    virtual void solve();
-    
     ///@brief resets the maximum number of iterations to a specified value
     ///
     ///@param max_iter_d desired maximum number of iterations
@@ -154,8 +163,10 @@ namespace PrositCore {
       epsilon = epsilon_d;
       reset();
     };
-
-  private:
+    /////@brief Solver specific algorithm (called by solve)
+    //virtual void apply_algorithm();
+    
+  protected:
     double epsilon; /*!< Thrshold for the result of two subsequent iterations */
     unsigned int max_iter; /*!< Cut off for the maximum number of iterations */
     
@@ -169,7 +180,7 @@ namespace PrositCore {
     ///The iteration produces a matrix R that has to be post-processed 
     ///Matrix A0, A1, A2 and R are the ones that can be found solver after 
     ///calling compute_matrices
-    void qbd_latouche();
+    void apply_algorithm();
   };
 }
 

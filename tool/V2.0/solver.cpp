@@ -13,8 +13,8 @@
 
 
 
-#define Nc 250000
-#define Nz 1200
+#define Nc 2500000
+#define Nz 1000000
 
 static int Q = 10000;
 static int T = 20000;
@@ -162,6 +162,7 @@ int main(int argc, char *argv[])
 
     PrositCore::ResourceReservationTaskDescriptor task_des("task", std::move(cp), std::move(up), unsigned(Q), unsigned(T));
     task_des.set_deadline_step(T);
+    task_des.set_verbose_flag(verbose_flag ?  true: false);
     for (int i = 0; i < max_deadline; i++)
       task_des.insert_deadline(i);
 
@@ -214,7 +215,7 @@ int main(int argc, char *argv[])
 	    if(!latouche_flag)
 	      EXC_PRINT("CR to be implemented yet");
 	    PrositCore::LatoucheResourceReservationProbabilitySolver solver(step,eps, iter);
-	    solver.register_task(&task_des);
+	    task_des.set_solver(&solver);
 	    task_des.compute_probability();
 	    
 	  }

@@ -22,10 +22,6 @@ namespace PrositCore
 	    endl;
 	return false;
       };
-    if (!computed_matrices)
-      EXC_PRINT_2
-	("QBD solver called for a task for which matrices have not been computed yet. Task: ",
-	 task_descriptor->get_name ());
     if (task_descriptor->get_deadline_step () == 0)
       EXC_PRINT_2
 	("QBD solver called for a task for which no deadline step has been set. Task: ",
@@ -377,8 +373,9 @@ namespace PrositCore
     if ((pi0.minCoeff () < 0) && task_descriptor->get_verbose ())
       cerr << "QBD_COMPUTE_PI0: Warning: x0 has negative elements" <<
 	endl;
-    return true;
     computed_pi0 = true;
+
+    return true;
   };
   void QBDResourceReservationProbabilitySolver::fill_in_probability_map() {
 #ifdef DEBUG
@@ -425,6 +422,21 @@ namespace PrositCore
       pi = pi0*R;
     }
   }
+  void QBDResourceReservationProbabilitySolver::solve() {
+    if ( !check_list() ) {
+      if (task_descriptor->get_verbose()) 
+	cerr<<"Latouche solver will not execute"<<endl;
+      return;
+    };
+    generate_matrices();
+    apply_algorithm();
+#ifdef DEBUG
+    cerr<<"R = "<<R<<endl;
+#endif
+    post_process();
+    
+  };
+
 };
   
 

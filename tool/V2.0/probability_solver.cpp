@@ -9,7 +9,6 @@ namespace PrositCore {
     if (! (task_descriptor = dynamic_cast<ResourceReservationTaskDescriptor*>(td)) )
       EXC_PRINT_2("Resource reservation solver udes for improper task ", td->get_name());
     reset();
-    td->set_solver(this);
   };
 
   void FixedPriorityProbabilitySolver::register_task(GenericTaskDescriptor * td) {
@@ -25,7 +24,6 @@ namespace PrositCore {
       };
     (*it).second.push_back(task_descriptor);
     reset();
-    td->set_solver(this);
   };
 }
 

@@ -4,8 +4,7 @@ namespace PrositCore {
   void GenericTaskDescriptor::insert_deadline(DeadlineUnit deadline) {
     if (deadline_step == 0)
       EXC_PRINT_2("Deadline inserted before defining the step for task ", name);
-    if (deadline%deadline_step)
-      EXC_PRINT_2("Wrong deadline values set for task ", name);
+   
     pair<unsigned int, double> entry(deadline,0.0);
     if(!(probabilistic_deadlines.insert(entry).second))
       EXC_PRINT_2("cannot create deadline for task ", name);
