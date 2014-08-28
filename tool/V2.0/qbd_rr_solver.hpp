@@ -7,8 +7,9 @@
 ///quasi-brith death processes.
 ///In particular: 
 ///LatoucheResourceReservationSolver applies the Latouche Algorithm (1) for the solution. It applies to both periodic and aperiodic tasks
+///CRResourceReservationSolver applies the cyclic reduction algorithm (2)
 ///(1) G. Latouche and V. Ramaswami. A logarithmic reduction algorithm for quasi-birth-and-death processes. J. Appl. Probab., 30:650--674, 1993.
-
+///(2) B. Meing and D. Bini Improved cyclic reduction for solving queueing problems.  Numerical Algorithms, 15:57--74, 1997
 #include "probability_solver.hpp"
 
 #include <Eigen/Dense>
@@ -176,6 +177,46 @@ namespace PrositCore {
     ///Matrix A0, A1, A2 and R are the ones that can be found solver after 
     ///calling compute_matrices
     void apply_algorithm();
+  };
+
+  class CRResourceReservationProbabilitySolver : public QBDResourceReservationProbabilitySolver {
+  public:
+    ///@brief Default constructor
+    ///
+    ///@param grand Desired value of the granularity for resampling the distribution of computation time
+    ///@param epsilon_d desired value for the espilon parameter
+    ///@param max_iter_d cut off value for the number of iterations
+    CRResourceReservationProbabilitySolver(unsigned int grand, bool shift_d, int max_iter_d):  QBDResourceReservationProbabilitySolver(grand), shift_f(shift_d), max_iter(max_iter_d), G(), U()  {
+    };
+    
+    ///@brief Destructor
+    virtual ~CRResourceReservationProbabilitySolver() {};
+    
+    ///@brief Sets the drift parameter
+    void set_shift() {
+      shift_f = true;
+    };
+    ///@brief Sets the maximum number of iterations
+    void set_max_iter(int max_iter_d) {
+      max_iter = max_iter_d;
+    };
+  protected:
+    ///@brief executes the iterations of the latouche method
+    ///
+    ///This implementation implements the CR method
+    ///for discrete time QBDP of the form
+    /// [B  A0  0  0  0 ...]
+    /// A2 A1 A0  0  0 ...]
+    /// 0 A2 A1 A0  0 ...]
+    ///The iteration produces a matrix R that has to be post-processed 
+    ///Matrix A0, A1, A2 and R are the ones that can be found solver after 
+    ///calling compute_matrices
+    void apply_algorithm();
+  private:
+    bool shift_f;
+    int max_iter;
+    MatrixXd G;
+    MatrixXd U;
   };
 }
 

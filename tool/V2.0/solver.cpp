@@ -213,14 +213,22 @@ int main(int argc, char *argv[])
 	}
 	else
 	  {
-	    if(!latouche_flag)
-	      EXC_PRINT("CR to be implemented yet");
-	    PrositCore::LatoucheResourceReservationProbabilitySolver solver(step,eps, iter);
-	    task_des.set_solver(&solver);
-	    if (compress_flag)
-	      solver.set_compress_flag();
-	    task_des.compute_probability();
+	    PrositCore::QBDResourceReservationProbabilitySolver * tmp;
+	    if (cr_flag) {
+	      tmp = new PrositCore::CRResourceReservationProbabilitySolver (step, false, iter);
+	    } else if (latouche_flag) {
+	      tmp = new PrositCore::LatoucheResourceReservationProbabilitySolver(step,eps, iter);
+	    }
+	    else
+	      {
+		EXC_PRINT("SOlver not implemented yet");
+	      }
+	    std::unique_ptr<PrositCore::QBDResourceReservationProbabilitySolver> ps(tmp);
 	    
+	    task_des.set_solver(ps.get());
+	    if (compress_flag)
+	      ps->set_compress_flag();
+	    task_des.compute_probability();
 	  }
       }
     for (i = 0; i< max_deadline; i++) 
