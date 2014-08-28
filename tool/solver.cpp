@@ -271,7 +271,8 @@ int main(int argc, char *argv[])
 	    compute_matrixes(mat,maxv,B0,A0,A1,A2);
 	    if (verbose_flag)
 	      cout<<"Submatrices extracted "<<endl;
-
+	    
+	    cerr<<"A0 :"<<A1<<endl;
 	    MatrixXd R(A0.rows(),A0.cols());
 
 	    if (cr_flag) {
@@ -320,7 +321,7 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
 	    cerr<<"R = "<<R<<endl;
 #endif
-
+	    cerr<<"R = "<<R<<endl;
 
 	    //6. Compute X0 from R
 	    RowVectorXd pi0;

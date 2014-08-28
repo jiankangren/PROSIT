@@ -47,6 +47,7 @@ namespace PrositCore {
       if(! compute_pi0() )
 	if (task_descriptor->get_verbose())
 	  cerr<<"Warning: anomalies in the computation of pi0"<<endl;
+      cerr<<"pi0:"<<pi0<<endl;
       fill_in_probability_map();
     };
 

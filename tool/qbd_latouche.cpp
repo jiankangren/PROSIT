@@ -21,12 +21,18 @@ void qbd_latouche(const MatrixXd & Ap0,
   bool cont=true;
   R.setZero();
 
+  cerr<<"Ap0: "<<Ap0<<endl;
+  cerr<<"Ap1: "<<Ap1<<endl;
+  cerr<<"Ap2: "<<Ap2<<endl;
+  
   while (cont) {
     Rnew = Ap2+R*Ap1+R*R*Ap0;
+    cerr<<"||R-Rnew||"<<PrositAux::InfinityNorm(R-Rnew)<<endl;
     if(PrositAux::InfinityNorm(R-Rnew)<parms.epsilon) 
       cont = false;
     else
       R=Rnew;
+
     if(it++ > parms.max_iter) {
       cont = false;
       cerr<<"QBD_LATOUCHE:Maximum number of iterations reached"<<endl;

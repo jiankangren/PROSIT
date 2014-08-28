@@ -295,6 +295,7 @@ namespace PrositCore
     extract_sub_matrices (mat, maxv, B0, A0, A1, A2);
     if (verbose_flag)
       cout << "Submatrices extracted " << endl;
+    //cerr<<"A1: "<<A1<<endl;
 
     R = MatrixXd (A0.rows (), A0.cols ());
 
@@ -330,8 +331,7 @@ namespace PrositCore
 	|| !PrositAux::check_sizes (A0, B0))
       EXC_PRINT
 	("A0, A1, A2 matrixes have to be square and equal size");
-
-    cerr<<"Minumum element "<<R.minCoeff()<<endl;
+    
     if ((R.minCoeff () < 0) && task_descriptor->get_verbose ())
       cerr << "QBD_COMPUTE_PI0: Warning: R has negative coeeficients"
 	   << endl;
@@ -371,7 +371,6 @@ namespace PrositCore
     MatrixXd W1;
     PrositAux::pseudoInverse < MatrixXd > (M, W1);
     pi0 = work * W1;
-    cerr<<"pi0: "<<endl;
     if ((pi0.minCoeff () < 0) && task_descriptor->get_verbose ())
       cerr << "QBD_COMPUTE_PI0: Warning: x0 has negative elements" <<
 	endl;
@@ -411,7 +410,7 @@ namespace PrositCore
     if (compress_flag)
       delta = u->get_min();
     
-    for(int h = 0; h < H; h++) { 
+    for(int h = 0; h <= H; h++) { 
       for (int i = 0; i<pi.size(); i++) {
 	prob += pi(i);
 	if (i%Q == 0) {
@@ -443,7 +442,6 @@ namespace PrositCore
     if(verbose_flag)
       cout<<"Latouche iteration completed"<<endl;
     solved = true;
-    cerr<<"R = "<<R<<endl;
     post_process();
     
   };
