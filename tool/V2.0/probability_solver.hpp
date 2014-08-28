@@ -48,10 +48,13 @@ namespace PrositCore{
     ///The destructor is virtual to enable subclassing
     virtual ~ProbabilitySolver() {};
     
-    ///@breif resets the solver to make it read for a new execution
+    ///@brief resets the solver to make it read for a new execution
     virtual void reset() {
       solved = false;
     };
+    
+    ///@brief returns the state of the solved flag
+    bool is_solved() const {return solved;};
   };
 
   ///@brief Interface for generic solvers that apply to a resource reservation task.

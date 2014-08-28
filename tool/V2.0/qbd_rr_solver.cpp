@@ -403,7 +403,7 @@ namespace PrositCore
     
     
     int Q = task_descriptor->get_budget();
-    
+    Q = Q/granularity;
     Eigen::RowVectorXd pi = pi0;
     int delta =0;
     double prob=0.0;
@@ -443,9 +443,18 @@ namespace PrositCore
       cout<<"Latouche iteration completed"<<endl;
     solved = true;
     post_process();
-    
+    if(verbose_flag)
+      cout<<"Post-processing completed"<<endl;
+  
   };
 
+  void QBDResourceReservationProbabilitySolver::post_process() {
+    if(! compute_pi0() )
+	if (task_descriptor->get_verbose())
+	  cerr<<"Warning: anomalies in the computation of pi0"<<endl;
+      
+      fill_in_probability_map();
+  };
 };
   
 

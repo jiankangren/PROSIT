@@ -43,13 +43,7 @@ namespace PrositCore {
     void fill_in_probability_map();
 
     ///@brief Post processing after QBD solution
-    void post_process() {
-      if(! compute_pi0() )
-	if (task_descriptor->get_verbose())
-	  cerr<<"Warning: anomalies in the computation of pi0"<<endl;
-      cerr<<"pi0:"<<pi0<<endl;
-      fill_in_probability_map();
-    };
+    void post_process();
 
     ///@brief Solver specific algorithm (called by solve)
     virtual void apply_algorithm()=0;

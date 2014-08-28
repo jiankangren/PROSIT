@@ -27,9 +27,14 @@ namespace PrositCore {
   };
    
   double GenericTaskDescriptor::get_probability(DeadlineUnit deadline) {
+    if (! probability_solver)
+      EXC_PRINT("Task is not linked to any solver");
     DeadlineProbabilityMapIter it = probabilistic_deadlines.find(deadline);    
-    if(!solved)
+    if(!probability_solver->is_solved()) {
+      if(verbose_flag)
+	cout<<"Probability requested for unsolved task. Now solving...."<<endl;
       compute_probability();
+    };
     if (it == probabilistic_deadlines.end())
       EXC_PRINT_2("Deadline does not exist for task ",name); 
     
