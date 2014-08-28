@@ -11,8 +11,8 @@
 #include <getopt.h>
 #include "matrix.hpp"
 #include "closed_form.hpp"
-#define Nc 2500000
-#define Nz 1000000
+#define Nc 250000
+#define Nz 1200
 
 static int Q = 10000;
 static int T = 20000;
@@ -29,7 +29,7 @@ static int old_model_flag = 0;
 
 static int iter = 100;
 static double eps = 1e-4;
---
+
 
 static int opts_parse(int argc, char *argv[]) throw (Exc)
 {

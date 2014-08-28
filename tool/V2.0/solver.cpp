@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
     PrositCore::ResourceReservationTaskDescriptor task_des("task", std::move(cp), std::move(up), unsigned(Q), unsigned(T));
     task_des.set_deadline_step(T);
     task_des.set_verbose_flag(verbose_flag ?  true: false);
+    
     for (int i = 0; i < max_deadline; i++)
       task_des.insert_deadline(i);
 
@@ -216,6 +217,8 @@ int main(int argc, char *argv[])
 	      EXC_PRINT("CR to be implemented yet");
 	    PrositCore::LatoucheResourceReservationProbabilitySolver solver(step,eps, iter);
 	    task_des.set_solver(&solver);
+	    if (compress_flag)
+	      solver.set_compress_flag();
 	    task_des.compute_probability();
 	    
 	  }

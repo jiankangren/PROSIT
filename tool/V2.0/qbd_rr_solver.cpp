@@ -331,6 +331,7 @@ namespace PrositCore
       EXC_PRINT
 	("A0, A1, A2 matrixes have to be square and equal size");
 
+    cerr<<"Minumum element "<<R.minCoeff()<<endl;
     if ((R.minCoeff () < 0) && task_descriptor->get_verbose ())
       cerr << "QBD_COMPUTE_PI0: Warning: R has negative coeeficients"
 	   << endl;
@@ -355,7 +356,7 @@ namespace PrositCore
     MatrixXd M (n, n + 1);
     M.block (0, 0, n, n) = B0 + R * A0 - Id;
     M.block (0, n, n, 1) = (Id - R).inverse () * u;
-
+   
     FullPivLU < MatrixXd > lu_decomp (M);
     if (lu_decomp.rank () < n)
       {
@@ -370,6 +371,7 @@ namespace PrositCore
     MatrixXd W1;
     PrositAux::pseudoInverse < MatrixXd > (M, W1);
     pi0 = work * W1;
+    cerr<<"pi0: "<<endl;
     if ((pi0.minCoeff () < 0) && task_descriptor->get_verbose ())
       cerr << "QBD_COMPUTE_PI0: Warning: x0 has negative elements" <<
 	endl;
@@ -424,15 +426,24 @@ namespace PrositCore
   }
   void QBDResourceReservationProbabilitySolver::solve() {
     if ( !check_list() ) {
-      if (task_descriptor->get_verbose()) 
+      if (task_descriptor && (task_descriptor->get_verbose())) 
 	cerr<<"Latouche solver will not execute"<<endl;
       return;
     };
+    bool verbose_flag = task_descriptor->get_verbose();
     generate_matrices();
+    if (verbose_flag) {
+      cout<<"Matrices Generated"<<endl;
+      cout<<"Size. A0 "<<A0.rows()<<" * "<<A0.cols()<<endl;
+    }
+
+      
+    computed_matrices = true;
     apply_algorithm();
-#ifdef DEBUG
+    if(verbose_flag)
+      cout<<"Latouche iteration completed"<<endl;
+    solved = true;
     cerr<<"R = "<<R<<endl;
-#endif
     post_process();
     
   };
