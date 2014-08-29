@@ -30,12 +30,12 @@ static int cr_flag = 0;
 static int max_deadline = 0;
 static int iter = 100;
 static double eps = 1e-4;
-
+static int shift_flag=0;
 
 static int opts_parse(int argc, char *argv[]) 
 {
   int opt;
-  static struct option long_options[16] =
+  static struct option long_options[] =
     {
       /* These options set a flag. */
       {"verbose", no_argument,0,'v'},
@@ -45,6 +45,7 @@ static int opts_parse(int argc, char *argv[])
       {"companion", no_argument,0,'o'},
       {"compress",no_argument,0,'m'},
       {"analytic",no_argument,0,'a'},
+      {"shift_flag", no_argument,0,'S'},
       /* These options don't set a flag.
 	 We distinguish them by their indices. */
       {"budget",  required_argument,       0, 'q'},
@@ -55,10 +56,10 @@ static int opts_parse(int argc, char *argv[])
       {"pessimistic",no_argument,0,'p'},
       {"step", required_argument, 0, 's'},
       {"max_deadline", required_argument,0,'M'},
-      {0, 0, 0, 0},
+            {0, 0, 0, 0},
     };
   verbose_flag = 0;
-  while ((opt = getopt_long(argc, argv, "t:q:e:i:T:s:M:vbplcom",long_options,0)) != -1) {
+  while ((opt = getopt_long(argc, argv, "t:q:e:i:T:s:M:vbplcomaS",long_options,0)) != -1) {
     switch (opt) {
     case 'q':
       Q = atoi(optarg);
@@ -104,6 +105,10 @@ static int opts_parse(int argc, char *argv[])
     case 'a':
       analytic_flag = 1;
       break;
+    case 'S':
+      shift_flag = 1;
+      break;
+
     default: /* ?~@~Y??~@~Y */
       EXC_PRINT("opts_parse parameters incorrect");
     }
@@ -135,7 +140,8 @@ int main(int argc, char *argv[])
       EXC_PRINT("Ambiguous choice of the algorithm");
     if (max_deadline <= 0)
       EXC_PRINT("Maximum deadline not properly set");
-      
+    if ((shift_flag!=0)&&(cr_flag==0))
+      cerr<<"Warning! shift_flag only makes sense for CR"<<endl;
     c->load(argv[opt]);
  
     
@@ -164,7 +170,7 @@ int main(int argc, char *argv[])
     task_des.set_deadline_step(T);
     task_des.set_verbose_flag(verbose_flag ?  true: false);
     
-    for (int i = 0; i < max_deadline; i++)
+    for (int i = 0; i <= max_deadline; i++)
       task_des.insert_deadline(i);
 
 
@@ -215,7 +221,7 @@ int main(int argc, char *argv[])
 	  {
 	    PrositCore::QBDResourceReservationProbabilitySolver * tmp;
 	    if (cr_flag) {
-	      tmp = new PrositCore::CRResourceReservationProbabilitySolver (step, false, iter);
+	      tmp = new PrositCore::CRResourceReservationProbabilitySolver (step, shift_flag ? true : false, iter);
 	    } else if (latouche_flag) {
 	      tmp = new PrositCore::LatoucheResourceReservationProbabilitySolver(step,eps, iter);
 	    }
@@ -232,7 +238,7 @@ int main(int argc, char *argv[])
 	  }
       }
     for (i = 0; i< max_deadline; i++) 
-      cout<<"P { f < "<<task_des.get_deadline_step()*T<< "} =" <<task_des.get_probability(i)<<endl;
+      cout<<"P { f < "<<task_des.get_deadline_step()*i<< "} =" <<task_des.get_probability(i)<<endl;
   } catch (PrositAux::Exc & e) {
     cerr<<"Exception caught"<<endl;
     e.what();

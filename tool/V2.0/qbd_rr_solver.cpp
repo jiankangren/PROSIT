@@ -13,7 +13,7 @@ namespace PrositCore
   bool QBDResourceReservationProbabilitySolver::check_list ()
   {
     if (!task_descriptor)
-      EXC_PRINT ("Latouche solver called but no task was registered");
+      EXC_PRINT ("Solver called but no task was registered");
     if (solved)
       {
 	if (task_descriptor->get_verbose() )
@@ -386,6 +386,8 @@ namespace PrositCore
     PrositAux::pmf * tmp;
     tmp = (task_descriptor->get_interarrival_time ())->resample (task_descriptor->get_server_period());
     unsigned int T = task_descriptor->get_server_period();
+    unsigned int Q = task_descriptor->get_budget();
+
     std::unique_ptr < PrositAux::pmf > u (tmp);
     
     DeadlineProbabilityMap * pm = task_descriptor->get_probabilistic_deadlines();
@@ -399,34 +401,35 @@ namespace PrositCore
     }
     ///The probability of state pi_h is found as pi_0 R^h
     ///Thus he have to didentify the maximum H
-    int H = ceil(max_deadline/pi0.size());
+    int H = ceil((max_deadline*Q)/(pi0.size()));
     
     
-    int Q = task_descriptor->get_budget();
     Q = Q/granularity;
     Eigen::RowVectorXd pi = pi0;
     int delta =0;
     double prob=0.0;
     if (compress_flag)
       delta = u->get_min();
-    
+    cout<<"H: "<<H<<endl;
     for(int h = 0; h <= H; h++) { 
       for (int i = 0; i<pi.size(); i++) {
 	prob += pi(i);
 	if (i%Q == 0) {
-	  if ( (pmi = pm->find(delta))!=pm->end() )
+	  if ( (pmi = pm->find(delta))!=pm->end() ) {
 	    (*pmi).second = prob;
-	  cout<<"P{d < "<<T*(delta)<<"} "<<prob<<endl;
+	    if(task_descriptor->get_verbose())
+	      cout<<"P{d < "<<T*(delta)<<"} "<<prob<<endl;
+	  }
 	  delta ++;
 	}
       };
-      pi = pi0*R;
+      pi = pi*R;
     }
   }
   void QBDResourceReservationProbabilitySolver::solve() {
     if ( !check_list() ) {
       if (task_descriptor && (task_descriptor->get_verbose())) 
-	cerr<<"Latouche solver will not execute"<<endl;
+	cerr<<"QBDP solver will not execute"<<endl;
       return;
     };
     bool verbose_flag = task_descriptor->get_verbose();
@@ -440,7 +443,7 @@ namespace PrositCore
     computed_matrices = true;
     apply_algorithm();
     if(verbose_flag)
-      cout<<"Latouche iteration completed"<<endl;
+      cout<<"QBDP solver iteration completed"<<endl;
     solved = true;
     post_process();
     if(verbose_flag)
