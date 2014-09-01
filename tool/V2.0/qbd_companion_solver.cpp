@@ -14,7 +14,7 @@ namespace PrositCore {
 
   bool CompanionResourceReservationProbabilitySolver::check_list() {
     bool ok = ResourceReservationProbabilitySolver::check_list();
-    book ok_periodic = false;
+    bool ok_periodic = false;
     
     if (linked_flag)
       ok_periodic = task_descriptor->is_periodic();
@@ -81,16 +81,15 @@ namespace PrositCore {
 
     std::unique_ptr < PrositAux::pmf > p (tmp);
     
-    PrositAux::cdf c(p.get_size(),p.get_offset());
-    PrositAux::pmf2cdf(p, c);
+    PrositAux::cdf c(p->get_size(),p->get_offset());
+    PrositAux::pmf2cdf(*p, c);
     unsigned BCET = c.get_min();
     unsigned WCET = c.get_max();
     unsigned size = (WCET-BCET);
     double a0;
-    double pi_0;
     a0=c.get(BCET);
     RowVectorXd v(size);
-    RowVectorXd Alfa(size+1);
+    Alfa = RowVectorXd(size+1);
     Alfa(0) = 1;
     
     
@@ -98,9 +97,9 @@ namespace PrositCore {
     if (verbose_flag)
       cout<<"now preparing the companion form"<<endl;
     if (N*Q>WCET) {
-      if (verbose)
+      if (verbose_flag)
 	cout<<"Bandwidth grater than Worst case requirements"<<endl;
-      return 1.0;
+      return;
     };
     for (unsigned int i = 0; i < size; i++) {
       double ai = c.get(i+BCET+1)-c.get(i+BCET);
@@ -110,7 +109,7 @@ namespace PrositCore {
 
     v(WCET-N*Q) = v(WCET-N*Q)+1/a0;
     //  cerr<<"v =" <<v<<endl;
-    if (verbose)
+    if (verbose_flag)
       cout<<"last row of the comapnion form has size "<<v.size()<<endl;
 
     VectorXd z(size-1);
@@ -121,12 +120,14 @@ namespace PrositCore {
     M.block(0,1,size-1,size-1)=I;
     M.block(size-1,0,1,size)=v;
     //cerr<<"Matrix M: "<<M<<endl;
-    if (verbose)
+    if (verbose_flag)
       cout<<"Companion form matrix size "<<M.size()<<endl;
   }
   void CompanionResourceReservationProbabilitySolver::apply_algorithm() {
+    double pi_0;
+    unsigned int size = M.rows();
     EigenSolver<MatrixXd> eigensolver(M,false);
-    if (verbose)
+    if (verbose_flag)
       cout<<"Companion form eigenvalues found "<< endl;
 
     if (eigensolver.info() != Success) 
@@ -187,6 +188,10 @@ namespace PrositCore {
     if (!task_descriptor)
       EXC_PRINT("Cannot call fill_in_probability_map on disconnected solver");
     unsigned int N = task_descriptor->get_period()/task_descriptor->get_server_period();
+    unsigned T = task_descriptor->get_server_period();
+    unsigned Q = task_descriptor->get_budget();
+    DeadlineProbabilityMap * pm = task_descriptor->get_probabilistic_deadlines();
+
     DeadlineProbabilityMapIter pmi; 
     unsigned int max_deadline = 0;
     for (pmi = pm->begin(); pmi != pm->end(); pmi++) 
@@ -200,9 +205,9 @@ namespace PrositCore {
       };
     int delta =0;
     double prob=0.0;
-    for (int i = 0; i< std::min(N+unst_num, max_deadline);i++)
+    for (unsigned int i = 0; i< std::min(N+unst_num, max_deadline);i++)
       {
-	prob += pi(i);
+	prob += pi0(i);
 	if (i%Q == 0) {
 	  if ( (pmi = pm->find(delta))!=pm->end() ) {
 	    (*pmi).second = prob;

@@ -23,7 +23,7 @@ namespace PrositCore {
     unsigned int granularity;
     double epsilon;
     
-    
+    RowVectorXd Alfa; 
 
     RowVectorXd pi0; /*!< Vector of fundamental proabilities that can be used to construct the whole
 		       vector by a simple recursion
