@@ -196,7 +196,11 @@ int main(int argc, char *argv[])
     else
       {      
 	if (companion_flag) {
-	  EXC_PRINT("Companion Solver TBD");
+	  PrositCore::CompanionResourceReservationProbabilitySolver *tmp =  new PrositCore::CRResourceReservationProbabilitySolver(step, eps);
+	  std::unique_ptr<PrositCore::QBDResourceReservationProbabilitySolver> ps(tmp);
+	  task_des.set_solver(ps.get());
+
+	  task_des.compute_probability();
 	  // RowVectorXd p;
 	  // if (verbose_flag) {
 	  //   cout<<"Companion Strategy Selected"<<endl;
