@@ -56,7 +56,7 @@ static int opts_parse(int argc, char *argv[])
       {"pessimistic",no_argument,0,'p'},
       {"step", required_argument, 0, 's'},
       {"max_deadline", required_argument,0,'M'},
-            {0, 0, 0, 0},
+      {0, 0, 0, 0},
     };
   verbose_flag = 0;
   while ((opt = getopt_long(argc, argv, "t:q:e:i:T:s:M:vbplcomaS",long_options,0)) != -1) {
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
 	    task_des.compute_probability();
 	  }
       }
-    for (i = 0; i< max_deadline; i++) 
+    for (i = 0; i<= max_deadline; i++) 
       cout<<"P { f < "<<task_des.get_deadline_step()*i<< "} =" <<task_des.get_probability(i)<<endl;
   } catch (PrositAux::Exc & e) {
     cerr<<"Exception caught"<<endl;

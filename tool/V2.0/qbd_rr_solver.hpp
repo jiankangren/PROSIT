@@ -29,31 +29,27 @@ namespace PrositCore {
     
     bool compress_flag; /*!< Should we compress all the states smaller than the minimum interarrival time ? */
     ///@brief Generates matrices used by QBD methods.
-    void generate_matrices();
+    void pre_process();
     
-    bool computed_matrices;
-    bool computed_pi0;
 
     ///@brief checks that everything is ok for solution
     bool check_list();
     
+    
     ///@brief Computes the probability from R, A0, A1, A2, B0
     bool compute_pi0();
     
-    ///@brief Fills in the probability map
-    void fill_in_probability_map();
 
-    ///@brief Post processing after QBD solution
+    ///@brief Generates matrices used by QBD methods.
     void post_process();
-
-    ///@brief Solver specific algorithm (called by solve)
-    virtual void apply_algorithm()=0;
-
+    
+    ///@brief computes the probability map from pi0
+    void fill_in_probability_map();
   public:
     ///@brief Default constructor
     ///
     ///@param granularity granularity for resampling the distribution of computation time
-    QBDResourceReservationProbabilitySolver(unsigned int grand):  ResourceReservationProbabilitySolver(), B0(), A0(), A1(), A2(), R(), pi0(), granularity(grand), compress_flag(false), computed_matrices(false), computed_pi0(false) {};
+    QBDResourceReservationProbabilitySolver(unsigned int grand):  ResourceReservationProbabilitySolver(), B0(), A0(), A1(), A2(), R(), pi0(), granularity(grand), compress_flag(false) {};
     
     ///@brief Sets granularity to a desired value
     ///
@@ -70,16 +66,7 @@ namespace PrositCore {
       compress_flag = true;
       reset();
     };
-    ///@brief redefinition of reset
-    ///
-    ///It is required to perform solver specific initialisation
-    virtual void reset();
 
-    ///@brief Redefinition of solve
-    ///
-    ///This buids on the services provided by solver specific algorithm
-    ///(apply_algorithm)
-    void solve();
 
 
     virtual ~QBDResourceReservationProbabilitySolver() {};
@@ -152,7 +139,7 @@ namespace PrositCore {
 
    ///@brief resets epsilon to a desired value
     ///
-    ///@param max_iter_d desired maximum number of iterations
+    ///@param epsilon value of epsilon
     void set_epsilon(double epsilon_d) {
       if(epsilon_d < 0)
 	EXC_PRINT("Epsilon parameter has to be non negative for Latouche solver");

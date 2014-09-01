@@ -23,24 +23,48 @@ namespace PrositCore{
   class ProbabilitySolver {
   protected:
     bool solved; /*!< Has the solver been already called on the current configuration of tasks? */
+
+    bool pre_process_done;
+    
+    bool post_process_done;
+    
+    bool verbose_flag; /*!< True if any of the task linked is has verbose_flag set */
+
+    bool linked_flag; /*!< True if the solver has been linked with at least one task */
+ 
+   ///@brief Prepare computation
+    virtual void pre_process() = 0;
+    
+    virtual void apply_algorithm() = 0;
+    
+    ///@brief Post processing after  solution
+    virtual void post_process() = 0;
+
+    ///@brief Fills in the probability map
+    virtual void fill_in_probability_map() = 0;
+
+    ///@brief Is everything ok to start pre_processing?
+    virtual bool check_list() = 0;
+
   public:
     ///@brief Computes the steady state probability of meeting a set of deadlines
     ///
     ///This function is supposed to have access to the internal information of the 
     ///task descriptor it applies to. The result of the call is to fill in 
     ///the proabilistic_deadline structure within the associated task descriptors.
-    virtual void solve() = 0;
+    virtual void solve();
     
     ///@brief Adds the task to the set of tasks the solver applies to
     ///
     ///This method is pure virtual so that each solver can verify the appropriateness
     ///of the task. The call to this method resets previous computations.
+    ///It also sets the verbose flag.
     ///@param td descriptor of the task
     virtual void register_task(GenericTaskDescriptor * td) = 0;
 
     ///@brief Default constructor
     ProbabilitySolver(): 
-      solved(false)
+      solved(false), pre_process_done(false), post_process_done(false), verbose_flag(false), linked_flag(false)
     {};
     
     ///@brief Destructor
@@ -51,6 +75,8 @@ namespace PrositCore{
     ///@brief resets the solver to make it read for a new execution
     virtual void reset() {
       solved = false;
+      pre_process_done = false;
+      post_process_done = false;
     };
     
     ///@brief returns the state of the solved flag

@@ -12,7 +12,7 @@ namespace PrositCore
 
   bool QBDResourceReservationProbabilitySolver::check_list ()
   {
-    if (!task_descriptor)
+    if (!linked_flag)
       EXC_PRINT ("Solver called but no task was registered");
     if (solved)
       {
@@ -169,14 +169,13 @@ namespace PrositCore
 
 
 
-  void QBDResourceReservationProbabilitySolver::generate_matrices ()
+  void QBDResourceReservationProbabilitySolver::pre_process()
   {
     int maxv, i, j;
     int forward, back;
     if (!task_descriptor)
       EXC_PRINT
 	("generate_matrices requested before linking any task descriptor");
-    bool verbose_flag = task_descriptor->get_verbose ();
     unsigned step = granularity;
     unsigned Q = task_descriptor->get_budget ();
 
@@ -188,7 +187,7 @@ namespace PrositCore
 	    << task_descriptor->get_name () << endl;
 	return;
       }
-    if (computed_matrices)
+    if (pre_process_done)
       {
 	if (verbose_flag)
 	  cerr <<
@@ -299,19 +298,11 @@ namespace PrositCore
 
     R = MatrixXd (A0.rows (), A0.cols ());
 
-    computed_matrices = true;
-
     return;
 
 
   };
 
-  void QBDResourceReservationProbabilitySolver::reset ()
-  {
-    ProbabilitySolver::reset ();
-    computed_matrices = false;
-    computed_pi0 = false;
-  }
   bool QBDResourceReservationProbabilitySolver::compute_pi0 ()
   {
 
@@ -321,8 +312,8 @@ namespace PrositCore
     if (!solved)
       EXC_PRINT_2 ("Computation of pi0 comes after solution. Task: ",
 		   task_descriptor->get_name ());
-    if (computed_pi0)
-      if (task_descriptor->get_verbose ())
+    if (post_process_done)
+      if (verbose_flag)
 	cerr << "Computation of pi0 required twice. Task " << task_descriptor->get_name () << endl;
     if (R.rows () != R.cols ())
       EXC_PRINT ("R had to be square");
@@ -332,20 +323,20 @@ namespace PrositCore
       EXC_PRINT
 	("A0, A1, A2 matrixes have to be square and equal size");
     
-    if ((R.minCoeff () < 0) && task_descriptor->get_verbose ())
+    if ((R.minCoeff () < 0) && verbose_flag)
       cerr << "QBD_COMPUTE_PI0: Warning: R has negative coeeficients"
 	   << endl;
 
     SelfAdjointEigenSolver < MatrixXd > eigensolver (R);
     if (eigensolver.info () != Success)
       {
-	if (task_descriptor->get_verbose ())
+	if (verbose_flag)
 	  cerr << "QBD_COMPUTE_PI0: cannot compute eigenvalues of R"
 	       << endl;
 	return false;
       }
     if ((ArrayXd (eigensolver.eigenvalues ()).abs ().maxCoeff () > 1)
-	&& task_descriptor->get_verbose ())
+	&& verbose_flag)
       cerr <<
 	"QBD_COMPUTE_PI0: Warning: R has spectral radius greater than 1"
 	   << endl;
@@ -360,7 +351,7 @@ namespace PrositCore
     FullPivLU < MatrixXd > lu_decomp (M);
     if (lu_decomp.rank () < n)
       {
-	if (task_descriptor->get_verbose ())
+	if ( verbose_flag )
 	  cerr << "QBD_COMPUTE_PI0: No unique solution" << endl;
 	return false;
       }
@@ -371,10 +362,9 @@ namespace PrositCore
     MatrixXd W1;
     PrositAux::pseudoInverse < MatrixXd > (M, W1);
     pi0 = work * W1;
-    if ((pi0.minCoeff () < 0) && task_descriptor->get_verbose ())
+    if ((pi0.minCoeff () < 0) && verbose_flag )
       cerr << "QBD_COMPUTE_PI0: Warning: x0 has negative elements" <<
 	endl;
-    computed_pi0 = true;
 
     return true;
   };
@@ -410,7 +400,7 @@ namespace PrositCore
     double prob=0.0;
     if (compress_flag)
       delta = u->get_min();
-    cout<<"H: "<<H<<endl;
+ 
     for(int h = 0; h <= H; h++) { 
       for (int i = 0; i<pi.size(); i++) {
 	prob += pi(i);
@@ -426,37 +416,11 @@ namespace PrositCore
       pi = pi*R;
     }
   }
-  void QBDResourceReservationProbabilitySolver::solve() {
-    if ( !check_list() ) {
-      if (task_descriptor && (task_descriptor->get_verbose())) 
-	cerr<<"QBDP solver will not execute"<<endl;
-      return;
-    };
-    bool verbose_flag = task_descriptor->get_verbose();
-    generate_matrices();
-    if (verbose_flag) {
-      cout<<"Matrices Generated"<<endl;
-      cout<<"Size. A0 "<<A0.rows()<<" * "<<A0.cols()<<endl;
-    }
-
-      
-    computed_matrices = true;
-    apply_algorithm();
-    if(verbose_flag)
-      cout<<"QBDP solver iteration completed"<<endl;
-    solved = true;
-    post_process();
-    if(verbose_flag)
-      cout<<"Post-processing completed"<<endl;
-  
-  };
 
   void QBDResourceReservationProbabilitySolver::post_process() {
     if(! compute_pi0() )
 	if (task_descriptor->get_verbose())
 	  cerr<<"Warning: anomalies in the computation of pi0"<<endl;
-      
-      fill_in_probability_map();
   };
 };
   
