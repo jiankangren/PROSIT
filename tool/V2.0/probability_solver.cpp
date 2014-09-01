@@ -27,6 +27,30 @@ namespace PrositCore {
     fill_in_probability_map();
   };
   
+  
+  bool ResourceReservationProbabilitySolver::check_list ()
+  {
+    if (!linked_flag)
+      EXC_PRINT ("Solver called but no task was registered");
+    if (solved)
+      {
+	if (task_descriptor->get_verbose() )
+	  cerr <<
+	    "Solution requested for a problem that has been solved already" <<
+	    endl;
+	return false;
+      };
+    if (task_descriptor->get_deadline_step () == 0)
+      EXC_PRINT_2
+	("QBD solver called for a task for which no deadline step has been set. Task: ",
+	 task_descriptor->get_name ());
+    if (task_descriptor->get_probabilistic_deadlines()->empty ())
+      EXC_PRINT_2
+	("QBD solver called for a task for which no deadline has been set. Task: ",
+	 task_descriptor->get_name ());
+    return true;
+  };
+
   void ResourceReservationProbabilitySolver::register_task(GenericTaskDescriptor * td) {
     if (! (task_descriptor = dynamic_cast<ResourceReservationTaskDescriptor*>(td)) )
       EXC_PRINT_2("Resource reservation solver used for improper task ", td->get_name());

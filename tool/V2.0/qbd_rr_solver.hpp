@@ -31,10 +31,6 @@ namespace PrositCore {
     ///@brief Generates matrices used by QBD methods.
     void pre_process();
     
-
-    ///@brief checks that everything is ok for solution
-    bool check_list();
-    
     
     ///@brief Computes the probability from R, A0, A1, A2, B0
     bool compute_pi0();

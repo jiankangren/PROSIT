@@ -96,6 +96,8 @@ namespace PrositCore{
     /// does not correspond to a resource reservation task.
     virtual void register_task(GenericTaskDescriptor * td);
     
+    bool check_list();
+
     ///@brief Default constructor
     ResourceReservationProbabilitySolver():  ProbabilitySolver(), task_descriptor(0) {};
     

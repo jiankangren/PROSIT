@@ -10,28 +10,6 @@
 namespace PrositCore
 {
 
-  bool QBDResourceReservationProbabilitySolver::check_list ()
-  {
-    if (!linked_flag)
-      EXC_PRINT ("Solver called but no task was registered");
-    if (solved)
-      {
-	if (task_descriptor->get_verbose() )
-	  cerr <<
-	    "Solution requested for a problem that has been solved already" <<
-	    endl;
-	return false;
-      };
-    if (task_descriptor->get_deadline_step () == 0)
-      EXC_PRINT_2
-	("QBD solver called for a task for which no deadline step has been set. Task: ",
-	 task_descriptor->get_name ());
-    if (task_descriptor->get_probabilistic_deadlines()->empty ())
-      EXC_PRINT_2
-	("QBD solver called for a task for which no deadline has been set. Task: ",
-	 task_descriptor->get_name ());
-    return true;
-  };
 
   ///@brief Computes the transition matrix
   ///
@@ -183,7 +161,7 @@ namespace PrositCore
       {
 	if (verbose_flag)
 	  cerr <<
-	    "generate_matrices called on a solver in solved state for task "
+	    "pre_process called on a solver in solved state for task "
 	    << task_descriptor->get_name () << endl;
 	return;
       }
@@ -191,7 +169,7 @@ namespace PrositCore
       {
 	if (verbose_flag)
 	  cerr <<
-	    "generate_matrices called on a solver that has already generated the matrices for task "
+	    "pre_process called on a solver that has already generated the matrices for task "
 	    << task_descriptor->get_name () << endl;
 	return;
       }
