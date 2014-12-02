@@ -1,5 +1,5 @@
-#ifndef QBD_RR_SOLVER_HPP
-#define QBD_RR_SOLVER_HPP
+#ifndef QBD_CMP_SOLVER_HPP
+#define QBD_CMP_SOLVER_HPP
 
 ///@file qbd_companion_solver.hpp
 ///

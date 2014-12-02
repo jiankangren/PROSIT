@@ -7,6 +7,7 @@
 #include "pmf.hpp"
 #include <memory>
 #include "qbd_rr_solver.hpp"
+#include "qbd_companion_solver.hpp"
 #include "exc.hpp"
 
 ///@file Command line solver for computation of stady state probabilities
@@ -196,8 +197,8 @@ int main(int argc, char *argv[])
     else
       {      
 	if (companion_flag) {
-	  PrositCore::CompanionResourceReservationProbabilitySolver *tmp =  new PrositCore::CRResourceReservationProbabilitySolver(step, eps);
-	  std::unique_ptr<PrositCore::QBDResourceReservationProbabilitySolver> ps(tmp);
+	  PrositCore::CompanionResourceReservationProbabilitySolver *tmp =  new PrositCore::CompanionResourceReservationProbabilitySolver(step, eps);
+	  std::unique_ptr<PrositCore::ResourceReservationProbabilitySolver> ps(tmp);
 	  task_des.set_solver(ps.get());
 
 	  task_des.compute_probability();
